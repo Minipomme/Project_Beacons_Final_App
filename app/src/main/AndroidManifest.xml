@@ -16,9 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Admin" />
-        <activity android:name=".Game" />
-        <activity android:name=".WIP"></activity>
+        <activity android:name=".AdminActivity" />
+        <activity android:name=".GameActivity" />
+        <activity android:name=".WIPActivity"></activity>
     </application>
 
 </manifest>

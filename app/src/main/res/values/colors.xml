@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#FFA000</color>
     <color name="backgroundcolor">#FCFCFC</color>
     <color name="lightgray">#EDEDED</color>
-    <color name="deepurple">#7C4DFF</color>
+    <color name="gray">#CDCDCD</color>
+    <color name="deeppurple">#7C4DFF</color>
     <color name="yellow">#FFB300</color>
     <color name="green">#00BFA5</color>
     <color name="blue">#0059bf</color>
