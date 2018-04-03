@@ -3,7 +3,7 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class WIP extends AppCompatActivity {
+public class WIPActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
