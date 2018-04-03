@@ -19,7 +19,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         CircleMenu circleMenu = findViewById(R.id.circle_game_menu);
-        circleMenu.setMainMenu(getResources().getColor(R.color.gray),R.drawable.ic_add_grey_24dp, R.drawable.ic_clear_grey_24dp)
+        circleMenu.setMainMenu(getResources().getColor(R.color.gray),R.drawable.ic_play_arrow_grey_24dp, R.drawable.ic_clear_grey_24dp)
                     .addSubMenu(getResources().getColor(R.color.deeppurple), R.drawable.ic_location_on_white_24dp)
                     .addSubMenu(getResources().getColor(R.color.yellow), R.drawable.ic_location_pin_multiple_white)
                     .addSubMenu(getResources().getColor(R.color.green), R.drawable.ic_thermometer_half_white)
