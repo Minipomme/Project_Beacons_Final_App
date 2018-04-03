@@ -7,5 +7,6 @@
     <color name="deepurple">#7C4DFF</color>
     <color name="yellow">#FFB300</color>
     <color name="green">#00BFA5</color>
+    <color name="blue">#0059bf</color>
     <color name="colorAccent">#FF4081</color>
 </resources>
