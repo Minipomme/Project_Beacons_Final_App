@@ -17,9 +17,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".AdminActivity" />
-        <activity android:name=".GameActivity" />
+        <activity android:name=".Game.GameActivity" />
         <activity android:name=".WIPActivity" />
-        <activity android:name=".HotColdActivity"></activity>
+        <activity android:name=".Game.HotCold.HotColdInitActivity" />
+        <activity android:name=".Game.HotCold.HotColdThermoActivity"></activity>
     </application>
 
 </manifest>

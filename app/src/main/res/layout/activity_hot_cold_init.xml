@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="beacon.projetco.dii.polytech.tours.univ.beaconsfinder.Game.HotCold.HotColdInitActivity">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ButtonValidate"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="27dp"
+        android:gravity="center"
+        android:text="Placez vous à 1 mètre du beacon.\n Attendez 10 secondes puis validez :" />
+
+    <Button
+        android:id="@+id/ButtonValidate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:onClick="onRangingClicked"
+        android:text="Valider" />
+</RelativeLayout>
