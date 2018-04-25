@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private CardView adminCard, gameCard, languageCard, day_nightCard, infosCard;
-    private String verif_password, verif_email, password, email;
+    private String email_saved, password_saved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (view.getId()) {
             case R.id.admin_card :
-                //load the email & password
-                SharedPreferences verif_settings = getSharedPreferences("PREFS", 0);
-                verif_password = verif_settings.getString("password", "");
-                verif_email = verif_settings.getString("email", "");
-
-                if(verif_email.isEmpty() || verif_password.isEmpty()) {
+                if(CheckEmailSaved() || CheckPwdSaved()) {
                     AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
                     View mView = getLayoutInflater().inflate(R.layout.dialog_create_or_login, null);
 
@@ -68,11 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     if (validatePwd(mNewPassword.getText().toString())) {
                                         if (mNewPassword.getText().toString().equals(mNewPasswordAgain.getText().toString())) {
                                             //save the password
+                                            createLogin(mNewEmail.getText().toString(), mNewPassword.getText().toString());
                                             Toast.makeText(MainActivity.this, R.string.succ_login_created_msg, Toast.LENGTH_SHORT).show();
-                                            SharedPreferences settings = getSharedPreferences("PREFS", 0);
-                                            SharedPreferences.Editor editor = settings.edit();
-                                            editor.putString("email", mNewEmail.getText().toString());
-                                            editor.putString("password", mNewPassword.getText().toString());
 
                                             //start the next activity
                                             j = new Intent(MainActivity.this, WIPActivity.class);
@@ -108,25 +100,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     final EditText mPassword = mView.findViewById(R.id.editTextPwd);
                     Button mLogin = mView.findViewById(R.id.btnLogin);
 
-                    //load the password
-                    SharedPreferences settings = getSharedPreferences("PREFS", 0);
-                    password = settings.getString("password", "");
-                    email = settings.getString("email", "");
-
                     mLogin.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent j ;
 
                             if(!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) {
-                                if(mEmail.getText().toString().equals(email) && mPassword.getText().toString().equals(password)) {
-
-                                    //start the next activity
-                                    Toast.makeText(MainActivity.this, R.string.success_login_msg, Toast.LENGTH_SHORT).show();
-                                    j = new Intent(MainActivity.this, WIPActivity.class); startActivity(j);
-
+                                if (compareWithEmailSaved(mEmail.getText().toString())) {
+                                    if (compareWithPwdSaved(mPassword.getText().toString())) {
+                                        //start the next activity
+                                        Toast.makeText(MainActivity.this, R.string.success_login_msg, Toast.LENGTH_SHORT).show();
+                                        j = new Intent(MainActivity.this, WIPActivity.class); startActivity(j);
+                                    } else {
+                                        mPassword.setError("Invalid Password");
+                                        mPassword.requestFocus();
+                                    }
                                 } else {
-                                    Toast.makeText(MainActivity.this, "Wrong Password !", Toast.LENGTH_SHORT).show();
+                                    mEmail.setError("Invalid Email");
+                                    mEmail.requestFocus();
                                 }
                             } else {
                                 Toast.makeText(MainActivity.this, R.string.error_login_msg, Toast.LENGTH_SHORT).show();
@@ -165,5 +156,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Matcher matcher = pattern.matcher(email);
 
         return matcher.matches();
+    }
+
+    protected boolean createLogin(String email, String password) {
+        SharedPreferences settings = getSharedPreferences("PREFS", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("password", password);
+        editor.putString("email", email);
+
+        return true; // WIP
+    }
+
+    protected boolean CheckEmailSaved() {
+        SharedPreferences verif_settings = getSharedPreferences("PREFS", 0);
+        email_saved = verif_settings.getString("email", "");
+        return email_saved.isEmpty();
+    }
+
+    protected boolean CheckPwdSaved() {
+        SharedPreferences verif_settings = getSharedPreferences("PREFS", 0);
+        password_saved = verif_settings.getString("password", "");
+        return password_saved.isEmpty();
+    }
+
+    protected boolean compareWithEmailSaved(String email) {
+        return email.equals(email_saved);
+    }
+
+    protected boolean compareWithPwdSaved(String password) {
+        return password.equals(password_saved);
     }
 }
