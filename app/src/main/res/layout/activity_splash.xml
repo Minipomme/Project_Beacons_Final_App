@@ -12,20 +12,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <ImageView
-            android:src="@drawable/ic_logo_application"
-            android:layout_gravity="center"
+            android:id="@+id/IVlogo"
             android:layout_width="200dp"
-            android:layout_height="200dp" />
-        <TextView
-            android:layout_marginTop="10dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
+            android:src="@drawable/ic_logo_application" />
+
+        <TextView
+            android:id="@+id/TVloading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:text="Indicon Join app loading..."
+            android:textColor="@color/white"
             android:textSize="23dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 
