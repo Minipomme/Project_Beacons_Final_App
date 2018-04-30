@@ -33,11 +33,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent i ;
 
         switch (view.getId()) {
-            case R.id.admin_card : i = new Intent(this, WIP.class); startActivity(i); break;
-            case R.id.game_card : i = new Intent(this, WIP.class); startActivity(i); break;
-            case R.id.language_card : i = new Intent(this, WIP.class); startActivity(i); break;
-            case R.id.day_night_card : i = new Intent(this, WIP.class); startActivity(i); break;
-            case R.id.infos_card : i = new Intent(this, WIP.class); startActivity(i); break;
+            case R.id.admin_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
+            case R.id.game_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
+            case R.id.language_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
+            case R.id.day_night_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
+            case R.id.infos_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
             default:break;
         }
     }
