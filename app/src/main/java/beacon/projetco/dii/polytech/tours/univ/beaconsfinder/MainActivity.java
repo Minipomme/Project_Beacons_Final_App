@@ -17,6 +17,9 @@ import java.util.regex.Pattern;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private CardView adminCard, gameCard, languageCard, day_nightCard, infosCard;
     private String email_saved, password_saved;
+    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String EMAIL = "email";
+    private static final String PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (view.getId()) {
             case R.id.admin_card :
-                if(CheckEmailSaved() || CheckPwdSaved()) {
+                if(loadLogin()) {
                     AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
                     View mView = getLayoutInflater().inflate(R.layout.dialog_create_or_login, null);
 
@@ -62,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 if (validateEmail(mNewEmail.getText().toString())) {
                                     if (validatePwd(mNewPassword.getText().toString())) {
                                         if (mNewPassword.getText().toString().equals(mNewPasswordAgain.getText().toString())) {
-                                            //save the password
-                                            createLogin(mNewEmail.getText().toString(), mNewPassword.getText().toString());
+                                            //save the login
+                                            saveLogin(mNewEmail.getText().toString(), mNewPassword.getText().toString());
                                             Toast.makeText(MainActivity.this, R.string.succ_login_created_msg, Toast.LENGTH_SHORT).show();
 
                                             //start the next activity
@@ -158,25 +161,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return matcher.matches();
     }
 
-    protected boolean createLogin(String email, String password) {
-        SharedPreferences settings = getSharedPreferences("PREFS", 0);
+    protected void saveLogin(String email, String password) {
+        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("password", password);
-        editor.putString("email", email);
 
-        return true; // WIP
+        editor.putString(PASSWORD, password);
+        editor.putString(EMAIL, email);
+
+        editor.apply();
     }
 
-    protected boolean CheckEmailSaved() {
-        SharedPreferences verif_settings = getSharedPreferences("PREFS", 0);
-        email_saved = verif_settings.getString("email", "");
-        return email_saved.isEmpty();
-    }
+    protected boolean loadLogin() {
+        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        email_saved = settings.getString(EMAIL, "");
+        password_saved = settings.getString(PASSWORD, "");
 
-    protected boolean CheckPwdSaved() {
-        SharedPreferences verif_settings = getSharedPreferences("PREFS", 0);
-        password_saved = verif_settings.getString("password", "");
-        return password_saved.isEmpty();
+        if(email_saved.isEmpty() || password_saved.isEmpty())
+            return true;
+        else
+            return false;
     }
 
     protected boolean compareWithEmailSaved(String email) {
