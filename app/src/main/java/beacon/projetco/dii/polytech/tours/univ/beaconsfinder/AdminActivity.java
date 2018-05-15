@@ -2,9 +2,13 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +22,10 @@ import android.widget.TextView;
 
 public class AdminActivity extends AppCompatActivity {
     private static final int SELECTED_PICTURE=1;
+    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String ERROR = "ERROR";
+    private Context context;
+
     private Button buttonValid;
 
     private TextView widthRoom;
@@ -38,6 +46,8 @@ public class AdminActivity extends AppCompatActivity {
 
     private ImageView validLoading;
     private String filePath;
+    private String MapName = "Map.png";
+    private String MapDirectory = "images";
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -73,33 +83,108 @@ public class AdminActivity extends AppCompatActivity {
         position_y_fixedBeaconThree = this.findViewById(R.id.editText_fixedBeaconThree_Y );
         position_y_fixedBeaconFour = this.findViewById(R.id.editText_fixedBeaconFour_Y);
 
-        validLoading.setVisibility(View.INVISIBLE);
-        buttonValid.setEnabled(false);
+        // Load Data Room
+        String Data = loadAdminData("widthRoom");
+        if(Data != ERROR)
+            widthRoom.setText(Data);
+        Data = loadAdminData("heightRoom");
+        if(Data != ERROR)
+            heightRoom.setText(Data);
+
+        // Load Data Offset
+        Data = loadAdminData("offsetMap_x");
+        if(Data != ERROR)
+            offsetMap_x.setText(Data);
+        Data = loadAdminData("offsetMap_y");
+        if(Data != ERROR)
+            offsetMap_y.setText(Data);
+
+        // Load Data Position Beacon One
+        Data = loadAdminData("positionXFixedBeaconOne");
+        if(Data != ERROR)
+            position_x_fixedBeaconOne.setText(Data);
+        Data = loadAdminData("positionYFixedBeaconOne");
+        if(Data != ERROR)
+            position_y_fixedBeaconOne.setText(Data);
+
+        // Load Data Position Beacon Two
+        Data = loadAdminData("positionXFixedBeaconTwo");
+        if(Data != ERROR)
+            position_x_fixedBeaconTwo.setText(Data);
+        Data = loadAdminData("positionYFixedBeaconTwo");
+        if(Data != ERROR)
+            position_y_fixedBeaconTwo.setText(Data);
+
+        // Load Data Position Beacon Three
+        Data = loadAdminData("positionXFixedBeaconThree");
+        if(Data != ERROR)
+            position_x_fixedBeaconThree.setText(Data);
+        Data = loadAdminData("positionYFixedBeaconThree");
+        if(Data != ERROR)
+            position_y_fixedBeaconThree.setText(Data);
+
+        // Load Data Position Beacon Four
+        Data = loadAdminData("positionXFixedBeaconFour");
+        if(Data != ERROR)
+            position_x_fixedBeaconFour.setText(Data);
+        Data = loadAdminData("positionYFixedBeaconFour");
+        if(Data != ERROR)
+            position_y_fixedBeaconFour.setText(Data);
+
+        // Load Map FilePath
+        Data = loadAdminData("map_name");
+        if(Data != ERROR) {
+            Data = loadAdminData("map_directory");
+            if(Data != ERROR) {
+                buttonValid.setEnabled(true);
+                validLoading.setVisibility(View.VISIBLE);
+            } else {
+                validLoading.setVisibility(View.INVISIBLE);
+                buttonValid.setEnabled(false);
+            }
+        } else {
+            validLoading.setVisibility(View.INVISIBLE);
+            buttonValid.setEnabled(false);
+        }
 
         buttonValid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent mapIntent = new Intent(view.getContext(), MapActivity.class);
+                // Save Data Room
+                saveAdminData("widthRoom", widthRoom.getText().toString());
+                saveAdminData("heightRoom", heightRoom.getText().toString());
 
-                mapIntent.putExtra("widthRoom", widthRoom.getText().toString());
-                mapIntent.putExtra("heightRoom", heightRoom.getText().toString());
+                // Save Data Offset
+                saveAdminData("offsetMap_x", offsetMap_x.getText().toString());
+                saveAdminData("offsetMap_y", offsetMap_y.getText().toString());
 
-                mapIntent.putExtra("offsetMap_x", offsetMap_x.getText().toString());
-                mapIntent.putExtra("offsetMap_y", offsetMap_y.getText().toString());
+                // Save Data Position Beacon One
+                saveAdminData("positionXFixedBeaconOne", position_x_fixedBeaconOne.getText().toString());
+                saveAdminData("positionYFixedBeaconOne", position_y_fixedBeaconOne.getText().toString());
 
-                mapIntent.putExtra("positionXFixedBeaconOne", position_x_fixedBeaconOne.getText().toString());
-                mapIntent.putExtra("positionXFixedBeaconTwo", position_x_fixedBeaconTwo.getText().toString());
-                mapIntent.putExtra("positionXFixedBeaconThree", position_x_fixedBeaconThree.getText().toString());
-                mapIntent.putExtra("positionXFixedBeaconFour", position_x_fixedBeaconFour.getText().toString());
+                // Save Data Position Beacon Two
+                saveAdminData("positionXFixedBeaconTwo", position_x_fixedBeaconTwo.getText().toString());
+                saveAdminData("positionYFixedBeaconTwo", position_y_fixedBeaconTwo.getText().toString());
 
-                mapIntent.putExtra("positionYFixedBeaconOne", position_y_fixedBeaconOne.getText().toString());
-                mapIntent.putExtra("positionYFixedBeaconTwo", position_y_fixedBeaconTwo.getText().toString());
-                mapIntent.putExtra("positionYFixedBeaconThree", position_y_fixedBeaconThree.getText().toString());
-                mapIntent.putExtra("positionYFixedBeaconFour", position_y_fixedBeaconFour.getText().toString());
+                // Save Data Position Beacon Three
+                saveAdminData("positionXFixedBeaconThree", position_x_fixedBeaconThree.getText().toString());
+                saveAdminData("positionYFixedBeaconThree", position_y_fixedBeaconThree.getText().toString());
 
-                mapIntent.putExtra("imageToLoad",filePath);
+                // Save Data Position Beacon Four
+                saveAdminData("positionXFixedBeaconFour", position_x_fixedBeaconFour.getText().toString());
+                saveAdminData("positionYFixedBeaconFour", position_y_fixedBeaconFour.getText().toString());
 
-                startActivity(mapIntent);*/
+                // Save Map
+                saveAdminData("map_name", MapName);
+                saveAdminData("map_directory", MapDirectory);
+                Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+
+                new ImageSaver(context).
+                        setFileName(MapName).
+                        setDirectoryName(MapDirectory).
+                        save(yourSelectedImage);
+
+                Intent mainIntent = new Intent(view.getContext(), MainActivity.class); startActivity(mainIntent);
             }
         });
     }
@@ -149,6 +234,21 @@ public class AdminActivity extends AppCompatActivity {
                     REQUEST_EXTERNAL_STORAGE
             );
         }
+    }
+
+    protected void saveAdminData(String Key, String Value) {
+        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Key, Value);
+
+        editor.apply();
+    }
+
+    protected String loadAdminData(String Key) {
+        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String Data = settings.getString(Key, ERROR);
+
+        return Data;
     }
 
 }
