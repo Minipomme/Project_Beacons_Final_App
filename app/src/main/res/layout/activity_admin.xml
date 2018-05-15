@@ -4,6 +4,255 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="beacon.projetco.dii.polytech.tours.univ.beaconsfinder.AdminActivity">
+    tools:context="beacon.projetco.dii.polytech.tours.univ.beaconsfinder.AdminActivity"
+    tools:layout_editor_absoluteY="81dp">
+
+    <TextView
+        android:id="@+id/textView_fixedBeaconOne"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginBottom="56dp"
+        android:layout_marginTop="52dp"
+        android:text="Position de la balise 1 :"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_fixedBeaconTwo"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/offsetMap_x" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconOne_X"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/offsetMap_x" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconOne_Y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconOne_X"
+        app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconTwo_Y" />
+
+    <TextView
+        android:id="@+id/textView_fixedBeaconTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Position de la balise 2 :"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconOne_X" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconTwo_X"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/textView_fixedBeaconTwo" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconTwo_Y"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconTwo_X"
+        app:layout_constraintStart_toEndOf="@+id/editText_fixedBeaconTwo_X" />
+
+    <TextView
+        android:id="@+id/textView_fixedBeaconThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Position de la balise 3 :"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconTwo_X" />
+
+    <TextView
+        android:id="@+id/textView_fixedBeaconFour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Position de la balise 4 :"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconThree_X" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconThree_X"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/textView_fixedBeaconThree" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconFour_X"
+        android:layout_width="141dp"
+        android:layout_height="33dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/textView_fixedBeaconFour" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconThree_Y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconThree_X"
+        app:layout_constraintStart_toEndOf="@+id/editText_fixedBeaconThree_X" />
+
+    <EditText
+        android:id="@+id/editText_fixedBeaconFour_Y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconFour_X"
+        app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconThree_Y" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="30dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <Button
+        android:id="@+id/buttonValid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginStart="7dp"
+        android:text="Valider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView_positionMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Mesure carte :"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editText_widthMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/textView_positionMap" />
+
+    <EditText
+        android:id="@+id/editText_heightMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText_widthMap"
+        app:layout_constraintStart_toEndOf="@+id/editText_widthMap" />
+
+    <TextView
+        android:id="@+id/offsetMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:text="Offset Map :"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+    <EditText
+        android:id="@+id/offsetMap_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/offsetMap" />
+
+    <EditText
+        android:id="@+id/offsetMap_y"
+        android:layout_width="149dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/offsetMap_x"
+        app:layout_constraintEnd_toEndOf="@+id/editText_fixedBeaconOne_Y"
+        app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconOne_Y" />
+
+    <Button
+        android:id="@+id/loadMap"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="110dp"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="15dp"
+        android:onClick="loadMap"
+        android:text="Charger une image"
+        app:layout_constraintBottom_toTopOf="@+id/buttonValid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconFour_X"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/validLoadingImg"
+        android:layout_width="54dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="74dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="21dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonValid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/loadMap"
+        app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconFour_Y"
+        app:srcCompat="@android:drawable/checkbox_on_background" />
 
 </android.support.constraint.ConstraintLayout>

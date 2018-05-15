@@ -14,8 +14,6 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import beacon.projetco.dii.polytech.tours.univ.beaconsfinder.admin.AdminConfigActivity;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private CardView adminCard, gameCard, languageCard, day_nightCard, infosCard;
     private String email_saved, password_saved;
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             Toast.makeText(MainActivity.this, R.string.succ_login_created_msg, Toast.LENGTH_SHORT).show();
 
                                             //start the next activity
-                                            j = new Intent(MainActivity.this, WIPActivity.class);
+                                            j = new Intent(MainActivity.this, AdminActivity.class);
                                             startActivity(j);
                                         } else {
                                             //there is no match on the passwords
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     if (compareWithPwdSaved(mPassword.getText().toString())) {
                                         //start the next activity
                                         Toast.makeText(MainActivity.this, R.string.success_login_msg, Toast.LENGTH_SHORT).show();
-                                        j = new Intent(MainActivity.this, AdminConfigActivity.class); startActivity(j);
+                                        j = new Intent(MainActivity.this, AdminActivity.class); startActivity(j);
                                     } else {
                                         mPassword.setError("Invalid Password");
                                         mPassword.requestFocus();

@@ -18,7 +18,6 @@
         </activity>
         <activity android:name=".AdminActivity" />
         <activity android:name=".GameActivity" />
-        <activity android:name=".admin.AdminConfigActivity" />
         <activity android:name=".WIPActivity"></activity>
     </application>
 
