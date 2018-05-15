@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="33dp"
         android:ems="10"
+        android:hint="X"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/offsetMap_x" />
@@ -35,8 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Y"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconOne_X"
         app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconTwo_Y" />
@@ -54,8 +54,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="X"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView_fixedBeaconTwo" />
@@ -66,8 +66,8 @@
         android:layout_height="32dp"
         android:layout_marginStart="24dp"
         android:ems="10"
+        android:hint="Y"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconTwo_X"
         app:layout_constraintStart_toEndOf="@+id/editText_fixedBeaconTwo_X" />
@@ -93,8 +93,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="X"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView_fixedBeaconThree" />
@@ -104,8 +104,8 @@
         android:layout_width="141dp"
         android:layout_height="33dp"
         android:ems="10"
+        android:hint="X"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView_fixedBeaconFour" />
@@ -116,8 +116,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:ems="10"
+        android:hint="Y"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconThree_X"
         app:layout_constraintStart_toEndOf="@+id/editText_fixedBeaconThree_X" />
@@ -127,8 +127,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Y"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/editText_fixedBeaconFour_X"
         app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconThree_Y" />
@@ -173,8 +173,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="X"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView_positionMap" />
@@ -185,11 +185,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:ems="10"
+        android:hint="Y"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText_widthMap"
-        app:layout_constraintStart_toEndOf="@+id/editText_widthMap" />
+        app:layout_constraintStart_toEndOf="@+id/editText_widthMap"
+        tools:layout_editor_absoluteY="35dp" />
 
     <TextView
         android:id="@+id/offsetMap"
@@ -205,8 +205,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="X"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/offsetMap" />
@@ -216,8 +216,8 @@
         android:layout_width="149dp"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Y"
         android:inputType="textPersonName"
-        android:text="0"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/offsetMap_x"
         app:layout_constraintEnd_toEndOf="@+id/editText_fixedBeaconOne_Y"
