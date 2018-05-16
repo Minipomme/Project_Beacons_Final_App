@@ -1,8 +1,10 @@
-package beacon.projetco.dii.polytech.tours.univ.beaconsfinder.Game.HotCold;
+package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+
+import java.util.Random;
 
 /**
  * Created by Minipomme.
@@ -17,4 +19,3 @@ public class Utils {
         return px;
     }
 }
-

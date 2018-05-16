@@ -1,4 +1,4 @@
-package beacon.projetco.dii.polytech.tours.univ.beaconsfinder.Game.HotCold;
+package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,7 +10,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 import android.util.Log;
-import beacon.projetco.dii.polytech.tours.univ.beaconsfinder.R;
 
 /**
  * Created by Minipomme.

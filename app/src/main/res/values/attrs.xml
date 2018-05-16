@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Ressources Thermomètre -->
+
     <declare-styleable name="Thermometer">
         <attr name="radius" format="dimension" />
         <attr name="outerColor" format="color" />

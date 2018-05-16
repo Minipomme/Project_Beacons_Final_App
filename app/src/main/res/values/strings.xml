@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">BeaconsFinder</string>
-
-    <!-- Ressources Thermomètre -->
-    <string name="reset">Reset</string>
 </resources>

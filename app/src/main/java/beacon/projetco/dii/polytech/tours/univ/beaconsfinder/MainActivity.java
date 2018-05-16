@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 
-import beacon.projetco.dii.polytech.tours.univ.beaconsfinder.Game.GameActivity;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private CardView adminCard, gameCard, languageCard, day_nightCard, infosCard;
     @Override

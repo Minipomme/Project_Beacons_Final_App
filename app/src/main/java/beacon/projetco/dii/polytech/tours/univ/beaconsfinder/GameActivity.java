@@ -1,4 +1,4 @@
-package beacon.projetco.dii.polytech.tours.univ.beaconsfinder.Game;
+package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.content.Intent;
 import android.os.Handler;
@@ -8,10 +8,6 @@ import android.widget.Toast;
 
 import com.hitomi.cmlibrary.CircleMenu;
 import com.hitomi.cmlibrary.OnMenuSelectedListener;
-
-import beacon.projetco.dii.polytech.tours.univ.beaconsfinder.Game.HotCold.HotColdInitActivity;
-import beacon.projetco.dii.polytech.tours.univ.beaconsfinder.R;
-import beacon.projetco.dii.polytech.tours.univ.beaconsfinder.WIPActivity;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -23,7 +19,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         CircleMenu circleMenu = findViewById(R.id.circle_game_menu);
-        circleMenu.setMainMenu(getResources().getColor(R.color.gray),R.drawable.ic_add_grey_24dp, R.drawable.ic_clear_grey_24dp)
+        circleMenu.setMainMenu(getResources().getColor(R.color.gray),R.drawable.ic_play_arrow_grey_24dp, R.drawable.ic_clear_grey_24dp)
                     .addSubMenu(getResources().getColor(R.color.deeppurple), R.drawable.ic_location_on_white_24dp)
                     .addSubMenu(getResources().getColor(R.color.yellow), R.drawable.ic_location_pin_multiple_white)
                     .addSubMenu(getResources().getColor(R.color.green), R.drawable.ic_thermometer_half_white)
@@ -41,7 +37,7 @@ public class GameActivity extends AppCompatActivity {
                                     switch (index) {
                                         case 0 : i = new Intent(GameActivity.this, WIPActivity.class); startActivity(i); break;
                                         case 1 : i = new Intent(GameActivity.this, WIPActivity.class); startActivity(i); break;
-                                        case 2 : i = new Intent(GameActivity.this, HotColdInitActivity.class); startActivity(i); break;
+                                        case 2 : i = new Intent(GameActivity.this, MonitoringActivity.class); startActivity(i); break;
                                         case 3 : i = new Intent(GameActivity.this, WIPActivity.class); startActivity(i); break;
                                         default:break;
                                     }
