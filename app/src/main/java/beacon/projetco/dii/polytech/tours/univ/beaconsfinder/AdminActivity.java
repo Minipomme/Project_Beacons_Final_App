@@ -131,17 +131,14 @@ public class AdminActivity extends AppCompatActivity {
         if(Data != ERROR)
             position_y_fixedBeaconFour.setText(Data);
 
-        // Load Map FilePath
-        Data = loadAdminData("map_name");
-        if(Data != ERROR) {
-            Data = loadAdminData("map_directory");
-            if(Data != ERROR) {
-                buttonValid.setEnabled(true);
-                validLoading.setVisibility(View.VISIBLE);
-            } else {
-                validLoading.setVisibility(View.INVISIBLE);
-                buttonValid.setEnabled(false);
-            }
+        // Load Map
+        Bitmap bitmap = new ImageSaver(context).
+                setFileName(MapName).
+                setDirectoryName(MapDirectory).
+                load();
+        if(bitmap != null) {
+            buttonValid.setEnabled(true);
+            validLoading.setVisibility(View.VISIBLE);
         } else {
             validLoading.setVisibility(View.INVISIBLE);
             buttonValid.setEnabled(false);
