@@ -132,7 +132,7 @@ public class AdminActivity extends AppCompatActivity {
             position_y_fixedBeaconFour.setText(Data);
 
         // Load Map
-        Bitmap bitmap = new ImageSaver(context).
+        final Bitmap bitmap = new ImageSaver(context).
                 setFileName(MapName).
                 setDirectoryName(MapDirectory).
                 load();
@@ -172,14 +172,17 @@ public class AdminActivity extends AppCompatActivity {
                 saveAdminData("positionYFixedBeaconFour", position_y_fixedBeaconFour.getText().toString());
 
                 // Save Map
-                saveAdminData("map_name", MapName);
-                saveAdminData("map_directory", MapDirectory);
-                Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+                if(bitmap == null) {
+                    saveAdminData("map_name", MapName);
+                    saveAdminData("map_directory", MapDirectory);
+                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
 
-                new ImageSaver(context).
-                        setFileName(MapName).
-                        setDirectoryName(MapDirectory).
-                        save(yourSelectedImage);
+
+                    new ImageSaver(context).
+                            setFileName(MapName).
+                            setDirectoryName(MapDirectory).
+                            save(yourSelectedImage);
+                }
 
                 Intent mainIntent = new Intent(view.getContext(), MainActivity.class); startActivity(mainIntent);
             }
