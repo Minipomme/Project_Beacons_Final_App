@@ -3,6 +3,7 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,11 +21,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 public class AdminActivity extends AppCompatActivity {
     private static final int SELECTED_PICTURE=1;
-    private static final String SHARED_PREFS = "sharedPrefs";
-    private static final String ERROR = "ERROR";
-    private Context context;
 
     private Button buttonValid;
 
@@ -46,8 +50,10 @@ public class AdminActivity extends AppCompatActivity {
 
     private ImageView validLoading;
     private String filePath;
-    private String MapName = "Map.png";
-    private String MapDirectory = "images";
+
+    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String DIRECTORY_NAME = "imageDir";
+    private static final String MAP_FILE_NAME = "map.png";
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -85,60 +91,59 @@ public class AdminActivity extends AppCompatActivity {
 
         // Load Data Room
         String Data = loadAdminData("widthRoom");
-        if(Data != ERROR)
+        if(Data != null)
             widthRoom.setText(Data);
         Data = loadAdminData("heightRoom");
-        if(Data != ERROR)
+        if(Data != null)
             heightRoom.setText(Data);
 
         // Load Data Offset
         Data = loadAdminData("offsetMap_x");
-        if(Data != ERROR)
+        if(Data != null)
             offsetMap_x.setText(Data);
         Data = loadAdminData("offsetMap_y");
-        if(Data != ERROR)
+        if(Data != null)
             offsetMap_y.setText(Data);
 
         // Load Data Position Beacon One
         Data = loadAdminData("positionXFixedBeaconOne");
-        if(Data != ERROR)
+        if(Data != null)
             position_x_fixedBeaconOne.setText(Data);
         Data = loadAdminData("positionYFixedBeaconOne");
-        if(Data != ERROR)
+        if(Data != null)
             position_y_fixedBeaconOne.setText(Data);
 
         // Load Data Position Beacon Two
         Data = loadAdminData("positionXFixedBeaconTwo");
-        if(Data != ERROR)
+        if(Data != null)
             position_x_fixedBeaconTwo.setText(Data);
         Data = loadAdminData("positionYFixedBeaconTwo");
-        if(Data != ERROR)
+        if(Data != null)
             position_y_fixedBeaconTwo.setText(Data);
 
         // Load Data Position Beacon Three
         Data = loadAdminData("positionXFixedBeaconThree");
-        if(Data != ERROR)
+        if(Data != null)
             position_x_fixedBeaconThree.setText(Data);
         Data = loadAdminData("positionYFixedBeaconThree");
-        if(Data != ERROR)
+        if(Data != null)
             position_y_fixedBeaconThree.setText(Data);
 
         // Load Data Position Beacon Four
         Data = loadAdminData("positionXFixedBeaconFour");
-        if(Data != ERROR)
+        if(Data != null)
             position_x_fixedBeaconFour.setText(Data);
         Data = loadAdminData("positionYFixedBeaconFour");
-        if(Data != ERROR)
+        if(Data != null)
             position_y_fixedBeaconFour.setText(Data);
 
         // Load Map
-        final Bitmap bitmap = new ImageSaver(context).
-                setFileName(MapName).
-                setDirectoryName(MapDirectory).
-                load();
-        if(bitmap != null) {
+        if(loadAdminData("mapPath") != null) {
             buttonValid.setEnabled(true);
             validLoading.setVisibility(View.VISIBLE);
+
+            loadImageFromStorage(loadAdminData("mapPath"));
+
         } else {
             validLoading.setVisibility(View.INVISIBLE);
             buttonValid.setEnabled(false);
@@ -172,17 +177,8 @@ public class AdminActivity extends AppCompatActivity {
                 saveAdminData("positionYFixedBeaconFour", position_y_fixedBeaconFour.getText().toString());
 
                 // Save Map
-                if(bitmap == null) {
-                    saveAdminData("map_name", MapName);
-                    saveAdminData("map_directory", MapDirectory);
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-
-
-                    new ImageSaver(context).
-                            setFileName(MapName).
-                            setDirectoryName(MapDirectory).
-                            save(yourSelectedImage);
-                }
+                if(filePath != null)
+                    saveAdminData("mapPath", saveToInternalStorage(BitmapFactory.decodeFile(filePath)));
 
                 Intent mainIntent = new Intent(view.getContext(), MainActivity.class); startActivity(mainIntent);
             }
@@ -236,19 +232,59 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
-    protected void saveAdminData(String Key, String Value) {
-        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+    private void saveAdminData(String Key, String Value) {
+        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(Key, Value);
 
         editor.apply();
     }
 
-    protected String loadAdminData(String Key) {
-        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        String Data = settings.getString(Key, ERROR);
+    private String loadAdminData(String Key) {
+        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        String Data = settings.getString(Key, null);
 
         return Data;
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir(DIRECTORY_NAME, Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,MAP_FILE_NAME);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
+    }
+
+    private boolean loadImageFromStorage(String path)
+    {
+
+        try {
+            File f=new File(path, MAP_FILE_NAME);
+            BitmapFactory.decodeStream(new FileInputStream(f));
+            return true;
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }
