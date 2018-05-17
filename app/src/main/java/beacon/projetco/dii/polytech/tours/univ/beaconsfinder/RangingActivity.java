@@ -1,12 +1,16 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.util.Log;
 import org.altbeacon.beacon.Beacon;
@@ -23,8 +27,12 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
 
     /* Start Merge */
     private Thermometer thermometer;
-    //private TextView txtRSSI;
-    //private TextView txtRange;
+
+    private Spinner spinnerBeacons;
+    private ArrayAdapter<String> adp;
+    private List<String> b;
+
+    private Beacon selectedBeacon = null;
 
     private float distance;
 
@@ -44,8 +52,16 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ranging);
         thermometer = findViewById(R.id.thermometer);
-        //txtRSSI = findViewById(R.id.RSSIText);
-        //txtRange = findViewById(R.id.RangeText);
+        spinnerBeacons = findViewById(R.id.spinnerBeacons);
+        b = new ArrayList<>();
+        b.add("Beacon 1");
+        b.add("Beacon 2");
+        b.add("Beacon 3");
+
+        adp = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, b);
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerBeacons.setAdapter(adp);
         beaconManager.bind(this);
     }
 
@@ -72,72 +88,59 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         beaconManager.addRangeNotifier(new RangeNotifier() {
            @Override
            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-
               if (beacons.size() > 0) {
-                  /*for(Beacon firstBeacon : beacons){
-                      logToDisplay("The first beacon " + firstBeacon.toString() + " is about " + firstBeacon.getDistance() + " meters away." + " Nb beacons : " + beacons.size());
-                  }*/
-                  //EditText editText = (EditText)RangingActivity.this.findViewById(R.id.rangingText);
-                  Beacon firstBeacon = beacons.iterator().next();
-
-                  /* Start Merge */
-
-                  if(!firstStart) {
-                      firstStart = true;
-                      RSSI_Init = firstBeacon.getRssi();
-                      Log.d("STATE","Init : "+RSSI_Init);
-                      //txtRSSI.setText(RSSI_Init);
-                  } else {
-                      RSSI_Now = firstBeacon.getRssi();
-                      Log.d("STATE","Init : "+RSSI_Init+" Now : "+RSSI_Now);
+                  for(Beacon b: beacons) {
+                    if(spinnerBeacons.getSelectedItem().equals(b.getBluetoothName())) {
+                        selectedBeacon = b;
+                    } else {
+                        selectedBeacon = null;
+                    }
                   }
-
-                  float ratio = RSSI_Now*1.0f/RSSI_Init;
-                  if (ratio < 1.0f) {
-                      distance = (float) Math.pow(ratio,10);
-                  }
-                  else {
-                      distance = (float) ((0.89976)*Math.pow(ratio,7.7095) + 0.111);
-                  }
-                  Log.d("STATE","Distance : "+distance + "m");
-
-
-                  /*if(RSSI_Now >= RSSI_Init){
-                      distance = (float) (0.89976*Math.pow((RSSI_Now / RSSI_Init), 7.7095) + 0.111);
-                  }
-                  else{
-                      distance = (float) (Math.pow(RSSI_Now / RSSI_Init, 10));
-                  }*/
-
-                  //txtRange.setText(distance + " m");
-
-                  if(distance < distCLOSE) {
-                      thermometer.setCurrentInnerColor(ColorCLOSE);
-                  } else if (distance > distFAR) {
-                      thermometer.setCurrentInnerColor(ColorFAR);
-                  } else {
-                      float[] HSVColorCLOSE = new float[3];
-                      float[] HSVColorFAR = new float[3];
-                      Color.RGBToHSV(Color.red(ColorCLOSE), Color.green(ColorCLOSE), Color.blue(ColorCLOSE), HSVColorCLOSE);
-                      Color.RGBToHSV(Color.red(ColorFAR), Color.green(ColorFAR), Color.blue(ColorFAR), HSVColorFAR);
-                      float[] HSVColorNOW = new float[3];
-                      float pas = abs(HSVColorCLOSE[0] - HSVColorFAR[0]) / abs(distCLOSE - distFAR);
-
-                      HSVColorNOW[0] = distance * pas;
-                      HSVColorNOW[1] = 1;
-                      HSVColorNOW[2] = 1;
-                      thermometer.setCurrentInnerColor(Color.HSVToColor(HSVColorNOW));
-                  }
-
-                  runOnUiThread(new Runnable() {
-                      public void run() {
-                          thermometer.setCurrentDist(distance);
+                  if(selectedBeacon != null) {
+                      /* Start Merge */
+                      if(!firstStart) {
+                          firstStart = true;
+                          RSSI_Init = selectedBeacon.getRssi();
+                          Log.d("STATE","Init : "+RSSI_Init);
+                      } else {
+                          RSSI_Now = selectedBeacon.getRssi();
+                          Log.d("STATE","Init : "+RSSI_Init+" Now : "+RSSI_Now);
                       }
-                  });
 
-                  //indicateDist( (int) distance );
+                      float ratio = RSSI_Now*1.0f/RSSI_Init;
+                      if (ratio < 1.0f) {
+                          distance = (float) Math.pow(ratio,10);
+                      }
+                      else {
+                          distance = (float) ((0.89976)*Math.pow(ratio,7.7095) + 0.111);
+                      }
+                      Log.d("STATE","Distance : "+distance + "m");
 
-                  /* End Merge */
+                      if(distance < distCLOSE) {
+                          thermometer.setCurrentInnerColor(ColorCLOSE);
+                      } else if (distance > distFAR) {
+                          thermometer.setCurrentInnerColor(ColorFAR);
+                      } else {
+                          float[] HSVColorCLOSE = new float[3];
+                          float[] HSVColorFAR = new float[3];
+                          Color.RGBToHSV(Color.red(ColorCLOSE), Color.green(ColorCLOSE), Color.blue(ColorCLOSE), HSVColorCLOSE);
+                          Color.RGBToHSV(Color.red(ColorFAR), Color.green(ColorFAR), Color.blue(ColorFAR), HSVColorFAR);
+                          float[] HSVColorNOW = new float[3];
+                          float pas = abs(HSVColorCLOSE[0] - HSVColorFAR[0]) / abs(distCLOSE - distFAR);
+
+                          HSVColorNOW[0] = distance * pas;
+                          HSVColorNOW[1] = 1;
+                          HSVColorNOW[2] = 1;
+                          thermometer.setCurrentInnerColor(Color.HSVToColor(HSVColorNOW));
+                      }
+
+                      runOnUiThread(new Runnable() {
+                          public void run() {
+                              thermometer.setCurrentDist(distance);
+                          }
+                      });
+                    /* End Merge */
+                  }
               }
            }
 
@@ -147,17 +150,4 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
         } catch (RemoteException e) {   }
     }
-
-    private void indicateDist(final int dist) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                TextView txtView = findViewById(R.id.RangeText);
-                if(txtView != null) {
-                    txtView.setText( Integer.toString( dist ) );
-                }
-            }
-        });
-    }
-
-
 }

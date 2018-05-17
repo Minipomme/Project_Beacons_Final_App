@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/RSSIText"
-        android:layout_marginTop="26dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="46dp"
         app:innerColor="@color/innerColor"
         app:middleColor="@color/middleColor"
         app:outerColor="@color/outerColor"
@@ -26,5 +26,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="43dp" />
+
+    <Spinner
+        android:id="@+id/spinnerBeacons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp" />
 
 </RelativeLayout>
