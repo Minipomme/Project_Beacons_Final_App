@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -177,8 +178,11 @@ public class AdminActivity extends AppCompatActivity {
                 saveAdminData("positionYFixedBeaconFour", position_y_fixedBeaconFour.getText().toString());
 
                 // Save Map
-                if(filePath != null)
+                if(filePath != null) {
                     saveAdminData("mapPath", saveToInternalStorage(BitmapFactory.decodeFile(filePath)));
+                    Toast.makeText(AdminActivity.this, "File saved", Toast.LENGTH_SHORT).show();
+                }
+
 
                 Intent mainIntent = new Intent(view.getContext(), MainActivity.class); startActivity(mainIntent);
             }
