@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="beacon.projetco.dii.polytech.tours.univ.beaconsfinder">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,7 +22,7 @@
         <activity android:name=".AdminActivity" />
         <activity android:name=".GameActivity" />
         <activity android:name=".WIPActivity" />
-        <activity android:name=".MultipleBeaconsActivity"></activity>
+        <activity android:name=".MapActivity"></activity>
     </application>
 
 </manifest>

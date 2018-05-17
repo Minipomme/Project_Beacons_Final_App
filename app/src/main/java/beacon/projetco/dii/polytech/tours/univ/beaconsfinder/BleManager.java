@@ -1,0 +1,178 @@
+package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
+
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BleManager extends Thread{
+    private BluetoothManager bluetoothManager;
+    private BluetoothAdapter adapter;
+    private BluetoothLeScanner scanner;
+    private BluetoothDevice device;
+    private BluetoothGatt gatt;
+    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
+    private BluetoothGattCharacteristic characteristic;
+    private MapActivity currentActivity;
+    private DataManager dataManager;
+
+    // Storage Permissions
+    private static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
+    private static String[] PERMISSIONS_LOCATION = {
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
+    public BleManager(MapActivity currentActivity){
+        this.currentActivity=currentActivity;
+
+        if (ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(currentActivity, PERMISSIONS_LOCATION, REQUEST_ACCESS_COARSE_LOCATION);
+        }
+
+        bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE);
+        if (bluetoothManager == null) {
+            //Handle this issue. Report to the user that the device does not support BLE
+        } else {
+            adapter = bluetoothManager.getAdapter();
+        }
+
+        if (adapter != null && !adapter.isEnabled()) {
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            currentActivity.startActivityForResult(intent,1);
+        } else {
+            System.out.println("BLE on!");
+        }
+    }
+
+    @Override
+    public void run() {
+        startScanning();
+    }
+
+    public void startScanning(){
+        scanner = adapter.getBluetoothLeScanner();
+        ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
+        List<ScanFilter> scanFilters = new ArrayList<ScanFilter>();
+        scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino1").build());
+        scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino2").build());
+        scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino3").build());
+        scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino4").build());
+        scanner.startScan(scanFilters, scanSettings, new MyScanCallback());
+        System.out.println("Scanner on !");
+    }
+
+    public class MyScanCallback extends ScanCallback {
+        @Override
+        public void onScanResult(int callbackType, final ScanResult result) {
+            Log.e("TEST",result.getDevice().getName());
+            device = adapter.getRemoteDevice(result.getDevice().getAddress());
+            gatt = device.connectGatt(currentActivity.getApplicationContext(), true, new myGattCallBack());
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            //Do something with batch of results
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            //Handle error
+        }
+    }
+
+    private class myGattCallBack extends BluetoothGattCallback {
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            if(newState==2) {
+                Log.d("TEST","onConnectionStateChange");
+                gatt.discoverServices();
+            }
+            else{
+                Log.e("ERROR", "Communication failed !");
+            }
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            Log.d("TEST","onServicesDiscovered");
+            List<BluetoothGattService> services = gatt.getServices();
+            for(BluetoothGattService service: services){
+                if(service.getUuid().toString().equalsIgnoreCase(uuidService)){
+                    characteristic=service.getCharacteristics().get(0);
+                    gatt.readCharacteristic(characteristic);
+                }
+            }
+        }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            Log.d("TEST","onCharacteristicRead");
+            gatt.setCharacteristicNotification(characteristic,true);
+            BluetoothGattDescriptor descriptor = characteristic.getDescriptors().get(0);
+            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+            gatt.writeDescriptor(descriptor);
+        }
+
+        @Override
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            Log.d("TEST","onCharacteristicChanged");
+
+            Long[] result = {0l,0l,0l,0l};
+            byte[] data = characteristic.getValue();
+            for(int j=0;j<=data.length-1;j++){
+                if(data[j]<0) {
+                    result[j] = (long) data[j] + 256 ;
+                }
+                else{
+                    result[j]= (long) data[j];
+                }
+            }
+
+            if(dataManager==null){
+                dataManager=new DataManager(currentActivity,scanner);
+            }
+            dataManager.setLocalisationResult(result,data);
+        }
+    }
+
+    public BluetoothGatt getGatt() {
+        return gatt;
+    }
+
+    public void setGatt(BluetoothGatt gatt) {
+        this.gatt = gatt;
+    }
+
+    public BluetoothLeScanner getScanner() {
+        return scanner;
+    }
+
+    public void setScanner(BluetoothLeScanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public BluetoothAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(BluetoothAdapter adapter) {
+        this.adapter = adapter;
+    }
+}

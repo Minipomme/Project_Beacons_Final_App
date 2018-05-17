@@ -36,7 +36,7 @@ public class GameActivity extends AppCompatActivity {
 
                                     switch (index) {
                                         case 0 : i = new Intent(GameActivity.this, WIPActivity.class); startActivity(i); break;
-                                        case 1 : i = new Intent(GameActivity.this, MultipleBeaconsActivity.class); startActivity(i); break;
+                                        case 1 : i = new Intent(GameActivity.this, MapActivity.class); startActivity(i); break;
                                         case 2 : i = new Intent(GameActivity.this, WIPActivity.class); startActivity(i); break;
                                         case 3 : i = new Intent(GameActivity.this, WIPActivity.class); startActivity(i); break;
                                         default:break;

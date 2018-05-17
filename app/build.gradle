@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "beacon.projetco.dii.polytech.tours.univ.beaconsfinder"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -29,4 +29,7 @@ dependencies {
 
     //Add Library for the Circle Menu
     compile 'com.github.Hitomis:CircleMenu:v1.1.0'
+
+    // Add Library for Trilateration
+    compile 'com.lemmingapex.trilateration:trilateration:1.0.2'
 }
