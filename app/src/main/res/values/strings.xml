@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">BeaconsFinder</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login_label">Login</string>
+    <string name="login_button">Login</string>
+
+    <string name="success_login_msg">Login Successful</string>
+    <string name="error_login_msg">Please fill any empty fields</string>
+
+    <string name="new_password">New Password</string>
+    <string name="new_password_again">New Password again</string>
+    <string name="create_or_edit_login">Create/Edit Login</string>
+    <string name="create_or_edit_login_btn">Create/Edit Login</string>
+    <string name="succ_login_created_msg">Login created</string>
 </resources>
