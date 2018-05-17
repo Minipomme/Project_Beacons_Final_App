@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="OnOffBeacons">
+        <attr name="Num_Beacon1" format="color" />
+        <attr name="Num_Beacon2" format="color" />
+        <attr name="Num_Beacon3" format="color" />
+        <attr name="Num_Beacon4" format="color" />
+    </declare-styleable>
+</resources>

@@ -5,14 +5,18 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.StyleRes;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -98,9 +102,17 @@ public class MapActivity extends AppCompatActivity {
         fixedBeaconThree = findViewById(R.id.FixedBeaconThree);
         fixedBeaconFour = findViewById(R.id.FixedBeaconFour);
 
+        final ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
+        changeTheme(wrapper.getTheme()); //WIP
+
         goal1 = this.findViewById(R.id.goal1);
+        goal1.setColorFilter(R.color.colorAccent);
+
         goal2 = this.findViewById(R.id.goal2);
+        goal2.setColorFilter(R.color.yellow);
+
         goal3 = this.findViewById(R.id.goal3);
+        goal3.setColorFilter(R.color.green);
 
         filePath = myIntent.getStringExtra("imageToLoad");
         map = findViewById(R.id.map);
@@ -416,5 +428,10 @@ public class MapActivity extends AppCompatActivity {
 
     public void setOffsetMap_y(String offsetMap_y) {
         this.offsetMap_y = offsetMap_y;
+    }
+
+    private void changeTheme(final Resources.Theme theme, ImageView imageView, int source_drawable) {
+        final Drawable drawable = ResourcesCompat.getDrawable(getResources(), source_drawable, theme);
+        imageView.setImageDrawable(drawable);
     }
 }

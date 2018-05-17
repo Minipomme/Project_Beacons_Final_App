@@ -9,5 +9,7 @@
     <color name="yellow">#FFB300</color>
     <color name="green">#00BFA5</color>
     <color name="blue">#0059bf</color>
+    <color name="red_off">#bf2900</color>
+    <color name="green_on">#79a41b</color>
     <color name="colorAccent">#FF4081</color>
 </resources>
