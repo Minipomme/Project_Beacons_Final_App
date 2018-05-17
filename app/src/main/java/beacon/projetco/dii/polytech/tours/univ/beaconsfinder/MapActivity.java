@@ -98,21 +98,26 @@ public class MapActivity extends AppCompatActivity {
         position_y_fixed_beacon_four = myIntent.getStringExtra("positionYFixedBeaconFour");
 
         fixedBeaconOne = findViewById(R.id.FixedBeaconOne);
-        fixedBeaconTwo = findViewById(R.id.FixedBeaconTwo);
-        fixedBeaconThree = findViewById(R.id.FixedBeaconThree);
-        fixedBeaconFour = findViewById(R.id.FixedBeaconFour);
-
         final ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
-        changeTheme(wrapper.getTheme()); //WIP
+        changeTheme(wrapper.getTheme(), fixedBeaconOne, R.drawable.ic_number_one_in_a_circle);
+
+        fixedBeaconTwo = findViewById(R.id.FixedBeaconTwo);
+        changeTheme(wrapper.getTheme(), fixedBeaconTwo, R.drawable.ic_number_two_in_a_circle);
+
+        fixedBeaconThree = findViewById(R.id.FixedBeaconThree);
+        changeTheme(wrapper.getTheme(), fixedBeaconThree, R.drawable.ic_number_three_in_a_circle);
+
+        fixedBeaconFour = findViewById(R.id.FixedBeaconFour);
+        changeTheme(wrapper.getTheme(), fixedBeaconFour, R.drawable.ic_number_four_in_a_circle);
 
         goal1 = this.findViewById(R.id.goal1);
-        goal1.setColorFilter(R.color.colorAccent);
+        goal1.setColorFilter(R.color.yellow);
 
         goal2 = this.findViewById(R.id.goal2);
-        goal2.setColorFilter(R.color.yellow);
+        goal2.setColorFilter(R.color.green);
 
         goal3 = this.findViewById(R.id.goal3);
-        goal3.setColorFilter(R.color.green);
+        goal3.setColorFilter(R.color.colorAccent);
 
         filePath = myIntent.getStringExtra("imageToLoad");
         map = findViewById(R.id.map);
