@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">BeaconsFinder</string>
+    <string name="title">Cibles à rechercher</string>
+    <string name="cancel">Quitter</string>
+    <string name="ok">Valider</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>

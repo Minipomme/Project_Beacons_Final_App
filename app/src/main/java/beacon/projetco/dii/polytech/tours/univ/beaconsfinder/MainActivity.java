@@ -133,10 +133,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.show();
                 }
                 break;
-            case R.id.game_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
             case R.id.language_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
             case R.id.day_night_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
             case R.id.infos_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
+            case R.id.game_card : i = new Intent(this, GameActivity.class); startActivity(i); break;
             default:break;
         }
     }
