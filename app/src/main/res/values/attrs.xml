@@ -6,9 +6,9 @@
         <attr name="Num_Beacon3" format="color" />
         <attr name="Num_Beacon4" format="color" />
         <attr name="Beacon" format="color" />
-    </declare-styleable>
-</resources>
         <attr name="radius" format="dimension" />
         <attr name="outerColor" format="color" />
         <attr name="middleColor" format="color" />
         <attr name="innerColor" format="color" />
+    </declare-styleable>
+</resources>
