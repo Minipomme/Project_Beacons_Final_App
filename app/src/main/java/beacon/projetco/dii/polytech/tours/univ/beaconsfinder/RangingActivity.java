@@ -9,7 +9,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.util.Log;
@@ -32,6 +35,8 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
     private ArrayAdapter<String> adp;
     private List<String> b;
 
+    private Button button_reset;
+
     private Beacon selectedBeacon = null;
 
     private float distance;
@@ -53,15 +58,36 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         setContentView(R.layout.activity_ranging);
         thermometer = findViewById(R.id.thermometer);
         spinnerBeacons = findViewById(R.id.spinnerBeacons);
+        button_reset = findViewById(R.id.button_reset);
         b = new ArrayList<>();
-        b.add("Beacon 1");
-        b.add("Beacon 2");
-        b.add("Beacon 3");
+        b.add("Beacon1");
+        b.add("Beacon2");
+        b.add("Beacon3");
 
-        adp = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, b);
+        adp = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, b);
         adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerBeacons.setAdapter(adp);
+
+        button_reset.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstStart = false;
+            }
+        } );
+
+        spinnerBeacons.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                firstStart = false;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                firstStart = false;
+            }
+        } );
+
         beaconManager.bind(this);
     }
 
@@ -88,13 +114,15 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         beaconManager.addRangeNotifier(new RangeNotifier() {
            @Override
            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+               Log.e("e", "onBeaconServiceConnect");
               if (beacons.size() > 0) {
+                selectedBeacon = null;
                   for(Beacon b: beacons) {
-                    if(spinnerBeacons.getSelectedItem().equals(b.getBluetoothName())) {
-                        selectedBeacon = b;
-                    } else {
-                        selectedBeacon = null;
-                    }
+                      Log.e("TEST",b.getBluetoothName());
+                      if (spinnerBeacons.getSelectedItem().equals( b.getBluetoothName() )) {
+                          selectedBeacon = b;
+                          Log.e("TEST", "Selected beacon " + b.getBluetoothName());
+                      }
                   }
                   if(selectedBeacon != null) {
                       /* Start Merge */
@@ -135,8 +163,7 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
                       }
 
                       runOnUiThread(new Runnable() {
-                          public void run() {
-                              thermometer.setCurrentDist(distance);
+                          public void run() {thermometer.setCurrentDist(distance);
                           }
                       });
                     /* End Merge */

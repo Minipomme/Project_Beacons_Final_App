@@ -72,7 +72,7 @@ public class BeaconReferenceApplication extends Application implements Bootstrap
             // Important:  make sure to add android:launchMode="singleInstance" in the manifest
             // to keep multiple copies of this activity from getting created if the user has
             // already manually launched the app.
-            this.startActivity(intent);
+            // this.startActivity(intent);
             haveDetectedBeaconsSinceBoot = true;
         } else {
             if (monitoringActivity == null) {

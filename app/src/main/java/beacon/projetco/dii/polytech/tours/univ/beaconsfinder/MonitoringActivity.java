@@ -29,8 +29,8 @@ public class MonitoringActivity extends AppCompatActivity {
             // Android M Permission check
             if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("This app needs location access");
-                builder.setMessage("Please grant location access so this app can detect beacons in the background.");
+                builder.setTitle("Cette application nécessite l'autorisation de la localisation");
+                builder.setMessage("Veuillez autoriser l'application à accéder à la localisation.");
                 builder.setPositiveButton(android.R.string.ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
@@ -55,8 +55,8 @@ public class MonitoringActivity extends AppCompatActivity {
 					Log.d(TAG, "coarse location permission granted");
 				} else {
 					final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle("Functionality limited");
-					builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+					builder.setTitle("Fonctionnalités limitées");
+					builder.setMessage("Tant que la localisation n'est pas accordée, il n'est pas possible d'effectuer la localisation.");
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 						@Override
@@ -92,8 +92,8 @@ public class MonitoringActivity extends AppCompatActivity {
 		try {
 			if (!BeaconManager.getInstanceForApplication(this).checkAvailability()) {
 				final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("Bluetooth not enabled");			
-				builder.setMessage("Please enable bluetooth in settings and restart this application.");
+				builder.setTitle("Bluetooth non activé");
+				builder.setMessage("Veuillez activer le bluetooth et redémarrer l'application.");
 				builder.setPositiveButton(android.R.string.ok, null);
 				builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 					@Override
@@ -107,8 +107,8 @@ public class MonitoringActivity extends AppCompatActivity {
 		}
 		catch (RuntimeException e) {
 			final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Bluetooth LE not available");			
-			builder.setMessage("Sorry, this device does not support Bluetooth LE.");
+			builder.setTitle("Bluetooth LE non disponible");
+			builder.setMessage("Désolé, l'appareil ne supporte pas le BLE.");
 			builder.setPositiveButton(android.R.string.ok, null);
 			builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
@@ -120,7 +120,6 @@ public class MonitoringActivity extends AppCompatActivity {
 				
 			});
 			builder.show();
-			
 		}
 		
 	}
