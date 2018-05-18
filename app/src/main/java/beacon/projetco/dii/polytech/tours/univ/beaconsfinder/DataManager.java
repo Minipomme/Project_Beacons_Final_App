@@ -109,29 +109,29 @@ public class DataManager {
 
                 if(flagFixedBeacon2){
                     ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_two_in_a_circle);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
                 }
                 else{
                     ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_two_in_a_circle);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
                 }
 
                 if(flagFixedBeacon3){
                     ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_three_in_a_circle);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
                 }
                 else{
                     ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_three_in_a_circle);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
                 }
 
                 if(flagFixedBeacon4){
                     ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_four_in_a_circle);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
                 }
                 else{
                     ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_four_in_a_circle);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
                 }
 
             }
