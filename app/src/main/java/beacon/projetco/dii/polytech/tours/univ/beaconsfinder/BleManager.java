@@ -9,15 +9,19 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +49,7 @@ public class BleManager extends Thread{
         if (ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(currentActivity, PERMISSIONS_LOCATION, REQUEST_ACCESS_COARSE_LOCATION);
         }
+        statusCheck();
 
         bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE);
         if (bluetoothManager == null) {
@@ -61,9 +66,37 @@ public class BleManager extends Thread{
         }
     }
 
+
     @Override
     public void run() {
+        while(!adapter.isEnabled());
         startScanning();
+    }
+
+    public void statusCheck() {
+        final LocationManager manager = (LocationManager) currentActivity.getSystemService(Context.LOCATION_SERVICE);
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+        }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
+        builder.setMessage("Votre GPS est semble être désactivé, voulez-vous l'activer ?")
+                .setCancelable(false)
+                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        currentActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                        System.exit(1);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void startScanning(){
@@ -100,12 +133,12 @@ public class BleManager extends Thread{
     private class myGattCallBack extends BluetoothGattCallback {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            if(newState==2) {
-                Log.d("TEST","onConnectionStateChange");
+            Log.d("TEST","onConnectionStateChange");
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                Log.i("TEST", "Connected to GATT peripheral. Attempting to start service discovery");
                 gatt.discoverServices();
-            }
-            else{
-                Log.e("ERROR", "Communication failed !");
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                Log.i("TEST", "Disconnected from GATT peripheral");
             }
         }
 
@@ -146,9 +179,9 @@ public class BleManager extends Thread{
             }
 
             if(dataManager==null){
-                dataManager=new DataManager(currentActivity,scanner);
+                dataManager = new DataManager(currentActivity,scanner);
             }
-            dataManager.setLocalisationResult(result,data);
+            dataManager.extractData(result,data);
         }
     }
 

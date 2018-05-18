@@ -227,29 +227,24 @@ public class MapActivity extends AppCompatActivity {
         selectGoals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e( "SALUT!!!!!" ,"salut");
                 fragment = new FireMissilesDialogFragment();
                 fragment.setInput(beaconsToFind);
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
-
-        //Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         bleManager=new BleManager(this);
         bleManager.start();
-        bleManager.setPriority(Thread.MAX_PRIORITY);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //bleManager.getScanner().stopScan( new ScanCallback(){});
         if (bleManager.getGatt() == null) {
             return;
         }
+        bleManager.getGatt().disconnect();
         bleManager.getGatt().close();
         bleManager.setGatt(null);
-        //bleManager.getAdapter().disable();
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -285,7 +280,7 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    /*public void setGoalsPosition(double[] calculatedPosition, int beacon){
+    public void setGoalsPosition(double[] calculatedPosition, int beacon){
         switch (beacon) {
             case 1:
                 //Position du beacon 1
@@ -327,7 +322,7 @@ public class MapActivity extends AppCompatActivity {
             }
         }
         //getWindow().getDecorView().findViewById(android.R.id.content).postInvalidate();
-    }*/
+    }
 
     public static class FireMissilesDialogFragment extends DialogFragment {
         private String[] input;
@@ -533,6 +528,8 @@ public class MapActivity extends AppCompatActivity {
         this.offsetMap_y = offsetMap_y;
     }
 
+    public View getView(){return this.getView();}
+
     private void changeTheme(final Resources.Theme theme, ImageView imageView, int source_drawable) {
         final Drawable drawable = ResourcesCompat.getDrawable(getResources(), source_drawable, theme);
         imageView.setImageDrawable(drawable);
@@ -547,7 +544,6 @@ public class MapActivity extends AppCompatActivity {
 
     private Bitmap loadImageFromStorage(String path)
     {
-
         try {
             File f=new File(path, MAP_FILE_NAME);
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
@@ -557,7 +553,6 @@ public class MapActivity extends AppCompatActivity {
         {
             e.printStackTrace();
         }
-
         return null;
     }
 }

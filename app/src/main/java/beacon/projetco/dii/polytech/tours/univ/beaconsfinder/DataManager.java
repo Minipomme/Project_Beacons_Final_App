@@ -16,10 +16,14 @@ public class DataManager {
     private double[] distancesBeacon2;
     private double[] distancesBeacon3;
     private float RSSI_Init=55;
-    private Trilateration Localization;
+    private Trilateration Localizer;
     private MapActivity currentActivity;
     private BluetoothLeScanner scanner;
-    private boolean flagScan = true;
+    private boolean flagScan = false;
+    private boolean flagFixedBeacon1 = false;
+    private boolean flagFixedBeacon2 = false;
+    private boolean flagFixedBeacon3 = false;
+    private boolean flagFixedBeacon4 = false;
 
     public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner){
         this.currentActivity=currentActivity;
@@ -34,7 +38,7 @@ public class DataManager {
         }
     }
 
-    public void setLocalisationResult(Long[] result,byte[] data){
+    public void extractData(Long[] result,byte[] data){
         float distance;
         distance = calcDist(result);
 
@@ -62,13 +66,41 @@ public class DataManager {
                 arrayArduino.get(2).get(2),
                 arrayArduino.get(3).get(2)};
 
-        if(dataComplete(distancesBeacon1)==true && dataComplete(distancesBeacon2)==true && dataComplete(distancesBeacon3)==true && flagScan){
-            scanner.stopScan( new ScanCallback(){});
-            flagScan=false;
+        if(dataComplete(arrayArduino.get(0))==true){
+            flagFixedBeacon1=true;
+        }
+        else{
+            flagFixedBeacon1=false;
         }
 
-        if(Localization==null){
-            Localization = new Trilateration(currentActivity);
+        if(dataComplete(arrayArduino.get(1))==true){
+            flagFixedBeacon2=true;
+        }
+        else{
+            flagFixedBeacon2=false;
+        }
+
+        if(dataComplete(arrayArduino.get(2))==true){
+            flagFixedBeacon3=true;
+        }
+        else{
+            flagFixedBeacon3=false;
+        }
+
+        if(dataComplete(arrayArduino.get(3))==true){
+            flagFixedBeacon4=true;
+        }
+        else{
+            flagFixedBeacon4=false;
+        }
+
+        if(flagFixedBeacon1 && flagFixedBeacon2 && flagFixedBeacon3 && flagFixedBeacon4 && !flagScan){
+            scanner.stopScan( new ScanCallback(){});
+            flagScan=true;
+        }
+
+        if(Localizer==null){
+            Localizer = new Trilateration(currentActivity);
         }
 
         double [][] positions = new double[][]{{Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_one()),
@@ -80,14 +112,14 @@ public class DataManager {
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_four()),
                         Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_four())}};
 
-        Localization.launchTrilateration(positions,distancesBeacon1,1);
-        Localization.launchTrilateration(positions,distancesBeacon2,2);
-        Localization.launchTrilateration(positions,distancesBeacon3,3);
+        Localizer.launchTrilateration(positions,distancesBeacon1,1);
+        Localizer.launchTrilateration(positions,distancesBeacon2,2);
+        Localizer.launchTrilateration(positions,distancesBeacon3,3);
     }
 
-    public boolean dataComplete(double[] array){
-        for(int i=0;i<array.length;i++){
-            if(array[i]==0.0){
+    public boolean dataComplete(List<Float> list){
+        for(int i=0;i<list.size();i++){
+            if(list.get(i)==0.0){
                 return false;
             }
         }
