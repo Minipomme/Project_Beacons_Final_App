@@ -1,8 +1,5 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
-import android.view.View;
-import android.widget.ImageView;
-
 import com.lemmingapex.trilateration.LinearLeastSquaresSolver;
 import com.lemmingapex.trilateration.NonLinearLeastSquaresSolver;
 import com.lemmingapex.trilateration.TrilaterationFunction;
