@@ -10,4 +10,7 @@
     <color name="green">#00BFA5</color>
     <color name="blue">#0059bf</color>
     <color name="colorAccent">#FF4081</color>
+	<color name="innerColor">#FF0000</color>
+    <color name="middleColor">#FFFFFF</color>
+    <color name="outerColor">#808080</color>
 </resources>
