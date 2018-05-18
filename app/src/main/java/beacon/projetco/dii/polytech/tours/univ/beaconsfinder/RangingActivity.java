@@ -33,7 +33,7 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
 
     private Spinner spinnerBeacons;
     private ArrayAdapter<String> adp;
-    private List<String> b;
+    private List<String> b; // WIP
 
     private Button button_reset;
 
