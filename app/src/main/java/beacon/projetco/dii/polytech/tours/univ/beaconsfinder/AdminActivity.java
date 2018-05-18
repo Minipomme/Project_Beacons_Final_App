@@ -154,28 +154,70 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Save Data Room
-                saveAdminData("widthRoom", widthRoom.getText().toString());
-                saveAdminData("heightRoom", heightRoom.getText().toString());
+                if(widthRoom.getText().toString() != null)
+                    saveAdminData("widthRoom", widthRoom.getText().toString());
+                else
+                    saveAdminData("widthRoom", "0");
+
+                if(heightRoom.getText().toString() != null)
+                    saveAdminData("heightRoom", heightRoom.getText().toString());
+                else
+                    saveAdminData("heightRoom", "0");
 
                 // Save Data Offset
-                saveAdminData("offsetMap_x", offsetMap_x.getText().toString());
-                saveAdminData("offsetMap_y", offsetMap_y.getText().toString());
+                if(offsetMap_x.getText().toString() != null)
+                    saveAdminData("offsetMap_x", offsetMap_x.getText().toString());
+                else
+                    saveAdminData("offsetMap_x", "0");
+
+                if(offsetMap_y.getText().toString() != null)
+                    saveAdminData("offsetMap_y", offsetMap_y.getText().toString());
+                else
+                    saveAdminData("offsetMap_y", "0");
 
                 // Save Data Position Beacon One
-                saveAdminData("positionXFixedBeaconOne", position_x_fixedBeaconOne.getText().toString());
-                saveAdminData("positionYFixedBeaconOne", position_y_fixedBeaconOne.getText().toString());
+                if(position_x_fixedBeaconOne.getText().toString() != null)
+                    saveAdminData("positionXFixedBeaconOne", position_x_fixedBeaconOne.getText().toString());
+                else
+                    saveAdminData("positionXFixedBeaconOne", "0");
+
+                if(position_y_fixedBeaconOne.getText().toString() != null)
+                    saveAdminData("positionYFixedBeaconOne", position_y_fixedBeaconOne.getText().toString());
+                else
+                    saveAdminData("positionYFixedBeaconOne", "0");
 
                 // Save Data Position Beacon Two
-                saveAdminData("positionXFixedBeaconTwo", position_x_fixedBeaconTwo.getText().toString());
-                saveAdminData("positionYFixedBeaconTwo", position_y_fixedBeaconTwo.getText().toString());
+                if(position_x_fixedBeaconTwo.getText().toString() != null)
+                    saveAdminData("positionXFixedBeaconTwo", position_x_fixedBeaconTwo.getText().toString());
+                else
+                    saveAdminData("positionXFixedBeaconTwo", "0");
+
+                if(position_y_fixedBeaconTwo.getText().toString() != null)
+                    saveAdminData("positionYFixedBeaconTwo", position_y_fixedBeaconTwo.getText().toString());
+                else
+                    saveAdminData("positionYFixedBeaconTwo", "0");
 
                 // Save Data Position Beacon Three
-                saveAdminData("positionXFixedBeaconThree", position_x_fixedBeaconThree.getText().toString());
-                saveAdminData("positionYFixedBeaconThree", position_y_fixedBeaconThree.getText().toString());
+                if(position_x_fixedBeaconThree.getText().toString() != null)
+                    saveAdminData("positionXFixedBeaconThree", position_x_fixedBeaconThree.getText().toString());
+                else
+                    saveAdminData("positionXFixedBeaconThree", "0");
+
+                if(position_y_fixedBeaconThree.getText().toString() != null)
+                    saveAdminData("positionYFixedBeaconThree", position_y_fixedBeaconThree.getText().toString());
+                else
+                    saveAdminData("positionYFixedBeaconThree", "0");
 
                 // Save Data Position Beacon Four
-                saveAdminData("positionXFixedBeaconFour", position_x_fixedBeaconFour.getText().toString());
-                saveAdminData("positionYFixedBeaconFour", position_y_fixedBeaconFour.getText().toString());
+                if(position_x_fixedBeaconFour.getText().toString() != null)
+                    saveAdminData("positionXFixedBeaconFour", position_x_fixedBeaconFour.getText().toString());
+                else
+                    saveAdminData("positionXFixedBeaconFour", "0");
+
+                if(position_y_fixedBeaconFour.getText().toString() != null)
+                    saveAdminData("positionYFixedBeaconFour", position_y_fixedBeaconFour.getText().toString());
+                else
+                    saveAdminData("positionYFixedBeaconFour", "0");
 
                 // Save Map
                 if(filePath != null) {
