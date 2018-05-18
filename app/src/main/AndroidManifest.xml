@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="beacon.projetco.dii.polytech.tours.univ.beaconsfinder">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
@@ -19,7 +25,8 @@
         </activity>
         <activity android:name=".AdminActivity" />
         <activity android:name=".GameActivity" />
-        <activity android:name=".WIPActivity"/>
+        <activity android:name=".WIPActivity" />
+        <activity android:name=".MapActivity"></activity>
         <activity android:name=".MonitoringActivity"/>
         <activity android:name=".RangingActivity"/>
     </application>

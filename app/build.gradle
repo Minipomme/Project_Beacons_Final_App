@@ -30,5 +30,6 @@ dependencies {
     //Add Library for the Circle Menu
     compile 'com.github.Hitomis:CircleMenu:v1.1.0'
 
-    compile 'org.altbeacon:android-beacon-library:2+'
+    // Add Library for Trilateration
+    compile 'com.lemmingapex.trilateration:trilateration:1.0.2'
 }
