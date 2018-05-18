@@ -40,6 +40,18 @@
     <item name="Num_Beacon4">@color/red_off</item>
     </style>
 
+    <style name="Beacon_One">
+        <item name="Beacon">@color/yellow</item>
+    </style>
+
+    <style name="Beacon_Two">
+        <item name="Beacon">@color/green</item>
+    </style>
+
+    <style name="Beacon_Three">
+        <item name="Beacon">@color/colorAccent</item>
+    </style>
+
     <style name="DefaultScene">
         <item name="Num_Beacon1">@color/red_off</item>
         <item name="Num_Beacon2">@color/red_off</item>

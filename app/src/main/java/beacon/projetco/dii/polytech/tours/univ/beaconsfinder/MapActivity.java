@@ -3,8 +3,10 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +25,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity {
@@ -59,6 +66,11 @@ public class MapActivity extends AppCompatActivity {
 
     private BleManager bleManager;
 
+    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String MAP_FILE_NAME = "map.png";
+
+    private boolean ConfigNotComplete = false;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,35 +82,105 @@ public class MapActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_map);
 
-        Intent myIntent = getIntent();
-
         Display display = getWindowManager().getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
         deviceWidth = point.x;
         deviceHeight = point.y;
 
-        //Recuperation des informations de l'intent
-        heightRoom = myIntent.getStringExtra("heightRoom");
-        widthRoom = myIntent.getStringExtra("widthRoom");
+        //Recuperation des informations sauvegardées
+        String Data = loadAdminData("heightRoom");
+        if(Data!= null)
+            heightRoom = Data;
+        else {
+            heightRoom = "0";
+            ConfigNotComplete =  true;
+        }
+        Data = loadAdminData("widthRoom");
+        if(Data!= null)
+            widthRoom = Data;
+        else {
+            widthRoom = "0";
+            ConfigNotComplete =  true;
+        }
 
-        offsetMap_x = myIntent.getStringExtra("offsetMap_x");
-        offsetMap_y = myIntent.getStringExtra("offsetMap_y");
+        Data = loadAdminData("offsetMap_x");
+        if(Data!= null)
+            offsetMap_x = Data;
+        else {
+            offsetMap_x = "0";
+            ConfigNotComplete =  true;
+        }
+        Data = loadAdminData("offsetMap_y");
+        if(Data!= null)
+            offsetMap_y = Data;
+        else {
+            offsetMap_y = "0";
+            ConfigNotComplete =  true;
+        }
 
-        position_x_fixed_beacon_one = myIntent.getStringExtra("positionXFixedBeaconOne");
-        position_y_fixed_beacon_one = myIntent.getStringExtra("positionYFixedBeaconOne");
+        Data = loadAdminData("positionXFixedBeaconOne");
+        if(Data!= null)
+            position_x_fixed_beacon_one = Data;
+        else {
+            position_x_fixed_beacon_one = "0";
+            ConfigNotComplete =  true;
+        }
+        Data = loadAdminData("positionYFixedBeaconOne");
+        if(Data!= null)
+            position_y_fixed_beacon_one = Data;
+        else {
+            position_y_fixed_beacon_one = "0";
+            ConfigNotComplete =  true;
+        }
 
-        position_x_fixed_beacon_two = myIntent.getStringExtra("positionXFixedBeaconTwo");
-        position_y_fixed_beacon_two = myIntent.getStringExtra("positionYFixedBeaconTwo");
+        Data = loadAdminData("positionXFixedBeaconTwo");
+        if(Data!= null)
+            position_x_fixed_beacon_two = Data;
+        else {
+            position_x_fixed_beacon_two = "0";
+            ConfigNotComplete =  true;
+        }
+        Data = loadAdminData("positionYFixedBeaconTwo");
+        if(Data!= null)
+            position_y_fixed_beacon_two = Data;
+        else {
+            position_y_fixed_beacon_two = "0";
+            ConfigNotComplete =  true;
+        }
 
-        position_x_fixed_beacon_three = myIntent.getStringExtra("positionXFixedBeaconThree");
-        position_y_fixed_beacon_three = myIntent.getStringExtra("positionYFixedBeaconThree");
+        Data = loadAdminData("positionXFixedBeaconThree");
+        if(Data!= null)
+            position_x_fixed_beacon_three = Data;
+        else {
+            position_x_fixed_beacon_three = "0";
+            ConfigNotComplete =  true;
+        }
+        Data = loadAdminData("positionYFixedBeaconThree");
+        if(Data!= null)
+            position_y_fixed_beacon_three = Data;
+        else {
+            position_y_fixed_beacon_three = "0";
+            ConfigNotComplete =  true;
+        }
 
-        position_x_fixed_beacon_four = myIntent.getStringExtra("positionXFixedBeaconFour");
-        position_y_fixed_beacon_four = myIntent.getStringExtra("positionYFixedBeaconFour");
+        Data = loadAdminData("positionXFixedBeaconFour");
+        if(Data!= null)
+            position_x_fixed_beacon_four = Data;
+        else {
+            position_x_fixed_beacon_four = "0";
+            ConfigNotComplete =  true;
+        }
+        Data = loadAdminData("positionYFixedBeaconFour");
+        if(Data!= null)
+            position_y_fixed_beacon_four = Data;
+        else {
+            position_y_fixed_beacon_four = "0";
+            ConfigNotComplete =  true;
+        }
 
         fixedBeaconOne = findViewById(R.id.FixedBeaconOne);
-        final ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
         changeTheme(wrapper.getTheme(), fixedBeaconOne, R.drawable.ic_number_one_in_a_circle);
 
         fixedBeaconTwo = findViewById(R.id.FixedBeaconTwo);
@@ -111,19 +193,35 @@ public class MapActivity extends AppCompatActivity {
         changeTheme(wrapper.getTheme(), fixedBeaconFour, R.drawable.ic_number_four_in_a_circle);
 
         goal1 = this.findViewById(R.id.goal1);
-        goal1.setColorFilter(R.color.yellow);
+        wrapper = new ContextThemeWrapper(this, R.style.Beacon_One);
+        changeTheme(wrapper.getTheme(), goal1, R.drawable.ic_place_black_24dp);
 
         goal2 = this.findViewById(R.id.goal2);
-        goal2.setColorFilter(R.color.green);
+        wrapper = new ContextThemeWrapper(this, R.style.Beacon_Two);
+        changeTheme(wrapper.getTheme(), goal2, R.drawable.ic_place_black_24dp);
 
         goal3 = this.findViewById(R.id.goal3);
-        goal3.setColorFilter(R.color.colorAccent);
+        wrapper = new ContextThemeWrapper(this, R.style.Beacon_Three);
+        changeTheme(wrapper.getTheme(), goal3, R.drawable.ic_place_black_24dp);
 
-        filePath = myIntent.getStringExtra("imageToLoad");
+
+        Data = loadAdminData("mapPath");
+        if(Data!= null)
+            filePath = Data;
+        else {
+            filePath = null;
+            ConfigNotComplete =  true;
+        }
         map = findViewById(R.id.map);
-        Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-        Drawable d = new BitmapDrawable(yourSelectedImage);
-        map.setImageBitmap(yourSelectedImage);
+
+        if(filePath != null) {
+            Bitmap SavedMap = loadImageFromStorage(filePath);
+            map.setImageBitmap(SavedMap);
+        }
+
+        if(ConfigNotComplete) {
+            Toast.makeText(MapActivity.this, "Configuration is not complete, contact an administrator", Toast.LENGTH_SHORT).show();
+        }
 
         selectGoals = findViewById(R.id.selectGoals);
         selectGoals.setOnClickListener(new View.OnClickListener() {
@@ -438,5 +536,28 @@ public class MapActivity extends AppCompatActivity {
     private void changeTheme(final Resources.Theme theme, ImageView imageView, int source_drawable) {
         final Drawable drawable = ResourcesCompat.getDrawable(getResources(), source_drawable, theme);
         imageView.setImageDrawable(drawable);
+    }
+
+    private String loadAdminData(String Key) {
+        SharedPreferences settings = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        String Data = settings.getString(Key, null);
+
+        return Data;
+    }
+
+    private Bitmap loadImageFromStorage(String path)
+    {
+
+        try {
+            File f=new File(path, MAP_FILE_NAME);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
