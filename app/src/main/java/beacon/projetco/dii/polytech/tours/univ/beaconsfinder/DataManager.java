@@ -3,6 +3,8 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,6 +95,47 @@ public class DataManager {
         else{
             flagFixedBeacon4=false;
         }
+
+        currentActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                if(flagFixedBeacon1){
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_ON);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
+                }
+                else{
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_OFF);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
+                }
+
+                if(flagFixedBeacon2){
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_ON);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_two_in_a_circle);
+                }
+                else{
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_two_in_a_circle);
+                }
+
+                if(flagFixedBeacon3){
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_ON);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_three_in_a_circle);
+                }
+                else{
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_three_in_a_circle);
+                }
+
+                if(flagFixedBeacon4){
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_ON);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_four_in_a_circle);
+                }
+                else{
+                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
+                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_four_in_a_circle);
+                }
+
+            }
+        });
 
         if(flagFixedBeacon1 && flagFixedBeacon2 && flagFixedBeacon3 && flagFixedBeacon4 && !flagScan){
             scanner.stopScan( new ScanCallback(){});

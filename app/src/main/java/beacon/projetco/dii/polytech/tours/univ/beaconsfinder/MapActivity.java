@@ -384,6 +384,38 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    public ImageView getFixedBeaconOne() {
+        return fixedBeaconOne;
+    }
+
+    public void setFixedBeaconOne(ImageView fixedBeaconOne) {
+        this.fixedBeaconOne = fixedBeaconOne;
+    }
+
+    public ImageView getFixedBeaconTwo() {
+        return fixedBeaconTwo;
+    }
+
+    public void setFixedBeaconTwo(ImageView fixedBeaconTwo) {
+        this.fixedBeaconTwo = fixedBeaconTwo;
+    }
+
+    public ImageView getFixedBeaconThree() {
+        return fixedBeaconThree;
+    }
+
+    public void setFixedBeaconThree(ImageView fixedBeaconThree) {
+        this.fixedBeaconThree = fixedBeaconThree;
+    }
+
+    public ImageView getFixedBeaconFour() {
+        return fixedBeaconFour;
+    }
+
+    public void setFixedBeaconFour(ImageView fixedBeaconFour) {
+        this.fixedBeaconFour = fixedBeaconFour;
+    }
+
     public ImageView getGoal1() {
         return goal1;
     }
@@ -530,7 +562,7 @@ public class MapActivity extends AppCompatActivity {
 
     public View getView(){return this.getView();}
 
-    private void changeTheme(final Resources.Theme theme, ImageView imageView, int source_drawable) {
+    public void changeTheme(final Resources.Theme theme, ImageView imageView, int source_drawable) {
         final Drawable drawable = ResourcesCompat.getDrawable(getResources(), source_drawable, theme);
         imageView.setImageDrawable(drawable);
     }
