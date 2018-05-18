@@ -192,6 +192,8 @@ public class MapActivity extends AppCompatActivity {
         fixedBeaconFour = findViewById(R.id.FixedBeaconFour);
         changeTheme(wrapper.getTheme(), fixedBeaconFour, R.drawable.ic_number_four_in_a_circle);
 
+        //SetCoordinate();
+
         goal1 = this.findViewById(R.id.goal1);
         wrapper = new ContextThemeWrapper(this, R.style.Beacon_One);
         changeTheme(wrapper.getTheme(), goal1, R.drawable.ic_place_black_24dp);
@@ -560,4 +562,18 @@ public class MapActivity extends AppCompatActivity {
 
         return null;
     }
+
+    /*private void SetCoordinate() {
+        fixedBeaconOne.setX(settingScale(position_x_fixed_beacon_one,fixedBeaconOne,"x"));
+        fixedBeaconOne.setY(settingScale(position_y_fixed_beacon_one,fixedBeaconOne,"y"));
+
+        fixedBeaconTwo.setX(settingScale(position_x_fixed_beacon_two,fixedBeaconTwo,"x"));
+        fixedBeaconTwo.setY(settingScale(position_y_fixed_beacon_two,fixedBeaconTwo,"y"));
+
+        fixedBeaconThree.setX(settingScale(position_x_fixed_beacon_three,fixedBeaconThree,"x"));
+        fixedBeaconThree.setY(settingScale(position_y_fixed_beacon_three,fixedBeaconThree,"y"));
+
+        fixedBeaconFour.setX(settingScale(position_x_fixed_beacon_four,fixedBeaconFour,"x"));
+        fixedBeaconFour.setY(settingScale(position_y_fixed_beacon_four,fixedBeaconFour,"y"));
+    }*/
 }
