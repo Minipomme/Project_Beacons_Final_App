@@ -2,7 +2,6 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import java.util.Collection;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
