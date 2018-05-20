@@ -78,7 +78,6 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
 
         mContext = this;
         boomMenuButton = findViewById(R.id.boom);
-        initViews();
     }
 
     @Override 
