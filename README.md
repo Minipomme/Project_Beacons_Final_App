@@ -67,7 +67,7 @@ Students from Polytech Tours (France) in Industrial Computer Science Department
 
 ### Team
 * Brandon SIMON-VERMOT
-* Julien GIDEL
+* [Julien GIDEL](http://jugid.fr)
 * Quentin ARCICAULT
 * Damien LE LANN
 * Axel EYRAUD
