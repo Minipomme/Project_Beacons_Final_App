@@ -78,4 +78,4 @@ We use [Git kraken](https://www.gitkraken.com/) for versioning (linked with GitH
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details or ask [The independant gamers](http://theindependentgamers.xooit.fr/index.php). They can't help you.
