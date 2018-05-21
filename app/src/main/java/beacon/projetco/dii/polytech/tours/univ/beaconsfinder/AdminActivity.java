@@ -277,7 +277,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     /**
-     * Verify the permissions gave to the app.
+     * Verify the permissions gave to the app about storage.
      * @param activity
      */
     public static void verifyStoragePermissions(Activity activity) {

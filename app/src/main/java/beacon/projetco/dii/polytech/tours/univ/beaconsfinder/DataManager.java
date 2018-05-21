@@ -7,6 +7,7 @@ import android.view.ContextThemeWrapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DataManager {
@@ -26,18 +27,16 @@ public class DataManager {
     private boolean flagFixedBeacon2 = false;
     private boolean flagFixedBeacon3 = false;
     private boolean flagFixedBeacon4 = false;
-
+    private boolean [] flagsArduino = new boolean[4];
     public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner){
         this.currentActivity=currentActivity;
         this.scanner=scanner;
 
         arrayArduino = new ArrayList<List<Float>>();
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
-            arrayArduino.add(new ArrayList<Float>());
-            for (int j = 0; j <= NB_Beacons - 1; j++) {
-                arrayArduino.get(i).add((float) 0);
-            }
+            arrayArduino.add(new ArrayList<Float>(Collections.nCopies(NB_Beacons, 0f)));
         }
+
     }
 
     /**
@@ -73,72 +72,51 @@ public class DataManager {
                 arrayArduino.get(2).get(2),
                 arrayArduino.get(3).get(2)};
 
-        if(dataComplete(arrayArduino.get(0))==true){
-            flagFixedBeacon1=true;
+        //Setting flags for arduino
+        for(int i=0;i<4;i++){
+            flagsArduino[i] = dataComplete(arrayArduino.get(i));
         }
-        else{
-            flagFixedBeacon1=false;
-        }
+        flagFixedBeacon1 = flagsArduino[0];
+        flagFixedBeacon2 = flagsArduino[1];
+        flagFixedBeacon3 = flagsArduino[2];
+        flagFixedBeacon4 = flagsArduino[3];
 
-        if(dataComplete(arrayArduino.get(1))==true){
-            flagFixedBeacon2=true;
-        }
-        else{
-            flagFixedBeacon2=false;
-        }
-
-        if(dataComplete(arrayArduino.get(2))==true){
-            flagFixedBeacon3=true;
-        }
-        else{
-            flagFixedBeacon3=false;
-        }
-
-        if(dataComplete(arrayArduino.get(3))==true){
-            flagFixedBeacon4=true;
-        }
-        else{
-            flagFixedBeacon4=false;
-        }
 
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
+                ContextThemeWrapper wrapper;
                 if(flagFixedBeacon1){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_ON);
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_OFF);
                 }
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
 
                 if(flagFixedBeacon2){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_ON);
+
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
                 }
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
 
                 if(flagFixedBeacon3){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_ON);
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
                 }
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
 
                 if(flagFixedBeacon4){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_ON);
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
                 }
-
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
             }
         });
 
@@ -171,10 +149,8 @@ public class DataManager {
      * @return
      */
     public boolean dataComplete(List<Float> list){
-        for(int i=0;i<list.size();i++){
-            if(list.get(i)==0.0){
-                return false;
-            }
+        if(list.contains(0f)){
+            return false;
         }
         return true;
     }
@@ -237,4 +213,5 @@ public class DataManager {
     public float getAverage(int fixedBeacon, int beacon){
         return arrayAverage[fixedBeacon][beacon][20];
     }
+
 }

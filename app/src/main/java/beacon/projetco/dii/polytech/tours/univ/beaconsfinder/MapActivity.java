@@ -85,98 +85,20 @@ public class MapActivity extends AppCompatActivity {
         deviceHeight = point.y;
 
         //Recuperation des informations sauvegardées
-        String Data = loadAdminData("heightRoom");
-        if(Data!= null)
-            heightRoom = Data;
-        else {
-            heightRoom = "0";
-            ConfigNotComplete =  true;
-        }
-        Data = loadAdminData("widthRoom");
-        if(Data!= null)
-            widthRoom = Data;
-        else {
-            widthRoom = "0";
-            ConfigNotComplete =  true;
+        String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
+        String [] dataTable = new String [12];
+
+        for(int i=0;i<12;i++){
+            dataTable[i]=loadAdminData(dataTitleTable[i]);
+            if(dataTable[i]==null){
+                dataTable[i]="0";
+                ConfigNotComplete = true;
+            }
         }
 
-        Data = loadAdminData("offsetMap_x");
-        if(Data!= null)
-            offsetMap_x = Data;
-        else {
-            offsetMap_x = "0";
-            ConfigNotComplete =  true;
-        }
-        Data = loadAdminData("offsetMap_y");
-        if(Data!= null)
-            offsetMap_y = Data;
-        else {
-            offsetMap_y = "0";
-            ConfigNotComplete =  true;
-        }
-
-        Data = loadAdminData("positionXFixedBeaconOne");
-        if(Data!= null)
-            position_x_fixed_beacon_one = Data;
-        else {
-            position_x_fixed_beacon_one = "0";
-            ConfigNotComplete =  true;
-        }
-        Data = loadAdminData("positionYFixedBeaconOne");
-        if(Data!= null)
-            position_y_fixed_beacon_one = Data;
-        else {
-            position_y_fixed_beacon_one = "0";
-            ConfigNotComplete =  true;
-        }
-
-        Data = loadAdminData("positionXFixedBeaconTwo");
-        if(Data!= null)
-            position_x_fixed_beacon_two = Data;
-        else {
-            position_x_fixed_beacon_two = "0";
-            ConfigNotComplete =  true;
-        }
-        Data = loadAdminData("positionYFixedBeaconTwo");
-        if(Data!= null)
-            position_y_fixed_beacon_two = Data;
-        else {
-            position_y_fixed_beacon_two = "0";
-            ConfigNotComplete =  true;
-        }
-
-        Data = loadAdminData("positionXFixedBeaconThree");
-        if(Data!= null)
-            position_x_fixed_beacon_three = Data;
-        else {
-            position_x_fixed_beacon_three = "0";
-            ConfigNotComplete =  true;
-        }
-        Data = loadAdminData("positionYFixedBeaconThree");
-        if(Data!= null)
-            position_y_fixed_beacon_three = Data;
-        else {
-            position_y_fixed_beacon_three = "0";
-            ConfigNotComplete =  true;
-        }
-
-        Data = loadAdminData("positionXFixedBeaconFour");
-        if(Data!= null)
-            position_x_fixed_beacon_four = Data;
-        else {
-            position_x_fixed_beacon_four = "0";
-            ConfigNotComplete =  true;
-        }
-        Data = loadAdminData("positionYFixedBeaconFour");
-        if(Data!= null)
-            position_y_fixed_beacon_four = Data;
-        else {
-            position_y_fixed_beacon_four = "0";
-            ConfigNotComplete =  true;
-        }
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
 
         fixedBeaconOne = findViewById(R.id.FixedBeaconOne);
-        ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
         changeTheme(wrapper.getTheme(), fixedBeaconOne, R.drawable.ic_number_one_in_a_circle);
 
         fixedBeaconTwo = findViewById(R.id.FixedBeaconTwo);
@@ -201,19 +123,17 @@ public class MapActivity extends AppCompatActivity {
         changeTheme(wrapper.getTheme(), goal3, R.drawable.ic_place_black_24dp);
 
 
-        Data = loadAdminData("mapPath");
-        if(Data!= null)
+        String Data = loadAdminData("mapPath");
+        if(Data!= null) {
             filePath = Data;
+            Bitmap SavedMap = loadImageFromStorage(filePath);
+            map.setImageBitmap(SavedMap);
+        }
         else {
             filePath = null;
             ConfigNotComplete =  true;
         }
         map = findViewById(R.id.map);
-
-        if(filePath != null) {
-            Bitmap SavedMap = loadImageFromStorage(filePath);
-            map.setImageBitmap(SavedMap);
-        }
 
         if(ConfigNotComplete) {
             Toast.makeText(MapActivity.this, "Configuration is not complete, contact an administrator", Toast.LENGTH_SHORT).show();
