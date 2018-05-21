@@ -50,7 +50,9 @@ Thanks for all this stuff !
 
 ## How it works
 
+Here is a graph to understand a bit :
 
+![How it works](https://image.noelshack.com/fichiers/2018/21/1/1526939700-explicationgraph.png)
 
 ## Screens
 
