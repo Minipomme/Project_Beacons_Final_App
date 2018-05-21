@@ -3,6 +3,7 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.bluetooth.le.ScanCallback;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.PowerManager;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -71,10 +73,11 @@ public class MapActivity extends AppCompatActivity {
 
     private boolean ConfigNotComplete = false;
 
+    private PowerManager.WakeLock wl;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Remove notification bar
@@ -220,7 +223,7 @@ public class MapActivity extends AppCompatActivity {
         }
 
         if(ConfigNotComplete) {
-            Toast.makeText(MapActivity.this, "Configuration is not complete, contact an administrator", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapActivity.this, "La configuration n'est pas complète, contacter un administrateur", Toast.LENGTH_SHORT).show();
         }
 
         selectGoals = findViewById(R.id.selectGoals);
@@ -232,23 +235,36 @@ public class MapActivity extends AppCompatActivity {
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
+
         bleManager=new BleManager(this);
-        bleManager.start();
+        //bleManager.setName("BleManagerThread");
+        bleManager.startScanning();
+
+        //PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        //wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        //wl.acquire();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (bleManager.getGatt() == null) {
-            return;
+        Log.e("TEST","OnStop");
+        if(bleManager.getAdapter().isEnabled()){
+            if (bleManager.getGatt() == null) {
+                return;
+            }
+            bleManager.getScanner().stopScan(new ScanCallback(){});;
+            bleManager.getGatt().disconnect();
+            bleManager.getGatt().close();
+            bleManager.setGatt(null);
+            bleManager.getAdapter().disable();
         }
-        bleManager.getGatt().disconnect();
-        bleManager.getGatt().close();
-        bleManager.setGatt(null);
+        //wl.release();
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        Log.e("TEST","OnFocus");
         if (hasFocus) {
             //Mise à l'échelle
             fixedBeaconOne.setX(settingScale(position_x_fixed_beacon_one,fixedBeaconOne,"x"));
@@ -561,6 +577,14 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public View getView(){return this.getView();}
+
+    public BleManager getBleManager() {
+        return bleManager;
+    }
+
+    public void setBleManager(BleManager bleManager) {
+        this.bleManager = bleManager;
+    }
 
     public void changeTheme(final Resources.Theme theme, ImageView imageView, int source_drawable) {
         final Drawable drawable = ResourcesCompat.getDrawable(getResources(), source_drawable, theme);

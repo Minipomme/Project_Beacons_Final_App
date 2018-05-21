@@ -26,7 +26,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BleManager extends Thread{
+public class BleManager{
     private BluetoothManager bluetoothManager;
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
@@ -46,32 +46,31 @@ public class BleManager extends Thread{
     public BleManager(MapActivity currentActivity){
         this.currentActivity=currentActivity;
 
-        if (ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+        if(ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(currentActivity, PERMISSIONS_LOCATION, REQUEST_ACCESS_COARSE_LOCATION);
         }
         statusCheck();
 
-        bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE);
-        if (bluetoothManager == null) {
+        bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        if(bluetoothManager == null) {
             //Handle this issue. Report to the user that the device does not support BLE
         } else {
             adapter = bluetoothManager.getAdapter();
         }
 
-        if (adapter != null && !adapter.isEnabled()) {
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            currentActivity.startActivityForResult(intent,1);
-        } else {
+        adapter.disable();
+        if(!adapter.isEnabled()){
+            adapter.enable();
             System.out.println("BLE on!");
         }
+        while(!adapter.isEnabled());
     }
 
-
-    @Override
+    /*@Override
     public void run() {
         while(!adapter.isEnabled());
         startScanning();
-    }
+    }*/
 
     public void statusCheck() {
         final LocationManager manager = (LocationManager) currentActivity.getSystemService(Context.LOCATION_SERVICE);
@@ -145,28 +144,34 @@ public class BleManager extends Thread{
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             Log.d("TEST","onServicesDiscovered");
-            List<BluetoothGattService> services = gatt.getServices();
-            for(BluetoothGattService service: services){
-                if(service.getUuid().toString().equalsIgnoreCase(uuidService)){
-                    characteristic=service.getCharacteristics().get(0);
-                    gatt.readCharacteristic(characteristic);
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                List<BluetoothGattService> services = gatt.getServices();
+                for (BluetoothGattService service : services) {
+                    if (service.getUuid().toString().equalsIgnoreCase( uuidService )) {
+                        characteristic = service.getCharacteristics().get( 0 );
+                        gatt.readCharacteristic( characteristic );
+                    }
                 }
+            } else {
+                Log.i("TEST", "onServicesDiscovered received: " + status);
             }
         }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Log.d("TEST","onCharacteristicRead");
-            gatt.setCharacteristicNotification(characteristic,true);
-            BluetoothGattDescriptor descriptor = characteristic.getDescriptors().get(0);
-            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-            gatt.writeDescriptor(descriptor);
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                gatt.setCharacteristicNotification( characteristic, true );
+                BluetoothGattDescriptor descriptor = characteristic.getDescriptors().get( 0 );
+                descriptor.setValue( BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE );
+                gatt.writeDescriptor( descriptor );
+            }
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             Log.d("TEST","onCharacteristicChanged");
-
+            Log.d("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
             Long[] result = {0l,0l,0l,0l};
             byte[] data = characteristic.getValue();
             for(int j=0;j<=data.length-1;j++){
@@ -177,7 +182,6 @@ public class BleManager extends Thread{
                     result[j]= (long) data[j];
                 }
             }
-
             if(dataManager==null){
                 dataManager = new DataManager(currentActivity,scanner);
             }
