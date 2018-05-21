@@ -7,6 +7,9 @@ import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
 import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
 import org.apache.commons.math3.linear.RealVector;
 
+/**
+ * Class used for calculate distances thanks to 3 -> N value.
+ */
 public class Trilateration {
     private MapActivity currentActivity;
 

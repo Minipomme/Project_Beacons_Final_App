@@ -40,6 +40,11 @@ public class DataManager {
         }
     }
 
+    /**
+     * Extract data from arrayArduino to print them and calculate the new distances
+     * @param result
+     * @param data
+     */
     public void extractData(Long[] result,byte[] data){
         float distance;
         distance = calcDist(result);
@@ -160,6 +165,11 @@ public class DataManager {
         Localizer.launchTrilateration(positions,distancesBeacon3,3);
     }
 
+    /**
+     * If the list is complete return true
+     * @param list
+     * @return
+     */
     public boolean dataComplete(List<Float> list){
         for(int i=0;i<list.size();i++){
             if(list.get(i)==0.0){
@@ -169,6 +179,11 @@ public class DataManager {
         return true;
     }
 
+    /**
+     * Calculate the distance from RSSI to meters
+     * @param result
+     * @return
+     */
     public float calcDist(Long[] result){
         short RSSI;
         float ratio;
@@ -184,6 +199,12 @@ public class DataManager {
         }
     }
 
+    /**
+     * Add the value into the tab to smooth the values. Using shift.
+     * @param new_value
+     * @param fixedBeacon
+     * @param beacon
+     */
     public void addValue(float new_value, int fixedBeacon, int beacon){
 
         float average = getAverage(fixedBeacon,beacon);
@@ -199,6 +220,11 @@ public class DataManager {
         }
     }
 
+    /**
+     * Set the average into the tab. Corresponding to the last column of the tab.
+     * @param fixedBeacon
+     * @param beacon
+     */
     public void setAverage(int fixedBeacon, int beacon){
         float average = 0f;
         for(int i = 0;i<20;i++){
@@ -206,6 +232,7 @@ public class DataManager {
         }
         arrayAverage[fixedBeacon][beacon][20]=average/20;
     }
+
 
     public float getAverage(int fixedBeacon, int beacon){
         return arrayAverage[fixedBeacon][beacon][20];

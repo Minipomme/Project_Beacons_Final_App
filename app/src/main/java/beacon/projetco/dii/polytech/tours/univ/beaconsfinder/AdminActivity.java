@@ -70,6 +70,7 @@ public class AdminActivity extends AppCompatActivity {
 
         verifyStoragePermissions(this);
 
+        //Creating variables with initialization
         validLoading = this.findViewById(R.id.validLoadingImg);
 
         buttonValid = this.findViewById(R.id.buttonValid);
@@ -150,6 +151,7 @@ public class AdminActivity extends AppCompatActivity {
             buttonValid.setEnabled(false);
         }
 
+        //Creating the listener that saves the datas into the app
         buttonValid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -231,12 +233,22 @@ public class AdminActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Loading map from the MadiaStore
+     * @param v
+     */
     public void loadMap(View v){
         Log.d("LOG","Click sur le bouton loadMap");
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i,SELECTED_PICTURE);
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
@@ -264,6 +276,10 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Verify the permissions gave to the app.
+     * @param activity
+     */
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -278,6 +294,11 @@ public class AdminActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Save admin data into the Shared preferences
+     * @param Key
+     * @param Value
+     */
     private void saveAdminData(String Key, String Value) {
         SharedPreferences settings = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
@@ -286,6 +307,11 @@ public class AdminActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    /**
+     * Load admin data from Shared preferences and returns it
+     * @param Key
+     * @return
+     */
     private String loadAdminData(String Key) {
         SharedPreferences settings = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         String Data = settings.getString(Key, null);
@@ -293,12 +319,17 @@ public class AdminActivity extends AppCompatActivity {
         return Data;
     }
 
+    /**
+     * Save the bitmap gave in params into the user storage
+     * @param bitmapImage
+     * @return
+     */
     private String saveToInternalStorage(Bitmap bitmapImage){
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir(DIRECTORY_NAME, Context.MODE_PRIVATE);
         // Create imageDir
-        File mypath=new File(directory,MAP_FILE_NAME);
+        File mypath = new File(directory,MAP_FILE_NAME);
 
         FileOutputStream fos = null;
         try {
@@ -317,6 +348,11 @@ public class AdminActivity extends AppCompatActivity {
         return directory.getAbsolutePath();
     }
 
+    /**
+     * Load a picture from internal storage
+     * @param path
+     * @return
+     */
     private boolean loadImageFromStorage(String path)
     {
 

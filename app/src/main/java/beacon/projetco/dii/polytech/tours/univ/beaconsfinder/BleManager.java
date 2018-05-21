@@ -43,6 +43,10 @@ public class BleManager extends Thread{
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
+    /**
+     * Create the BleManager and bluetooth adapter. Verify the permissions concerning location and bluetooth
+     * @param currentActivity
+     */
     public BleManager(MapActivity currentActivity){
         this.currentActivity=currentActivity;
 
@@ -67,6 +71,9 @@ public class BleManager extends Thread{
     }
 
 
+    /**
+     * Run the Thread and start scanning. Do nothing if the bluetooth isn't active
+     */
     @Override
     public void run() {
         while(!adapter.isEnabled());
@@ -80,9 +87,12 @@ public class BleManager extends Thread{
         }
     }
 
+    /**
+     * Advertise the user if the location isn't active
+     */
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
-        builder.setMessage("Votre GPS est semble être désactivé, voulez-vous l'activer ?")
+        builder.setMessage("Votre GPS semble être désactivé, voulez-vous l'activer ?")
                 .setCancelable(false)
                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
@@ -99,6 +109,9 @@ public class BleManager extends Thread{
         alert.show();
     }
 
+    /**
+     * Start scanning with filters corresponding to the services sent by the arduino(s)
+     */
     public void startScanning(){
         scanner = adapter.getBluetoothLeScanner();
         ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
@@ -111,6 +124,9 @@ public class BleManager extends Thread{
         System.out.println("Scanner on !");
     }
 
+    /**
+     * Callback that read the characteristics into the service
+     */
     public class MyScanCallback extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
