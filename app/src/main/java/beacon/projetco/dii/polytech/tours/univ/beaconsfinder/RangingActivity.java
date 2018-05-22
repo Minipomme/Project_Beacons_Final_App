@@ -27,6 +27,7 @@ import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
+import org.apache.commons.math3.exception.NullArgumentException;
 
 import static java.lang.Math.abs;
 
@@ -56,8 +57,6 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
     private String selectedButton;
 
     private Context mContext;
-
-    private boolean isInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,27 +103,28 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
             Log.e("e", "onBeaconServiceConnect");
             if (beacons.size() > 0) {
-                initViews();
                 num_beacons = beacons.size();
-                selectedBeacon = null;
+                initViews();
                 for(Beacon b: beacons) {
-                    Log.e("TEST",b.getBluetoothName());
-                    if(!firstStart) {
+                    Log.d("TEST",b.getBluetoothName());
+                    if (selectedButton != null) {
+                        if(selectedButton.equals( b.getBluetoothName() )) {
+                            selectedBeacon = b;
+                            Log.d("TEST", "Selected beacon " + b.getBluetoothName());
+                        }
+                    } else {
                         selectedBeacon = b;
-                        Log.e("TEST", "Selected beacon " + b.getBluetoothName());
-                    } else if (selectedButton.equals( b.getBluetoothName() )) {
-                        selectedBeacon = b;
-                        Log.e("TEST", "Selected beacon " + b.getBluetoothName());
+                        Log.d("TEST", "Selected beacon " + b.getBluetoothName());
                     }
                 }
                 if(selectedBeacon != null) {
                     if(!firstStart) {
                         firstStart = true;
                         RSSI_Init = selectedBeacon.getRssi();
-                        Log.d("STATE","Init : "+RSSI_Init);
+                        Log.e("STATE","Init : "+RSSI_Init);
                     } else {
                         RSSI_Now = selectedBeacon.getRssi();
-                        Log.d("STATE","Init : "+RSSI_Init+" Now : "+RSSI_Now);
+                        Log.e("STATE","Init : "+RSSI_Init+" Now : "+RSSI_Now);
                     }
 
                     float ratio = RSSI_Now*1.0f/RSSI_Init;
@@ -134,7 +134,7 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
                     else {
                         distance = (float) ((0.89976)*Math.pow(ratio,7.7095) + 0.111);
                     }
-                    Log.d("STATE","Distance : "+distance + "m");
+                    Log.e("STATE","Distance : "+distance + "m");
 
                     if(distance < distCLOSE) {
                         thermometer.setCurrentInnerColor(ColorCLOSE);
@@ -169,36 +169,28 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         } catch (RemoteException e) {   }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-        if (!isInit) {
-            initBoom();
-        }
-        isInit = true;
-    }
-
     private void initBoom() {
         int number = num_beacons;
+        BoomMenuButton.OnSubButtonClickListener ClickListener = this;
 
         if(number > 0) {
             boomMenuButton.setVisibility(View.VISIBLE);
+
             Drawable[] drawables = new Drawable[number];
             int drawableResource = R.drawable.ic_place_white;
             for (int i = 0; i < number; i++)
                 drawables[i] = ContextCompat.getDrawable(mContext, drawableResource);
 
             String[] STRINGS = new String[]{
-                    "Beacon 1",
-                    "Beacon 2",
-                    "Beacon 3",
-                    "Beacon 4",
-                    "Beacon 5",
-                    "Beacon 6",
-                    "Beacon 7",
-                    "Beacon 8",
-                    "Beacon 9"
+                    "Beacon1",
+                    "Beacon2",
+                    "Beacon3",
+                    "Beacon4",
+                    "Beacon5",
+                    "Beacon6",
+                    "Beacon7",
+                    "Beacon8",
+                    "Beacon9"
             };
             String[] strings = new String[number];
             for (int i = 0; i < number; i++)
@@ -220,7 +212,7 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
                     .place(getPlaceType())
                     .boomButtonShadow(Util.getInstance().dp2px(2), Util.getInstance().dp2px(2))
                     .subButtonsShadow(Util.getInstance().dp2px(2), Util.getInstance().dp2px(2))
-                    .onSubButtonClick(this)
+                    .onSubButtonClick(ClickListener)
                     .init(boomMenuButton);
         } else {
             boomMenuButton.setVisibility(View.INVISIBLE);
@@ -230,16 +222,21 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
     }
 
     private void initViews() {
-        initBoom();
-        boomMenuButton.setDuration(500);
-        boomMenuButton.setDuration(500);
-        boomMenuButton.setDelay(100);
-        boomMenuButton.setDelay(100);
-        boomMenuButton.setRotateDegree(360);
-        boomMenuButton.setAutoDismiss(true);
-        boomMenuButton.setShowOrderType(OrderType.RANDOM);
-        boomMenuButton.setHideOrderType(OrderType.RANDOM);
-        boomMenuButton.setClickEffectType(ClickEffectType.NORMAL);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initBoom();
+                boomMenuButton.setDuration(500);
+                boomMenuButton.setDuration(500);
+                boomMenuButton.setDelay(100);
+                boomMenuButton.setDelay(100);
+                boomMenuButton.setRotateDegree(360);
+                boomMenuButton.setAutoDismiss(true);
+                boomMenuButton.setShowOrderType(OrderType.RANDOM);
+                boomMenuButton.setHideOrderType(OrderType.RANDOM);
+                boomMenuButton.setClickEffectType(ClickEffectType.NORMAL);
+            }
+        });
     }
 
     private BoomType getBoomType() {
@@ -282,9 +279,15 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
 
     @Override
     public void onClick(int buttonIndex) {
-        Toast.makeText(this, "You search " + boomMenuButton.getTextViews()[buttonIndex].getText().toString(), Toast.LENGTH_SHORT).show();
-        selectedButton = boomMenuButton.getTextViews()[buttonIndex].getText().toString();
-        firstStart = false;
+        try {
+            selectedButton = boomMenuButton.getTextViews()[buttonIndex].getText().toString();
+            Toast.makeText(this, "You search " + boomMenuButton.getTextViews()[buttonIndex].getText().toString(), Toast.LENGTH_SHORT).show();
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+            Toast.makeText(this, "Lost connection with this beacon", Toast.LENGTH_SHORT).show();
+            selectedButton = null;
+            firstStart = false;
+        }
+
     }
 
     @Override
