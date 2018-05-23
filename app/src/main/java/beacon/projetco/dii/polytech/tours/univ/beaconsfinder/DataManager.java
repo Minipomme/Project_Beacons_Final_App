@@ -2,7 +2,6 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
-import android.os.Binder;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import java.util.ArrayList;

@@ -207,7 +207,6 @@ public class MapActivity extends AppCompatActivity {
         wrapper = new ContextThemeWrapper(this, R.style.Beacon_Three);
         changeTheme(wrapper.getTheme(), goal3, R.drawable.ic_place_black_24dp);
 
-
         Data = loadAdminData("mapPath");
         if(Data!= null)
             filePath = Data;
@@ -237,12 +236,12 @@ public class MapActivity extends AppCompatActivity {
         });
 
         bleManager=new BleManager(this);
-        //bleManager.setName("BleManagerThread");
-        bleManager.startScanning();
+        bleManager.setName("BleManagerThread");
+        bleManager.start();
 
-        //PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        //wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        //wl.acquire();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        wl.acquire();
     }
 
     @Override
@@ -253,13 +252,15 @@ public class MapActivity extends AppCompatActivity {
             if (bleManager.getGatt() == null) {
                 return;
             }
-            bleManager.getScanner().stopScan(new ScanCallback(){});;
-            bleManager.getGatt().disconnect();
-            bleManager.getGatt().close();
-            bleManager.setGatt(null);
-            bleManager.getAdapter().disable();
+            else{
+                bleManager.getScanner().stopScan(new ScanCallback(){});;
+                bleManager.getGatt().disconnect();
+                bleManager.getGatt().close();
+                bleManager.setGatt(null);
+                bleManager.pleaseStop();
+            }
         }
-        //wl.release();
+        wl.release();
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
