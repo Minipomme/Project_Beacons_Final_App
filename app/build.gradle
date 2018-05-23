@@ -34,4 +34,5 @@ dependencies {
     compile 'com.lemmingapex.trilateration:trilateration:1.0.2'
 
     compile 'org.altbeacon:android-beacon-library:2+'
+    implementation 'com.android.support:design:26.1.0'
 }
