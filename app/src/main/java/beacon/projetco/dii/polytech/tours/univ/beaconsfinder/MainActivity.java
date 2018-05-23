@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private CardView adminCard, gameCard, languageCard, day_nightCard, infosCard;
+    private CardView adminCard, gameCard, infosCard;
     private String email_saved, password_saved;
     private static final String SHARED_PREFS = "sharedPrefs";
     private static final String EMAIL = "email";
@@ -29,15 +29,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Defining Cards
         adminCard = findViewById(R.id.admin_card);
         gameCard = findViewById(R.id.game_card);
-        languageCard = findViewById(R.id.language_card);
-        day_nightCard = findViewById(R.id.day_night_card);
         infosCard = findViewById(R.id.infos_card);
 
         // Add Click Listener to the cards
         adminCard.setOnClickListener(this);
         gameCard.setOnClickListener(this);
-        languageCard.setOnClickListener(this);
-        day_nightCard.setOnClickListener(this);
         infosCard.setOnClickListener(this);
     }
 
@@ -133,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.show();
                 }
                 break;
-            case R.id.language_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
-            case R.id.day_night_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
             case R.id.infos_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
             case R.id.game_card : i = new Intent(this, GameActivity.class); startActivity(i); break;
             default:break;
