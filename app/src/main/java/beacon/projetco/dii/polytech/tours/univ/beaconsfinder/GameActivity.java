@@ -20,8 +20,8 @@ public class GameActivity extends AppCompatActivity {
 
         CircleMenu circleMenu = findViewById(R.id.circle_game_menu);
         circleMenu.setMainMenu(getResources().getColor(R.color.gray),R.drawable.rotate_play_arrow_grey, R.drawable.ic_clear_grey_24dp)
-                    .addSubMenu(getResources().getColor(R.color.yellow), R.drawable.rotate_location_pin_multiple_white)
-                    .addSubMenu(getResources().getColor(R.color.colorAccent), R.drawable.rotate_thermometer_half_white)
+                    .addSubMenu(getResources().getColor(R.color.green), R.drawable.rotate_location_pin_multiple_white)
+                    .addSubMenu(getResources().getColor(R.color.deeppurple), R.drawable.rotate_thermometer_half_white)
                     .setOnMenuSelectedListener(new OnMenuSelectedListener() {
                         @Override
                         public void onMenuSelected(final int index) {

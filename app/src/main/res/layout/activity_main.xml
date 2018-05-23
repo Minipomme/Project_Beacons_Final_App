@@ -54,7 +54,7 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:background="@drawable/cerclebackgroundpurple"
+                    android:background="@drawable/cerclebackgroundpink"
                     android:src="@drawable/ic_build_white_50dp"
                     android:padding="10dp"/>
                 <TextView
@@ -94,7 +94,7 @@
                 <ImageView
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:background="@drawable/cerclebackgroundpink"
+                    android:background="@drawable/cerclebackgroundyellow"
                     android:padding="10dp"
                     android:src="@drawable/ic_videogame_asset_white_50dp" />
 
