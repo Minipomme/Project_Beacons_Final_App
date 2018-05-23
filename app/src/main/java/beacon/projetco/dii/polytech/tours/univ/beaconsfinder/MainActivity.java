@@ -6,11 +6,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -165,10 +168,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
-        editor.putString(PASSWORD, password);
+        // Sauvegarde du mot de passe hashé SHA-256
+        editor.putString(PASSWORD, stringifyHashedPassword(getHash(password)));
         editor.putString(EMAIL, email);
 
         editor.apply();
+    }
+
+    // Convertion des mot de passe hashé (byte[] -> String)
+    private static String stringifyHashedPassword(byte[] hash) {
+        StringBuffer hashedPassword = new StringBuffer();
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) hashedPassword.append('0');
+            hashedPassword.append(hex);
+        }
+        return hashedPassword.toString();
+    }
+
+    // Hashage du mot de passe en SHA-256
+    public byte[] getHash(String password) {
+        MessageDigest digest=null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e1) {
+            e1.printStackTrace();
+        }
+        digest.reset();
+        return digest.digest(password.getBytes());
     }
 
     protected boolean loadLogin() {
@@ -187,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     protected boolean compareWithPwdSaved(String password) {
-        return password.equals(password_saved);
+        // Hashage du password en SHA-256 puis comparaison avec celui sauvegarder
+        return stringifyHashedPassword(getHash(password)).equals(password_saved);
     }
 }
