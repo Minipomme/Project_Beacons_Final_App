@@ -167,7 +167,7 @@ public class Thermometer extends View {
         float tmp = innerEffectStartY;
         //float startGraduation = minDist;
         //float inc = rangeDist / nbGraduations;
-        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu est gelé", "Tabernak", "Il fait -8000"};
+        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu es gelé", "Tabernak", "Il fait -8000"};
 
         for (int i = 0; tmp <= innerEffectEndY; i++) {
             canvas.drawLine(circleCenterX - outerRectRadius - DEGREE_WIDTH, tmp, circleCenterX - outerRectRadius, tmp, degreePaint);
