@@ -1,7 +1,6 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
