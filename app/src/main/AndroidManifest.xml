@@ -19,10 +19,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".BeaconReferenceApplication">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".AdminActivity" />
-        <activity android:name=".GameActivity" />
-        <activity android:name=".SplashActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".AdminActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".GameActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".SplashActivity"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,9 +34,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".WIPActivity" />
-        <activity android:name=".MapActivity"/>
-        <activity android:name=".MonitoringActivity"/>
-        <activity android:name=".RangingActivity"/>
+        <activity android:name=".MapActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".MonitoringActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".RangingActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

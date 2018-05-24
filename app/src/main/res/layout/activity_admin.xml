@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="18dp"
         android:layout_marginTop="17dp"
-        android:text="Position de la balise 1 :"
+        android:text="Position of the fixed beacon 1 :"
         app:layout_constraintStart_toStartOf="@+id/offsetMap_x"
         app:layout_constraintTop_toBottomOf="@+id/offsetMap_x" />
 
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="Position de la balise 2 :"
+        android:text="Position of the fixed beacon 2 :"
         app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconOne_X"
         app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconOne_X" />
 
@@ -74,7 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="Position de la balise 3 :"
+        android:text="Position of the fixed beacon 3 :"
         app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconTwo_X"
         app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconTwo_X" />
 
@@ -105,7 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="Position de la balise 4 :"
+        android:text="Position of the fixed beacon 4 :"
         app:layout_constraintStart_toStartOf="@+id/editText_fixedBeaconThree_X"
         app:layout_constraintTop_toBottomOf="@+id/editText_fixedBeaconThree_X" />
 
@@ -142,7 +142,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="7dp"
         android:layout_marginStart="7dp"
-        android:text="Valider"
+        android:text="Submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -153,7 +153,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="34dp"
         android:layout_marginTop="16dp"
-        android:text="Mesure carte :"
+        android:text="Measure map :"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -186,7 +186,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
-        android:text="Offset Map :"
+        android:text="Offset map :"
         app:layout_constraintStart_toStartOf="@+id/editText_widthMap"
         app:layout_constraintTop_toBottomOf="@+id/editText_widthMap" />
 
@@ -222,7 +222,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="loadMap"
-        android:text="Charger une image"
+        android:text="Upload an image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
