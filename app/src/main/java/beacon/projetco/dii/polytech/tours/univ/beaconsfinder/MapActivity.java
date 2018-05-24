@@ -30,19 +30,10 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class MapActivity extends AppCompatActivity {
-    private String heightRoom;
-    private String widthRoom;
-    private String position_x_fixed_beacon_one;
-    private String position_y_fixed_beacon_one;
-    private String position_x_fixed_beacon_two;
-    private String position_y_fixed_beacon_two;
-    private String position_x_fixed_beacon_three;
-    private String position_y_fixed_beacon_three;
-    private String position_x_fixed_beacon_four;
-    private String position_y_fixed_beacon_four;
-    private String offsetMap_x;
-    private String offsetMap_y;
     private String filePath;
+
+    String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
+    String [] dataTable = new String [dataTitleTable.length];
 
     private ImageView map;
     private ImageView fixedBeaconOne;
@@ -86,9 +77,6 @@ public class MapActivity extends AppCompatActivity {
         deviceHeight = point.y;
 
         //Recuperation des informations sauvegardées
-        String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
-        String [] dataTable = new String [dataTitleTable.length];
-
         for(int i=0;i<12;i++){
             dataTable[i]=loadAdminData(dataTitleTable[i]);
             if(dataTable[i]==null){
@@ -125,7 +113,7 @@ public class MapActivity extends AppCompatActivity {
 
 
         String Data = loadAdminData("mapPath");
-        if(Data!= null) {
+        if(Data != null) {
             filePath = Data;
             Bitmap SavedMap = loadImageFromStorage(filePath);
             map.setImageBitmap(SavedMap);
@@ -168,29 +156,31 @@ public class MapActivity extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             //Mise à l'échelle
-            fixedBeaconOne.setX(settingScale(position_x_fixed_beacon_one,fixedBeaconOne,"x"));
-            fixedBeaconOne.setY(settingScale(position_y_fixed_beacon_one,fixedBeaconOne,"y"));
+            //      0           1           2               3               4                           5                           6                       7                           8                       9                           10                          11
+            //"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"
+            fixedBeaconOne.setX(settingScale(dataTable[4],fixedBeaconOne,"x"));
+            fixedBeaconOne.setY(settingScale(dataTable[5],fixedBeaconOne,"y"));
 
-            fixedBeaconTwo.setX(settingScale(position_x_fixed_beacon_two,fixedBeaconTwo,"x"));
-            fixedBeaconTwo.setY(settingScale(position_y_fixed_beacon_two,fixedBeaconTwo,"y"));
+            fixedBeaconTwo.setX(settingScale(dataTable[6],fixedBeaconTwo,"x"));
+            fixedBeaconTwo.setY(settingScale(dataTable[7],fixedBeaconTwo,"y"));
 
-            fixedBeaconThree.setX(settingScale(position_x_fixed_beacon_three,fixedBeaconThree,"x"));
-            fixedBeaconThree.setY(settingScale(position_y_fixed_beacon_three,fixedBeaconThree,"y"));
+            fixedBeaconThree.setX(settingScale(dataTable[8],fixedBeaconThree,"x"));
+            fixedBeaconThree.setY(settingScale(dataTable[9],fixedBeaconThree,"y"));
 
-            fixedBeaconFour.setX(settingScale(position_x_fixed_beacon_four,fixedBeaconFour,"x"));
-            fixedBeaconFour.setY(settingScale(position_y_fixed_beacon_four,fixedBeaconFour,"y"));
+            fixedBeaconFour.setX(settingScale(dataTable[10],fixedBeaconFour,"x"));
+            fixedBeaconFour.setY(settingScale(dataTable[11],fixedBeaconFour,"y"));
         }
     }
 
     //Mise à l'échelle en fonction de la position
     public Float settingScale(String positionXY, ImageView object, String type){
         if(type=="x"){
-            return ((Float.parseFloat(positionXY) * deviceWidth / Float.parseFloat(widthRoom))
-                    + Float.parseFloat(offsetMap_x)) - object.getWidth()/2;
+            return ((Float.parseFloat(positionXY) * deviceWidth / Float.parseFloat(dataTable[1]))
+                    + Float.parseFloat(dataTable[2])) - object.getWidth()/2;
         }
         else if(type=="y"){
-            return ((Float.parseFloat(positionXY) * deviceHeight / Float.parseFloat(heightRoom))
-                    + Float.parseFloat(offsetMap_y)) - object.getHeight()/2;
+            return ((Float.parseFloat(positionXY) * deviceHeight / Float.parseFloat(dataTable[0]))
+                    + Float.parseFloat(dataTable[3])) - object.getHeight()/2;
         }
         else{
             return -1f;
@@ -198,7 +188,7 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public void setGoalsPosition(double[] calculatedPosition, Beacon bcn){
-        bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x"));
+        bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x")); //bcn.getImage() de temps en temps il est null donc ça plante (java.lang.NullPointerException: Attempt to invoke virtual method 'int android.widget.ImageView.getWidth()' on a null object reference)
         bcn.getImage().setY(settingScale(Float.toString((float) calculatedPosition[1]),bcn.getImage(),"y"));
         /*
         switch (beacon) {
@@ -370,84 +360,62 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public String getHeightRoom() {
-        return heightRoom;
+        return dataTable[0];
     }
 
-    public void setHeightRoom(String heightRoom) {
-        this.heightRoom = heightRoom;
-    }
+    public void setHeightRoom(String heightRoom) { this.dataTable[0] = heightRoom; }
 
     public String getWidthRoom() {
-        return widthRoom;
+        return dataTable[1];
     }
 
-    public void setWidthRoom(String widthRoom) {
-        this.widthRoom = widthRoom;
-    }
+    public void setWidthRoom(String widthRoom) { this.dataTable[1] = widthRoom; }
 
-    public String getPosition_x_fixed_beacon_one() {
-        return position_x_fixed_beacon_one;
-    }
+    public String getPosition_x_fixed_beacon_one() { return dataTable[4]; }
 
-    public void setPosition_x_fixed_beacon_one(String position_x_fixed_beacon_one) {
-        this.position_x_fixed_beacon_one = position_x_fixed_beacon_one;
-    }
+    public void setPosition_x_fixed_beacon_one(String position_x_fixed_beacon_one) { this.dataTable[4] = position_x_fixed_beacon_one; }
 
     public String getPosition_y_fixed_beacon_one() {
-        return position_y_fixed_beacon_one;
+        return dataTable[5];
     }
 
-    public void setPosition_y_fixed_beacon_one(String position_y_fixed_beacon_one) {
-        this.position_y_fixed_beacon_one = position_y_fixed_beacon_one;
-    }
+    public void setPosition_y_fixed_beacon_one(String position_y_fixed_beacon_one) { this.dataTable[5] = position_y_fixed_beacon_one; }
 
     public String getPosition_x_fixed_beacon_two() {
-        return position_x_fixed_beacon_two;
+        return dataTable[6];
     }
 
-    public void setPosition_x_fixed_beacon_two(String position_x_fixed_beacon_two) {
-        this.position_x_fixed_beacon_two = position_x_fixed_beacon_two;
-    }
+    public void setPosition_x_fixed_beacon_two(String position_x_fixed_beacon_two) { this.dataTable[6] = position_x_fixed_beacon_two; }
 
     public String getPosition_y_fixed_beacon_two() {
-        return position_y_fixed_beacon_two;
+        return dataTable[7];
     }
 
-    public void setPosition_y_fixed_beacon_two(String position_y_fixed_beacon_two) {
-        this.position_y_fixed_beacon_two = position_y_fixed_beacon_two;
-    }
+    public void setPosition_y_fixed_beacon_two(String position_y_fixed_beacon_two) { this.dataTable[7] = position_y_fixed_beacon_two; }
 
     public String getPosition_x_fixed_beacon_three() {
-        return position_x_fixed_beacon_three;
+        return dataTable[8];
     }
 
-    public void setPosition_x_fixed_beacon_three(String position_x_fixed_beacon_three) {
-        this.position_x_fixed_beacon_three = position_x_fixed_beacon_three;
-    }
+    public void setPosition_x_fixed_beacon_three(String position_x_fixed_beacon_three) { this.dataTable[8] = position_x_fixed_beacon_three; }
 
     public String getPosition_y_fixed_beacon_three() {
-        return position_y_fixed_beacon_three;
+        return dataTable[9];
     }
 
-    public void setPosition_y_fixed_beacon_three(String position_y_fixed_beacon_three) {
-        this.position_y_fixed_beacon_three = position_y_fixed_beacon_three;
-    }
+    public void setPosition_y_fixed_beacon_three(String position_y_fixed_beacon_three) { this.dataTable[9] = position_y_fixed_beacon_three; }
 
     public String getPosition_x_fixed_beacon_four() {
-        return position_x_fixed_beacon_four;
+        return dataTable[10];
     }
 
-    public void setPosition_x_fixed_beacon_four(String position_x_fixed_beacon_four) {
-        this.position_x_fixed_beacon_four = position_x_fixed_beacon_four;
-    }
+    public void setPosition_x_fixed_beacon_four(String position_x_fixed_beacon_four) { this.dataTable[10] = position_x_fixed_beacon_four; }
 
     public String getPosition_y_fixed_beacon_four() {
-        return position_y_fixed_beacon_four;
+        return dataTable[11];
     }
 
-    public void setPosition_y_fixed_beacon_four(String position_y_fixed_beacon_four) {
-        this.position_y_fixed_beacon_four = position_y_fixed_beacon_four;
-    }
+    public void setPosition_y_fixed_beacon_four(String position_y_fixed_beacon_four) { this.dataTable[11] = position_y_fixed_beacon_four; }
 
     public int getDeviceWidth() {
         return deviceWidth;
@@ -466,19 +434,19 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public String getOffsetMap_x() {
-        return offsetMap_x;
+        return dataTable[2];
     }
 
     public void setOffsetMap_x(String offsetMap_x) {
-        this.offsetMap_x = offsetMap_x;
+        this.dataTable[2] = offsetMap_x;
     }
 
     public String getOffsetMap_y() {
-        return offsetMap_y;
+        return dataTable[3];
     }
 
     public void setOffsetMap_y(String offsetMap_y) {
-        this.offsetMap_y = offsetMap_y;
+        this.dataTable[3] = offsetMap_y;
     }
 
     public View getView(){return this.getView();}
