@@ -20,10 +20,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BleManager extends Thread{
@@ -32,8 +36,8 @@ public class BleManager extends Thread{
     private BluetoothLeScanner scanner;
     private BluetoothDevice device;
     private BluetoothGatt gatt;
-    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
     private BluetoothGattCharacteristic characteristic;
+    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
     private MapActivity currentActivity;
     private DataManager dataManager;
     private boolean stopThread=false;
@@ -42,6 +46,9 @@ public class BleManager extends Thread{
     private int onConnectionStateChangeStatus;
     private int onServicesDiscoveredStatus;
     private int onCharacteristicReadStatus;
+
+    private BluetoothGattCharacteristic onCharactericticReadCharacteristic;
+    private BluetoothGattCharacteristic onCharactericticChangedCharacteristic;
 
     private boolean flagOnScanResult=false;
     private boolean flagOnConnectionStateChange=false;
@@ -52,7 +59,6 @@ public class BleManager extends Thread{
     private boolean flagState1=false;
     private boolean flagState2=false;
     private boolean flagState3=false;
-    private boolean flagState4=false;
 
     // Storage Permissions
     private static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
@@ -69,28 +75,33 @@ public class BleManager extends Thread{
         statusCheck();
 
         bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        Log.e("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
         if(bluetoothManager == null) {
             //Handle this issue. Report to the user that the device does not support BLE
         } else {
             adapter = bluetoothManager.getAdapter();
         }
 
-        adapter.disable();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(!adapter.isEnabled()){
-            adapter.enable();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("BLE on!");
+        if (adapter != null && !adapter.isEnabled()) {
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            currentActivity.startActivityForResult(intent,1);
         }
         while(!adapter.isEnabled());
+    }
+
+    private boolean refreshDeviceCache(BluetoothGatt gatt){
+        try {
+            BluetoothGatt localBluetoothGatt = gatt;
+            Method localMethod = localBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
+            if (localMethod != null) {
+                boolean bool = ((Boolean) localMethod.invoke(localBluetoothGatt, new Object[0])).booleanValue();
+                return bool;
+            }
+        }
+        catch (Exception localException) {
+            Log.e("TEST", "An exception occured while refreshing device");
+        }
+        return false;
     }
 
     public void statusCheck() {
@@ -142,20 +153,34 @@ public class BleManager extends Thread{
                 flagState3=true;
             }
             if(flagOnCharacteristicRead && flagState3){
-                setDescriptor(onCharacteristicReadStatus);
+                setDescriptor(onCharacteristicReadStatus,onCharactericticReadCharacteristic);
                 flagOnCharacteristicRead=false;
                 flagState3=false;
-                flagState4=true;
             }
-            if(flagOnCharacteristicChanged && flagState4){
-                getData();
+            if(flagOnCharacteristicChanged){
+                getData(onCharactericticChangedCharacteristic);
                 flagOnCharacteristicChanged=false;
-                flagState4=false;
             }
         }
     }
 
-    public void pleaseStop() {stopThread=false;}
+    public void pleaseStop() {
+        if(gatt!=null && scanner!=null){
+            //gatt.disconnect();
+            //gatt.close();
+            //gatt=null;
+            scanner.stopScan( new ScanCallback() {
+                @Override
+                public void onScanResult(int callbackType, ScanResult result) {
+                    super.onScanResult(callbackType,result);
+                }
+            } );
+            scanner=null;
+            gatt.close();
+            gatt=null;
+            stopThread=true;
+        }
+    }
 
     public void startScanning(){
         scanner = adapter.getBluetoothLeScanner();
@@ -172,8 +197,8 @@ public class BleManager extends Thread{
     public class MyScanCallback extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
-            if(result.getDevice()!=null){
-                Log.d("TEST",result.getDevice().getName());
+            if(result.getDevice().getName()!=null){
+                Log.e("TEST",result.getDevice().getName());
             }
             scanResult=result;
             flagOnScanResult=true;
@@ -204,20 +229,23 @@ public class BleManager extends Thread{
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             Log.e("TEST","onCharacteristicRead");
             onCharacteristicReadStatus=status;
+            onCharactericticReadCharacteristic=characteristic;
             flagOnCharacteristicRead=true;
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            Log.d("TEST","onCharacteristicChanged");
-            //Log.d("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
+            Log.d("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
+            onCharactericticChangedCharacteristic=characteristic;
             flagOnCharacteristicChanged=true;
         }
     }
 
     public void doConnect(ScanResult result){
         device = adapter.getRemoteDevice(result.getDevice().getAddress());
+        device.fetchUuidsWithSdp();
         gatt = device.connectGatt(currentActivity.getApplicationContext(), false, new myGattCallBack());
+        refreshDeviceCache(gatt);
     }
 
     public void discoverServices(int newState){
@@ -243,7 +271,7 @@ public class BleManager extends Thread{
         }
     }
 
-    public void setDescriptor(int status){
+    public void setDescriptor(int status, BluetoothGattCharacteristic characteristic){
         if (status == BluetoothGatt.GATT_SUCCESS) {
             gatt.setCharacteristicNotification(characteristic,true);
             BluetoothGattDescriptor descriptor = characteristic.getDescriptors().get(0);
@@ -252,9 +280,11 @@ public class BleManager extends Thread{
         }
     }
 
-    public void getData(){
+    public void getData(BluetoothGattCharacteristic characteristic){
+        Log.e("TEST","getData");
         Long[] result = {0l,0l,0l,0l};
         byte[] data = characteristic.getValue();
+        Log.e("Data", Arrays.toString(data));
         for(int j=0;j<=data.length-1;j++){
             if(data[j]<0) {
                 result[j] = (long) data[j] + 256 ;
@@ -263,6 +293,7 @@ public class BleManager extends Thread{
                 result[j]= (long) data[j];
             }
         }
+
         if(dataManager==null){
             dataManager = new DataManager(currentActivity,scanner);
         }

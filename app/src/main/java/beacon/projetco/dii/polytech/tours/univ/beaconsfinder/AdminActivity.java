@@ -231,6 +231,11 @@ public class AdminActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        AdminActivity.this.finish();
+    }
+
     public void loadMap(View v){
         Log.d("LOG","Click sur le bouton loadMap");
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

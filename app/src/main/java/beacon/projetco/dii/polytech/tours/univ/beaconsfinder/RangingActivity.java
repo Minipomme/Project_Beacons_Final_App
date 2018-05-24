@@ -91,22 +91,27 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         beaconManager.bind(this);
     }
 
-    @Override 
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         beaconManager.unbind(this);
     }
 
-    @Override 
+    @Override
     protected void onPause() {
         super.onPause();
         if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(true);
     }
 
-    @Override 
+    @Override
     protected void onResume() {
         super.onResume();
         if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(false);
+    }
+
+    @Override
+    public void onBackPressed() {
+        RangingActivity.this.finish();
     }
 
     @Override

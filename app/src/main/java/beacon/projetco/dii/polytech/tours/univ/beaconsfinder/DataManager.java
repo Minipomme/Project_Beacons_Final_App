@@ -39,7 +39,7 @@ public class DataManager {
         }
     }
 
-    public void extractData(Long[] result,byte[] data){
+    public void extractData(Long[] result, byte[] data){
         float distance;
         distance = calcDist(result);
 

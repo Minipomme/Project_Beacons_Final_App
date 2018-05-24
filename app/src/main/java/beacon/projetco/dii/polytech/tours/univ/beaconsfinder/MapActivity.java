@@ -73,8 +73,6 @@ public class MapActivity extends AppCompatActivity {
 
     private boolean ConfigNotComplete = false;
 
-    private PowerManager.WakeLock wl;
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -234,33 +232,18 @@ public class MapActivity extends AppCompatActivity {
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
-
+        Thread.currentThread().setPriority( Thread.MAX_PRIORITY);
         bleManager=new BleManager(this);
         bleManager.setName("BleManagerThread");
+        bleManager.setPriority(Thread.NORM_PRIORITY);
         bleManager.start();
-
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        wl.acquire();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Log.e("TEST","OnStop");
-        if(bleManager.getAdapter().isEnabled()){
-            if (bleManager.getGatt() == null) {
-                return;
-            }
-            else{
-                bleManager.getScanner().stopScan(new ScanCallback(){});;
-                bleManager.getGatt().disconnect();
-                bleManager.getGatt().close();
-                bleManager.setGatt(null);
-                bleManager.pleaseStop();
-            }
-        }
-        wl.release();
+        bleManager.pleaseStop();
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -280,6 +263,11 @@ public class MapActivity extends AppCompatActivity {
             fixedBeaconFour.setX(settingScale(position_x_fixed_beacon_four,fixedBeaconFour,"x"));
             fixedBeaconFour.setY(settingScale(position_y_fixed_beacon_four,fixedBeaconFour,"y"));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        MapActivity.this.finish();
     }
 
     //Mise à l'échelle en fonction de la position
