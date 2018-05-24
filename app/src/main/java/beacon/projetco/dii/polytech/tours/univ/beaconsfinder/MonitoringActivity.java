@@ -87,6 +87,11 @@ public class MonitoringActivity extends AppCompatActivity {
         ((BeaconReferenceApplication) this.getApplicationContext()).setMonitoringActivity(null);
     }
 
+	@Override
+	public void onBackPressed() {
+		MonitoringActivity.this.finish();
+	}
+
 	private void verifyBluetooth() {
 
 		try {

@@ -108,6 +108,11 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
     }
 
     @Override
+    public void onBackPressed() {
+        RangingActivity.this.finish();
+    }
+
+    @Override
     public void onBeaconServiceConnect() {
         beaconManager.addRangeNotifier(new RangeNotifier() {
            @Override

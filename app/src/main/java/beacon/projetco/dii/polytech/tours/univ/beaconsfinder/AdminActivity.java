@@ -233,6 +233,11 @@ public class AdminActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        AdminActivity.this.finish();
+    }
+
     /**
      * Loading map from the MadiaStore
      * @param v

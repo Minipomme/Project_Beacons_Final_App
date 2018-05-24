@@ -165,6 +165,11 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        MapActivity.this.finish();
+    }
+
     //Mise à l'échelle en fonction de la position
     public Float settingScale(String positionXY, ImageView object, String type){
         if(type=="x"){
