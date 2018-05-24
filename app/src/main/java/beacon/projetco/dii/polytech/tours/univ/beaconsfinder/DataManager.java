@@ -46,12 +46,16 @@ public class DataManager {
         NB_Arduinos=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_ARDUINO));
         NB_Beacons=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_BEACONS));
 
+        Log.e("Test Julien",NB_Arduinos + " ; "+ NB_Beacons);
         ensembleBeacon = new ParcBeacon(currentActivity);
 
         this.arrayArduino = new ArrayList<List<Float>>();
 
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
-            this.arrayArduino.add(new ArrayList<Float>(Collections.nCopies(NB_Beacons, 0f)));
+            arrayArduino.add(new ArrayList<Float>());
+            for (int j = 0; j <= NB_Beacons - 1; j++) {
+                arrayArduino.get(i).add((float) 0);
+            }
         }
     }
 
@@ -83,24 +87,6 @@ public class DataManager {
                     arrayArduino.get(3).get(bcn.getName()-1)
             } );
         }
-
-        /*
-        distancesBeacon1 = new double[] {
-                arrayArduino.get(0).get(0),
-                arrayArduino.get(1).get(0),
-                arrayArduino.get(2).get(0),
-                arrayArduino.get(3).get(0)};
-        distancesBeacon2 = new double[] {
-                arrayArduino.get(0).get(1),
-                arrayArduino.get(1).get(1),
-                arrayArduino.get(2).get(1),
-                arrayArduino.get(3).get(1)};
-        distancesBeacon3 = new double[] {
-                arrayArduino.get(0).get(2),
-                arrayArduino.get(1).get(2),
-                arrayArduino.get(2).get(2),
-                arrayArduino.get(3).get(2)};
-        */
 
         //Setting flags for arduino
         for(int i=0;i<NB_Arduinos;i++){
@@ -248,5 +234,4 @@ public class DataManager {
     public String[] getBeaconsToFind(){
         return beaconsToFind;
     }
-
 }

@@ -35,6 +35,11 @@ public class BleManager extends Thread{
     private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
     private BluetoothGattCharacteristic characteristic;
     private MapActivity currentActivity;
+
+    public DataManager getDataManager() {
+        return dataManager;
+    }
+
     private DataManager dataManager;
 
     // Storage Permissions

@@ -54,7 +54,6 @@ public class MapActivity extends AppCompatActivity {
 
     private FireMissilesDialogFragment fragment;
 
-
     private BleManager bleManager;
 
     private static final String SHARED_PREFS = "sharedPrefs";
@@ -62,6 +61,7 @@ public class MapActivity extends AppCompatActivity {
 
     private boolean ConfigNotComplete = false;
 
+    private DataManager dataManager;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +88,13 @@ public class MapActivity extends AppCompatActivity {
                 dataTable[i]="0";
                 ConfigNotComplete = true;
             }
+        }
+
+        if(dataManager!=null){
+          for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
+              changeTheme(new ContextThemeWrapper(this, R.style.Beacon_One).getTheme(),bcn.getImage(),R.drawable.ic_place_black_24dp);
+              addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
+          }
         }
 
         ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
@@ -131,6 +138,7 @@ public class MapActivity extends AppCompatActivity {
             }
         });
         bleManager=new BleManager(this);
+        dataManager = bleManager.getDataManager();
         bleManager.start();
     }
 
@@ -200,65 +208,7 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    public static class FireMissilesDialogFragment extends DialogFragment {
-        private String[] input;
-        private ArrayList<Integer> mSelectedItems = new ArrayList<Integer>();  // Where we track the selected items
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // Set the dialog title
-            builder.setTitle(R.string.title)
-                    // Specify the list array, the items to be selected by default (null for none),
-                    // and the listener through which to receive callbacks when items are selected
-                    .setMultiChoiceItems(input, null,
-                            new DialogInterface.OnMultiChoiceClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which,
-                                                    boolean isChecked) {
-                                    if (isChecked) {
-                                        // If the user checked the item, add it to the selected items
-                                        mSelectedItems.add(which);
-                                    } else if (mSelectedItems.contains(which)) {
-                                        // Else, if the item is already in the array, remove it
-                                        mSelectedItems.remove(Integer.valueOf(which));
-                                    }
-                                }
-                            })
-                    // Set the action buttons
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK, so save the mSelectedItems results somewhere
-                            // or return them to the component that opened the dialog
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-
-            return builder.create();
-        }
-
-        public String[] getInput() {
-            return input;
-        }
-
-        public ArrayList<Integer> getmSelectedItems() {
-            return mSelectedItems;
-        }
-
-        public void setInput(String[] input) {
-            this.input = input;
-        }
-
-        public void setmSelectedItems(ArrayList mSelectedItems) {
-            this.mSelectedItems = mSelectedItems;
-        }
-    }
 
     public ImageView getFixedBeaconOne() {
         return fixedBeaconOne;
@@ -314,14 +264,6 @@ public class MapActivity extends AppCompatActivity {
 
     public void setGoal3(ImageView goal3) {
         this.goal3 = goal3;
-    }
-
-    public FireMissilesDialogFragment getFragment() {
-        return fragment;
-    }
-
-    public void setFragment(FireMissilesDialogFragment fragment) {
-        this.fragment = fragment;
     }
 
     public String getHeightRoom() {
@@ -440,5 +382,73 @@ public class MapActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static class FireMissilesDialogFragment extends DialogFragment {
+        private String[] input;
+        private ArrayList<Integer> mSelectedItems = new ArrayList<Integer>();  // Where we track the selected items
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            // Set the dialog title
+            builder.setTitle(R.string.title)
+                    // Specify the list array, the items to be selected by default (null for none),
+                    // and the listener through which to receive callbacks when items are selected
+                    .setMultiChoiceItems(input, null,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which,
+                                                    boolean isChecked) {
+                                    if (isChecked) {
+                                        // If the user checked the item, add it to the selected items
+                                        mSelectedItems.add(which);
+                                    } else if (mSelectedItems.contains(which)) {
+                                        // Else, if the item is already in the array, remove it
+                                        mSelectedItems.remove(Integer.valueOf(which));
+                                    }
+                                }
+                            })
+                    // Set the action buttons
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK, so save the mSelectedItems results somewhere
+                            // or return them to the component that opened the dialog
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+
+            return builder.create();
+        }
+
+        public String[] getInput() {
+            return input;
+        }
+
+        public ArrayList<Integer> getmSelectedItems() {
+            return mSelectedItems;
+        }
+
+        public void setInput(String[] input) {
+            this.input = input;
+        }
+
+        public void setmSelectedItems(ArrayList mSelectedItems) {
+            this.mSelectedItems = mSelectedItems;
+        }
+    }
+
+    public FireMissilesDialogFragment getFragment() {
+        return fragment;
+    }
+
+    public void setFragment(FireMissilesDialogFragment fragment) {
+        this.fragment = fragment;
     }
 }
