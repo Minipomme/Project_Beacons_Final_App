@@ -56,7 +56,7 @@ public class MonitoringActivity extends AppCompatActivity {
 				} else {
 					final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 					builder.setTitle("Fonctionnalités limitées");
-					builder.setMessage("Tant que la localisation n'est pas accordée, il n'est pas possible d'effectuer la localisation.");
+					builder.setMessage("Tant que la localisation n'est pas activée/acceptée, il n'est pas possible d'effectuer la localisation des beacons.");
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 						@Override

@@ -33,7 +33,7 @@ public class DataManager {
     private boolean flagFixedBeacon3 = false;
     private boolean flagFixedBeacon4 = false;
 
-    public ParcBeacon ensembleBeacon;
+    private ParcBeacon ensembleBeacon;
     private Trilateration Localizer;
 
     public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner){
@@ -77,7 +77,7 @@ public class DataManager {
         Log.d("RESULT","---------------------------------------------");
 
         //Setting arduino distance
-        for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
+        for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
             bcn.setDistances(new double[] {
                     arrayArduino.get(0).get(bcn.getName()-1),
                     arrayArduino.get(1).get(bcn.getName()-1),
@@ -152,7 +152,7 @@ public class DataManager {
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_four()),
                         Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_four())}};
 
-        for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
+        for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
             Localizer.launchTrilateration(positions,bcn.getDistances(),bcn);
         }
 
@@ -224,8 +224,11 @@ public class DataManager {
         arrayAverage[fixedBeacon][beacon][20]=average/20;
     }
 
-
     public float getAverage(int fixedBeacon, int beacon){
         return arrayAverage[fixedBeacon][beacon][20];
+    }
+
+    public ParcBeacon getEnsembleBeacon() {
+        return ensembleBeacon;
     }
 }

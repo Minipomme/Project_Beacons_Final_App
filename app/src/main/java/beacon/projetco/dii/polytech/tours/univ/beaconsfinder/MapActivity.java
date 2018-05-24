@@ -61,9 +61,9 @@ public class MapActivity extends AppCompatActivity {
     //Classe de gestion du bluetooth
     private BleManager bleManager;
 
-
-
+    //Gestion des informations
     private DataManager dataManager;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,22 +123,24 @@ public class MapActivity extends AppCompatActivity {
             Toast.makeText(MapActivity.this, "Configuration is not complete, contact an administrator", Toast.LENGTH_SHORT).show();
         }
 
+
+        bleManager=new BleManager(this);
+        dataManager = bleManager.getDataManager();
+
+        for(Beacon bcn : dataManager.getEnsembleBeacon().getBeaconsToFind()){
+            changeTheme(new ContextThemeWrapper(this, R.style.Beacon_One).getTheme(),bcn.getImage(),R.drawable.ic_place_black_24dp);
+            addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
+        }
+
         selectGoals = findViewById(R.id.selectGoals);
         selectGoals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fragment = new FireMissilesDialogFragment();
-                fragment.setInput(ParcBeacon.getBeaconsToFindString(NB_Beacons));
+                fragment.setInput(dataManager.getEnsembleBeacon().getBeaconsToFindString());
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
-        bleManager=new BleManager(this);
-        dataManager = bleManager.getDataManager();
-
-        for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
-            changeTheme(new ContextThemeWrapper(this, R.style.Beacon_One).getTheme(),bcn.getImage(),R.drawable.ic_place_black_24dp);
-            addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
-        }
 
         bleManager.start();
     }
