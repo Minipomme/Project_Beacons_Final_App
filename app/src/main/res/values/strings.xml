@@ -17,4 +17,18 @@
     <string name="create_or_edit_login">Create/Edit Login</string>
     <string name="create_or_edit_login_btn">Create/Edit Login</string>
     <string name="succ_login_created_msg">Login created</string>
+    <string-array name="libraries">
+        <item>AltBeacon</item>
+        <item>Trilateration</item>
+        <item>AltBeacon</item>
+        <item>Circle menu android</item>
+    </string-array>
+    <string-array name="team">
+        <item>Karim EL GHARBI as <b>Project Manager</b></item>
+        <item>Brandon SIMON-VERMOT</item>
+        <item>Julien GIDEL</item>
+        <item>Quentin ARCICAULT</item>*
+        <item>Damien LE LANN</item>
+        <item>Axel EYRAUD</item>
+    </string-array>
 </resources>

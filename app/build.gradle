@@ -38,4 +38,5 @@ dependencies {
 
     // Add Library for Boom Menu
     compile 'com.nightonke:boommenu:1.0.9'
+    implementation 'com.android.support:design:26.1.0'
 }
