@@ -32,6 +32,9 @@ import java.util.ArrayList;
 public class MapActivity extends AppCompatActivity {
     private String filePath;
 
+    private int NB_Arduinos=Integer.parseInt("@strings/NB_ARDUINO");
+    private int NB_Beacons=Integer.parseInt("@strings/NB_BEACONS");
+
     String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
     String [] dataTable = new String [dataTitleTable.length];
 
@@ -111,6 +114,7 @@ public class MapActivity extends AppCompatActivity {
         wrapper = new ContextThemeWrapper(this, R.style.Beacon_Three);
         changeTheme(wrapper.getTheme(), goal3, R.drawable.ic_place_black_24dp);
 
+        map = findViewById(R.id.map);
 
         String Data = loadAdminData("mapPath");
         if(Data != null) {
@@ -122,7 +126,6 @@ public class MapActivity extends AppCompatActivity {
             filePath = null;
             ConfigNotComplete =  true;
         }
-        map = findViewById(R.id.map);
 
         if(ConfigNotComplete) {
             Toast.makeText(MapActivity.this, "Configuration is not complete, contact an administrator", Toast.LENGTH_SHORT).show();
@@ -190,49 +193,16 @@ public class MapActivity extends AppCompatActivity {
     public void setGoalsPosition(double[] calculatedPosition, Beacon bcn){
         bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x")); //bcn.getImage() de temps en temps il est null donc ça plante (java.lang.NullPointerException: Attempt to invoke virtual method 'int android.widget.ImageView.getWidth()' on a null object reference)
         bcn.getImage().setY(settingScale(Float.toString((float) calculatedPosition[1]),bcn.getImage(),"y"));
-        /*
-        switch (beacon) {
-            case 1:
-                //Position du beacon 1
-                goal1.setX(settingScale(Float.toString((float) calculatedPosition[0]),goal1,"x"));
-                goal1.setY(settingScale(Float.toString((float) calculatedPosition[1]),goal1,"y"));
-                //Log.i("MAP POC - BEACON1 (m)", "X = " + calculatedPosition[0] + " -- Y = " + calculatedPosition[1]);
-                break;
-            case 2:
-                //Position du beacon 2
-                goal2.setX(settingScale(Float.toString((float) calculatedPosition[0]),goal2,"x"));
-                goal2.setY(settingScale(Float.toString((float) calculatedPosition[1]),goal2,"y"));
-                //Log.i("MAP POC - BEACON2", "X = " + calculatedPosition[0] + " -- Y = " + calculatedPosition[1]);
-                break;
-            case 3:
-                //Position du beacon 3
-                goal3.setX(settingScale(Float.toString((float) calculatedPosition[0]),goal3,"x"));
-                goal3.setY(settingScale(Float.toString((float) calculatedPosition[1]),goal3,"y"));
-                //Log.i("MAP POC - BEACON3", "X = " + calculatedPosition[0] + " -- Y = " + calculatedPosition[1]);
-                break;
-        }*/
+
 
         if(fragment!=null) {
-
-            if (fragment.getmSelectedItems().contains(0)) {
-                goal1.setVisibility(View.VISIBLE);
-            } else {
-                goal1.setVisibility(View.INVISIBLE);
+            if(fragment.getmSelectedItems().contains(bcn.getName())){
+                bcn.getImage().setVisibility(View.VISIBLE);
             }
-
-            if (fragment.getmSelectedItems().contains(1)) {
-                goal2.setVisibility(View.VISIBLE);
-            } else {
-                goal2.setVisibility(View.INVISIBLE);
-            }
-
-            if (fragment.getmSelectedItems().contains(2)) {
-                goal3.setVisibility(View.VISIBLE);
-            } else {
-                goal3.setVisibility(View.INVISIBLE);
+            else{
+                bcn.getImage().setVisibility(View.INVISIBLE);
             }
         }
-        //getWindow().getDecorView().findViewById(android.R.id.content).postInvalidate();
     }
 
     public static class FireMissilesDialogFragment extends DialogFragment {

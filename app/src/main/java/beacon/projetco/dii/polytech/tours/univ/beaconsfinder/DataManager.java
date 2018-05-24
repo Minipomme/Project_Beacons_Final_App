@@ -11,8 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class DataManager {
-    public int NB_Arduinos=4;
-    public int NB_Beacons=3;
+    public int NB_Arduinos=Integer.parseInt("@strings/NB_ARDUINO");
+    public int NB_Beacons=Integer.parseInt("@strings/NB_BEACONS");
 
     private float[][][] arrayAverage = new float[NB_Arduinos][NB_Beacons][21];
     private List<List<Float>> arrayArduino;
@@ -41,6 +41,7 @@ public class DataManager {
         listBeacon = new ArrayList<Beacon>();
         for(int i=0; i< NB_Beacons;i++){
             listBeacon.add(new Beacon(i+1));
+
         }
 
         arrayArduino = new ArrayList<List<Float>>();

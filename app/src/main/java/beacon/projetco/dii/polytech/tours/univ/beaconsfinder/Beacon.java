@@ -70,4 +70,5 @@ public class Beacon {
     public void setImage(ImageView image) {
         this.image = image;
     }
+
 }
