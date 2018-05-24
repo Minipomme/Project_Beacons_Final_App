@@ -60,6 +60,66 @@ public class Thermometer extends View {
         init(context, attrs);
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        Log.d("STATE","ON DRAW !!!");
+        super.onDraw(canvas);
+
+        innerPaint.setColor(currentInnerColor);
+
+        int height = getHeight();
+        int width = getWidth();
+
+        int circleCenterX = width / 2;
+        float circleCenterY = height - outerCircleRadius;
+        float outerStartY = 0;
+        float middleStartY = outerStartY + 5;
+
+        float innerEffectStartY = middleStartY + middleRectRadius + 10;
+        float innerEffectEndY = circleCenterY - outerCircleRadius - 10;
+        float innerRectHeight = innerEffectEndY - innerEffectStartY;
+        float innerStartY = innerEffectEndY + (maxDist - currentDist) / rangeDist * (-innerRectHeight);
+
+        RectF outerRect = new RectF();
+        outerRect.left  = circleCenterX - outerRectRadius;
+        outerRect.top = outerStartY;
+        outerRect.right = circleCenterX + outerRectRadius;
+        outerRect.bottom = circleCenterY;
+
+        canvas.drawRoundRect(outerRect, outerRectRadius, outerRectRadius, outerPaint);
+        canvas.drawCircle(circleCenterX, circleCenterY, outerCircleRadius, outerPaint);
+
+        RectF middleRect = new RectF();
+        middleRect.left  = circleCenterX - middleRectRadius;
+        middleRect.top = outerStartY;
+        middleRect.right = circleCenterX + middleRectRadius;
+        middleRect.bottom = circleCenterY;
+
+        canvas.drawRoundRect(middleRect, middleRectRadius, middleRectRadius, middlePaint);
+        canvas.drawCircle(circleCenterX, circleCenterY, middleCircleRadius, middlePaint);
+
+        canvas.drawRect(circleCenterX - innerRectRadius, innerStartY, circleCenterX + innerRectRadius, circleCenterY, innerPaint);
+        canvas.drawCircle(circleCenterX, circleCenterY, innerCircleRadius, innerPaint);
+
+        float tmp = innerEffectStartY;
+        //float startGraduation = minDist;
+        //float inc = rangeDist / nbGraduations;
+        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu est gelé", "Tabernak", "Il fait -8000"};
+
+        for (int i = 0; tmp <= innerEffectEndY; i++) {
+            canvas.drawLine(circleCenterX - outerRectRadius - DEGREE_WIDTH, tmp, circleCenterX - outerRectRadius, tmp, degreePaint);
+            graduationPaint.getTextBounds(txt_field[i], 0, txt_field[i].length(), rect);
+            float textWidth = rect.width();
+            float textHeight = rect.height();
+
+            canvas.drawText(txt_field[i], circleCenterX - outerRectRadius - DEGREE_WIDTH - textWidth - DEGREE_WIDTH * 1.5f,
+                    tmp + textHeight / 2, graduationPaint);
+            tmp += (innerEffectEndY - innerEffectStartY) / nbGraduations;
+            //startGraduation += inc;
+        }
+        Log.d("STATE","fin ON DRAW !!!");
+    }
+
     public void setCurrentInnerColor(int newColor) {
         this.currentInnerColor = newColor;
     }
@@ -121,65 +181,5 @@ public class Thermometer extends View {
         graduationPaint.setAntiAlias(true);
         graduationPaint.setTextSize(Utils.convertDpToPixel(GRADUATION_TEXT_SIZE, getContext()));
         Log.d("STATE","FIN INIT !!!");
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        Log.d("STATE","ON DRAW !!!");
-        super.onDraw(canvas);
-
-        innerPaint.setColor(currentInnerColor);
-
-        int height = getHeight();
-        int width = getWidth();
-
-        int circleCenterX = width / 2;
-        float circleCenterY = height - outerCircleRadius;
-        float outerStartY = 0;
-        float middleStartY = outerStartY + 5;
-
-        float innerEffectStartY = middleStartY + middleRectRadius + 10;
-        float innerEffectEndY = circleCenterY - outerCircleRadius - 10;
-        float innerRectHeight = innerEffectEndY - innerEffectStartY;
-        float innerStartY = innerEffectEndY + (maxDist - currentDist) / rangeDist * (-innerRectHeight);
-
-        RectF outerRect = new RectF();
-        outerRect.left  = circleCenterX - outerRectRadius;
-        outerRect.top = outerStartY;
-        outerRect.right = circleCenterX + outerRectRadius;
-        outerRect.bottom = circleCenterY;
-
-        canvas.drawRoundRect(outerRect, outerRectRadius, outerRectRadius, outerPaint);
-        canvas.drawCircle(circleCenterX, circleCenterY, outerCircleRadius, outerPaint);
-
-        RectF middleRect = new RectF();
-        middleRect.left  = circleCenterX - middleRectRadius;
-        middleRect.top = outerStartY;
-        middleRect.right = circleCenterX + middleRectRadius;
-        middleRect.bottom = circleCenterY;
-
-        canvas.drawRoundRect(middleRect, middleRectRadius, middleRectRadius, middlePaint);
-        canvas.drawCircle(circleCenterX, circleCenterY, middleCircleRadius, middlePaint);
-
-        canvas.drawRect(circleCenterX - innerRectRadius, innerStartY, circleCenterX + innerRectRadius, circleCenterY, innerPaint);
-        canvas.drawCircle(circleCenterX, circleCenterY, innerCircleRadius, innerPaint);
-
-        float tmp = innerEffectStartY;
-        //float startGraduation = minDist;
-        //float inc = rangeDist / nbGraduations;
-        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu est gelé", "Tabernak", "Il fait -8000"};
-
-        for (int i = 0; tmp <= innerEffectEndY; i++) {
-            canvas.drawLine(circleCenterX - outerRectRadius - DEGREE_WIDTH, tmp, circleCenterX - outerRectRadius, tmp, degreePaint);
-            graduationPaint.getTextBounds(txt_field[i], 0, txt_field[i].length(), rect);
-            float textWidth = rect.width();
-            float textHeight = rect.height();
-
-            canvas.drawText(txt_field[i], circleCenterX - outerRectRadius - DEGREE_WIDTH - textWidth - DEGREE_WIDTH * 1.5f,
-                    tmp + textHeight / 2, graduationPaint);
-            tmp += (innerEffectEndY - innerEffectStartY) / nbGraduations;
-            //startGraduation += inc;
-        }
-        Log.d("STATE","fin ON DRAW !!!");
     }
 }

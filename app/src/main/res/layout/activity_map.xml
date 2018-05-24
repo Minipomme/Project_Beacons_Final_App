@@ -52,7 +52,7 @@
         android:layout_alignParentTop="true"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:src="@drawable/ic_place_black_24dp"
+        android:src="@drawable/ic_place_black_50dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="373dp"
         tools:ignore="MissingConstraints" />
@@ -64,7 +64,7 @@
         android:layout_alignParentStart="true"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:src="@drawable/ic_place_black_24dp"
+        android:src="@drawable/ic_place_black_50dp"
         tools:layout_editor_absoluteX="90dp"
         tools:layout_editor_absoluteY="373dp"
         tools:ignore="MissingConstraints" />
@@ -76,7 +76,7 @@
         android:layout_alignParentStart="true"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:src="@drawable/ic_place_black_24dp"
+        android:src="@drawable/ic_place_black_50dp"
         tools:layout_editor_absoluteX="204dp"
         tools:layout_editor_absoluteY="373dp"
         tools:ignore="MissingConstraints" />
@@ -89,7 +89,7 @@
         android:layout_alignParentTop="true"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:src="@drawable/ic_place_black_24dp"
+        android:src="@drawable/ic_place_black_50dp"
         tools:layout_editor_absoluteX="294dp"
         tools:layout_editor_absoluteY="373dp"
         tools:ignore="MissingConstraints" />
@@ -100,7 +100,7 @@
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_place_black_24dp"
+        android:src="@drawable/ic_place_black_50dp"
         tools:layout_editor_absoluteX="38dp"
         tools:layout_editor_absoluteY="259dp"
         tools:ignore="MissingConstraints" />
@@ -111,7 +111,7 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:src="@drawable/ic_place_black_24dp"
+        android:src="@drawable/ic_place_black_50dp"
         tools:layout_editor_absoluteX="166dp"
         tools:layout_editor_absoluteY="259dp"
         tools:ignore="MissingConstraints" />
@@ -122,7 +122,7 @@
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/goal2"
-        android:src="@drawable/ic_place_black_24dp"
+        android:src="@drawable/ic_place_black_50dp"
         tools:layout_editor_absoluteX="294dp"
         tools:layout_editor_absoluteY="259dp"
         tools:ignore="MissingConstraints" />

@@ -33,5 +33,9 @@ dependencies {
     // Add Library for Trilateration
     compile 'com.lemmingapex.trilateration:trilateration:1.0.2'
 
+    // Add Library for Altbeacon
     compile 'org.altbeacon:android-beacon-library:2+'
+
+    // Add Library for Boom Menu
+    compile 'com.nightonke:boommenu:1.0.9'
 }

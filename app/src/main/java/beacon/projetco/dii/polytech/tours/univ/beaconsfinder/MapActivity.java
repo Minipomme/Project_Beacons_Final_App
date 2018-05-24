@@ -5,19 +5,15 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.StyleRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.View;
@@ -194,15 +190,15 @@ public class MapActivity extends AppCompatActivity {
 
         goal1 = this.findViewById(R.id.goal1);
         wrapper = new ContextThemeWrapper(this, R.style.Beacon_One);
-        changeTheme(wrapper.getTheme(), goal1, R.drawable.ic_place_black_24dp);
+        changeTheme(wrapper.getTheme(), goal1, R.drawable.ic_place_black_50dp);
 
         goal2 = this.findViewById(R.id.goal2);
         wrapper = new ContextThemeWrapper(this, R.style.Beacon_Two);
-        changeTheme(wrapper.getTheme(), goal2, R.drawable.ic_place_black_24dp);
+        changeTheme(wrapper.getTheme(), goal2, R.drawable.ic_place_black_50dp);
 
         goal3 = this.findViewById(R.id.goal3);
         wrapper = new ContextThemeWrapper(this, R.style.Beacon_Three);
-        changeTheme(wrapper.getTheme(), goal3, R.drawable.ic_place_black_24dp);
+        changeTheme(wrapper.getTheme(), goal3, R.drawable.ic_place_black_50dp);
 
 
         Data = loadAdminData("mapPath");
