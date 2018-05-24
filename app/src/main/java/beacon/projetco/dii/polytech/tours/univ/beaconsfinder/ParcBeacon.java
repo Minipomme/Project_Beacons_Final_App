@@ -31,9 +31,6 @@ public class ParcBeacon {
             imgView.setLayoutParams(new RelativeLayout.LayoutParams(50,50));
             bcn.setImage(imgView);
 
-            //A MODIFIER
-
-
             listBeacon.add(bcn);
         }
     }

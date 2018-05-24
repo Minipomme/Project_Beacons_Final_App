@@ -13,31 +13,28 @@ import java.util.List;
  * Class that manages all the data from BLEManager. It
  */
 public class DataManager {
+    private MapActivity currentActivity;
+
+    //Variables fixes
     private int NB_Arduinos;
     private int NB_Beacons;
+    private float RSSI_Init=55;
 
+    //Gestion des informations
+    private boolean [] flagsArduino = new boolean[NB_Arduinos];
     private float[][][] arrayAverage = new float[NB_Arduinos][NB_Beacons][21];
     private List<List<Float>> arrayArduino;
 
-    public ParcBeacon ensembleBeacon;
-
-    private String[] beaconsToFind={"Beacon1","Beacon2"};
-    /*
-    private double[] distancesBeacon1;
-    private double[] distancesBeacon2;
-    private double[] distancesBeacon3;
-    */
-
-    private float RSSI_Init=55;
-    private Trilateration Localizer;
-    private MapActivity currentActivity;
+    //Gestion du BLE et des balises de détection
     private BluetoothLeScanner scanner;
     private boolean flagScan = false;
     private boolean flagFixedBeacon1 = false;
     private boolean flagFixedBeacon2 = false;
     private boolean flagFixedBeacon3 = false;
     private boolean flagFixedBeacon4 = false;
-    private boolean [] flagsArduino = new boolean[NB_Arduinos];
+
+    public ParcBeacon ensembleBeacon;
+    private Trilateration Localizer;
 
     public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner){
         this.currentActivity=currentActivity;
@@ -230,9 +227,5 @@ public class DataManager {
 
     public float getAverage(int fixedBeacon, int beacon){
         return arrayAverage[fixedBeacon][beacon][20];
-    }
-
-    public String[] getBeaconsToFind(){
-        return beaconsToFind;
     }
 }

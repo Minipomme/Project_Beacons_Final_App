@@ -36,32 +36,32 @@ public class MapActivity extends AppCompatActivity {
 
     private int NB_Arduinos;
     private int NB_Beacons;
+    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String MAP_FILE_NAME = "map.png";
+    private int deviceWidth;
+    private int deviceHeight;
 
+
+    //Gestion des données internes de l'application
+    private boolean ConfigNotComplete = false;
     String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
     String [] dataTable = new String [dataTitleTable.length];
 
+    //Variables de gestion de l'affichage
     private ImageView map;
     private ImageView fixedBeaconOne;
     private ImageView fixedBeaconTwo;
     private ImageView fixedBeaconThree;
     private ImageView fixedBeaconFour;
-    private ImageView goal1;
-    private ImageView goal2;
-    private ImageView goal3;
-
-    private int deviceWidth;
-    private int deviceHeight;
-
     private ImageButton selectGoals;
 
+    //Selection des beacons à afficher
     private FireMissilesDialogFragment fragment;
 
+    //Classe de gestion du bluetooth
     private BleManager bleManager;
 
-    private static final String SHARED_PREFS = "sharedPrefs";
-    private static final String MAP_FILE_NAME = "map.png";
 
-    private boolean ConfigNotComplete = false;
 
     private DataManager dataManager;
     @Override
@@ -241,30 +241,6 @@ public class MapActivity extends AppCompatActivity {
 
     public void setFixedBeaconFour(ImageView fixedBeaconFour) {
         this.fixedBeaconFour = fixedBeaconFour;
-    }
-
-    public ImageView getGoal1() {
-        return goal1;
-    }
-
-    public void setGoal1(ImageView goal1) {
-        this.goal1 = goal1;
-    }
-
-    public ImageView getGoal2() {
-        return goal2;
-    }
-
-    public void setGoal2(ImageView goal2) {
-        this.goal2 = goal2;
-    }
-
-    public ImageView getGoal3() {
-        return goal3;
-    }
-
-    public void setGoal3(ImageView goal3) {
-        this.goal3 = goal3;
     }
 
     public String getHeightRoom() {

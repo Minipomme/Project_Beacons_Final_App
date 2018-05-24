@@ -27,19 +27,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BleManager extends Thread{
+    private MapActivity currentActivity;
+
+    //Variables fixes
+    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
+
+    //Gestion du bluetooth
     private BluetoothManager bluetoothManager;
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothDevice device;
     private BluetoothGatt gatt;
-    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
     private BluetoothGattCharacteristic characteristic;
-    private MapActivity currentActivity;
 
-    public DataManager getDataManager() {
-        return dataManager;
-    }
-
+    //Classe de gestion des informations
     private DataManager dataManager;
 
     // Storage Permissions
@@ -215,6 +216,10 @@ public class BleManager extends Thread{
 
     public BluetoothLeScanner getScanner() {
         return scanner;
+    }
+
+    public DataManager getDataManager() {
+        return dataManager;
     }
 
     public void setScanner(BluetoothLeScanner scanner) {
