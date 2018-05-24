@@ -2,6 +2,9 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.widget.ImageView;
 
+/**
+ * Class that represents a physical beacon
+ */
 public class Beacon {
 
     private int name;

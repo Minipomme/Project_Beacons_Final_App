@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.View;
@@ -29,6 +28,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+/**
+ * UI class that manage every part of the design. It doesn't care about data.
+ */
 public class MapActivity extends AppCompatActivity {
     private String filePath;
 
@@ -90,13 +92,6 @@ public class MapActivity extends AppCompatActivity {
             }
         }
 
-        if(dataManager!=null){
-          for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
-              changeTheme(new ContextThemeWrapper(this, R.style.Beacon_One).getTheme(),bcn.getImage(),R.drawable.ic_place_black_24dp);
-              addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
-          }
-        }
-
         ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.DefaultScene);
 
         fixedBeaconOne = findViewById(R.id.FixedBeaconOne);
@@ -139,6 +134,12 @@ public class MapActivity extends AppCompatActivity {
         });
         bleManager=new BleManager(this);
         dataManager = bleManager.getDataManager();
+
+        for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
+            changeTheme(new ContextThemeWrapper(this, R.style.Beacon_One).getTheme(),bcn.getImage(),R.drawable.ic_place_black_24dp);
+            addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
+        }
+
         bleManager.start();
     }
 

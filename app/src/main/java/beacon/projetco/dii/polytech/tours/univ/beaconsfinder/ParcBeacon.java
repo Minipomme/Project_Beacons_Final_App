@@ -1,12 +1,14 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
-import android.view.ContextThemeWrapper;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that manages the entire parc of beacons. It is used to separate the UI from data
+ */
 public class ParcBeacon {
     static ArrayList<Beacon> listBeacon;
 

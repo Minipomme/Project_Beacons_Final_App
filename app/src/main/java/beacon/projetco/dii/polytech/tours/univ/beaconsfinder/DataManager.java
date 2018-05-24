@@ -4,14 +4,14 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+/**
+ * Class that manages all the data from BLEManager. It
+ */
 public class DataManager {
     private int NB_Arduinos;
     private int NB_Beacons;
@@ -50,6 +50,7 @@ public class DataManager {
         ensembleBeacon = new ParcBeacon(currentActivity);
 
         this.arrayArduino = new ArrayList<List<Float>>();
+
 
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
             arrayArduino.add(new ArrayList<Float>());

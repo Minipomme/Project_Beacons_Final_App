@@ -73,6 +73,9 @@ public class BleManager extends Thread{
         } else {
             System.out.println("BLE on!");
         }
+
+        dataManager = new DataManager(currentActivity,scanner);
+
     }
 
 
@@ -197,10 +200,6 @@ public class BleManager extends Thread{
                 else{
                     result[j]= (long) data[j];
                 }
-            }
-
-            if(dataManager==null){
-                dataManager = new DataManager(currentActivity,scanner);
             }
             dataManager.extractData(result,data);
         }
