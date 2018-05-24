@@ -4,11 +4,11 @@ import android.widget.ImageView;
 
 public class Beacon {
 
-    int name;
-    double [] distances;
-    int x;
-    int y;
-    ImageView image;
+    private int name;
+    private double [] distances;
+    private int x;
+    private int y;
+    private ImageView image;
 
     public Beacon(int name,double [] distances){
         this.name=name;

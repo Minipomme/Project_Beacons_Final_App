@@ -4,6 +4,8 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,17 +13,21 @@ import java.util.Collections;
 import java.util.List;
 
 public class DataManager {
-    public int NB_Arduinos=Integer.parseInt("@strings/NB_ARDUINO");
-    public int NB_Beacons=Integer.parseInt("@strings/NB_BEACONS");
+    private int NB_Arduinos;
+    private int NB_Beacons;
 
     private float[][][] arrayAverage = new float[NB_Arduinos][NB_Beacons][21];
     private List<List<Float>> arrayArduino;
 
-    private List<Beacon> listBeacon;
+    public ParcBeacon ensembleBeacon;
 
+    private String[] beaconsToFind={"Beacon1","Beacon2"};
+    /*
     private double[] distancesBeacon1;
     private double[] distancesBeacon2;
     private double[] distancesBeacon3;
+    */
+
     private float RSSI_Init=55;
     private Trilateration Localizer;
     private MapActivity currentActivity;
@@ -37,20 +43,16 @@ public class DataManager {
         this.currentActivity=currentActivity;
         this.scanner=scanner;
 
+        NB_Arduinos=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_ARDUINO));
+        NB_Beacons=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_BEACONS));
 
-        listBeacon = new ArrayList<Beacon>();
-        for(int i=0; i< NB_Beacons;i++){
-            listBeacon.add(new Beacon(i+1));
+        ensembleBeacon = new ParcBeacon(currentActivity);
 
-        }
+        this.arrayArduino = new ArrayList<List<Float>>();
 
-        arrayArduino = new ArrayList<List<Float>>();
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
-            arrayArduino.add(new ArrayList<Float>(Collections.nCopies(NB_Beacons, 0f)));
+            this.arrayArduino.add(new ArrayList<Float>(Collections.nCopies(NB_Beacons, 0f)));
         }
-
-        Log.e("DataManager",arrayArduino.toString());
-
     }
 
     /**
@@ -73,7 +75,7 @@ public class DataManager {
         Log.d("RESULT","---------------------------------------------");
 
         //Setting arduino distance
-        for(Beacon bcn : listBeacon){
+        for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
             bcn.setDistances(new double[] {
                     arrayArduino.get(0).get(bcn.getName()-1),
                     arrayArduino.get(1).get(bcn.getName()-1),
@@ -109,7 +111,6 @@ public class DataManager {
         flagFixedBeacon3 = flagsArduino[2];
         flagFixedBeacon4 = flagsArduino[3];
 
-        Log.e("DataManager",flagsArduino.toString());
 
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -167,15 +168,10 @@ public class DataManager {
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_four()),
                         Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_four())}};
 
-        for(Beacon bcn : listBeacon){
-            Localizer.launchTrilateration(positions,bcn.distances,bcn);
+        for(Beacon bcn : ParcBeacon.getBeaconsToFind()){
+            Localizer.launchTrilateration(positions,bcn.getDistances(),bcn);
         }
 
-        /*
-        Localizer.launchTrilateration(positions,distancesBeacon1,1);
-        Localizer.launchTrilateration(positions,distancesBeacon2,2);
-        Localizer.launchTrilateration(positions,distancesBeacon3,3);
-        */
     }
 
     /**
@@ -247,6 +243,10 @@ public class DataManager {
 
     public float getAverage(int fixedBeacon, int beacon){
         return arrayAverage[fixedBeacon][beacon][20];
+    }
+
+    public String[] getBeaconsToFind(){
+        return beaconsToFind;
     }
 
 }

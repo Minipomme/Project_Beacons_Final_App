@@ -32,8 +32,8 @@ import java.util.ArrayList;
 public class MapActivity extends AppCompatActivity {
     private String filePath;
 
-    private int NB_Arduinos=Integer.parseInt("@strings/NB_ARDUINO");
-    private int NB_Beacons=Integer.parseInt("@strings/NB_BEACONS");
+    private int NB_Arduinos;
+    private int NB_Beacons;
 
     String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
     String [] dataTable = new String [dataTitleTable.length];
@@ -53,7 +53,7 @@ public class MapActivity extends AppCompatActivity {
     private ImageButton selectGoals;
 
     private FireMissilesDialogFragment fragment;
-    private String[] beaconsToFind = {"Beacon1","Beacon2","Beacon3"};
+
 
     private BleManager bleManager;
 
@@ -73,6 +73,8 @@ public class MapActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_map);
 
+        NB_Arduinos=Integer.parseInt(getString(R.string.NB_ARDUINO));
+        NB_Beacons=Integer.parseInt(getString(R.string.NB_BEACONS));
         Display display = getWindowManager().getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
@@ -102,18 +104,6 @@ public class MapActivity extends AppCompatActivity {
         fixedBeaconFour = findViewById(R.id.FixedBeaconFour);
         changeTheme(wrapper.getTheme(), fixedBeaconFour, R.drawable.ic_number_four_in_a_circle);
 
-        goal1 = this.findViewById(R.id.goal1);
-        wrapper = new ContextThemeWrapper(this, R.style.Beacon_One);
-        changeTheme(wrapper.getTheme(), goal1, R.drawable.ic_place_black_24dp);
-
-        goal2 = this.findViewById(R.id.goal2);
-        wrapper = new ContextThemeWrapper(this, R.style.Beacon_Two);
-        changeTheme(wrapper.getTheme(), goal2, R.drawable.ic_place_black_24dp);
-
-        goal3 = this.findViewById(R.id.goal3);
-        wrapper = new ContextThemeWrapper(this, R.style.Beacon_Three);
-        changeTheme(wrapper.getTheme(), goal3, R.drawable.ic_place_black_24dp);
-
         map = findViewById(R.id.map);
 
         String Data = loadAdminData("mapPath");
@@ -136,7 +126,7 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 fragment = new FireMissilesDialogFragment();
-                fragment.setInput(beaconsToFind);
+                fragment.setInput(ParcBeacon.getBeaconsToFindString(NB_Beacons));
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
