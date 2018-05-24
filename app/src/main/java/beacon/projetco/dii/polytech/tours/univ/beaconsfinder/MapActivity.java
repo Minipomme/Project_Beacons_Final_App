@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.View;
@@ -86,7 +87,7 @@ public class MapActivity extends AppCompatActivity {
 
         //Recuperation des informations sauvegardées
         String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
-        String [] dataTable = new String [12];
+        String [] dataTable = new String [dataTitleTable.length];
 
         for(int i=0;i<12;i++){
             dataTable[i]=loadAdminData(dataTitleTable[i]);
@@ -196,7 +197,10 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    public void setGoalsPosition(double[] calculatedPosition, int beacon){
+    public void setGoalsPosition(double[] calculatedPosition, Beacon bcn){
+        bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x"));
+        bcn.getImage().setY(settingScale(Float.toString((float) calculatedPosition[1]),bcn.getImage(),"y"));
+        /*
         switch (beacon) {
             case 1:
                 //Position du beacon 1
@@ -216,9 +220,10 @@ public class MapActivity extends AppCompatActivity {
                 goal3.setY(settingScale(Float.toString((float) calculatedPosition[1]),goal3,"y"));
                 //Log.i("MAP POC - BEACON3", "X = " + calculatedPosition[0] + " -- Y = " + calculatedPosition[1]);
                 break;
-        }
+        }*/
 
         if(fragment!=null) {
+
             if (fragment.getmSelectedItems().contains(0)) {
                 goal1.setVisibility(View.VISIBLE);
             } else {

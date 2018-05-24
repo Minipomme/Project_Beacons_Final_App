@@ -17,7 +17,7 @@ public class Trilateration {
         this.currentActivity=currentActivity;
     }
 
-    public void launchTrilateration(double [][] positions, double[] distances, final int beacon) {
+    public void launchTrilateration(double [][] positions, double[] distances, final Beacon bcn) {
         TrilaterationFunction triFunc = new TrilaterationFunction(positions,distances);
         LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(triFunc);
         NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(triFunc, new LevenbergMarquardtOptimizer());
@@ -31,7 +31,7 @@ public class Trilateration {
             public void run() {
                 currentActivity.runOnUiThread(new Runnable() {
                     public void run() {
-                        currentActivity.setGoalsPosition(calculatedPosition,beacon);
+                        currentActivity.setGoalsPosition(calculatedPosition,bcn);
                     }
                 });
             }

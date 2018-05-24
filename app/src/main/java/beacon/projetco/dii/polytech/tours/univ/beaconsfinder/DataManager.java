@@ -13,8 +13,12 @@ import java.util.List;
 public class DataManager {
     public int NB_Arduinos=4;
     public int NB_Beacons=3;
+
     private float[][][] arrayAverage = new float[NB_Arduinos][NB_Beacons][21];
     private List<List<Float>> arrayArduino;
+
+    private List<Beacon> listBeacon;
+
     private double[] distancesBeacon1;
     private double[] distancesBeacon2;
     private double[] distancesBeacon3;
@@ -27,15 +31,24 @@ public class DataManager {
     private boolean flagFixedBeacon2 = false;
     private boolean flagFixedBeacon3 = false;
     private boolean flagFixedBeacon4 = false;
-    private boolean [] flagsArduino = new boolean[4];
+    private boolean [] flagsArduino = new boolean[NB_Arduinos];
+
     public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner){
         this.currentActivity=currentActivity;
         this.scanner=scanner;
+
+
+        listBeacon = new ArrayList<Beacon>();
+        for(int i=0; i< NB_Beacons;i++){
+            listBeacon.add(new Beacon(i+1));
+        }
 
         arrayArduino = new ArrayList<List<Float>>();
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
             arrayArduino.add(new ArrayList<Float>(Collections.nCopies(NB_Beacons, 0f)));
         }
+
+        Log.e("DataManager",arrayArduino.toString());
 
     }
 
@@ -58,22 +71,36 @@ public class DataManager {
         Log.d("RESULT", "[Distances Arduino 4] : "+arrayArduino.get(3));
         Log.d("RESULT","---------------------------------------------");
 
+        //Setting arduino distance
+        for(Beacon bcn : listBeacon){
+            bcn.setDistances(new double[] {
+                    arrayArduino.get(0).get(bcn.getName()-1),
+                    arrayArduino.get(1).get(bcn.getName()-1),
+                    arrayArduino.get(2).get(bcn.getName()-1),
+                    arrayArduino.get(3).get(bcn.getName()-1)
+            } );
+        }
 
-        distancesBeacon1 = new double[] {arrayArduino.get(0).get(0),
+        /*
+        distancesBeacon1 = new double[] {
+                arrayArduino.get(0).get(0),
                 arrayArduino.get(1).get(0),
                 arrayArduino.get(2).get(0),
                 arrayArduino.get(3).get(0)};
-        distancesBeacon2 = new double[] {arrayArduino.get(0).get(1),
+        distancesBeacon2 = new double[] {
+                arrayArduino.get(0).get(1),
                 arrayArduino.get(1).get(1),
                 arrayArduino.get(2).get(1),
                 arrayArduino.get(3).get(1)};
-        distancesBeacon3 = new double[] {arrayArduino.get(0).get(2),
+        distancesBeacon3 = new double[] {
+                arrayArduino.get(0).get(2),
                 arrayArduino.get(1).get(2),
                 arrayArduino.get(2).get(2),
                 arrayArduino.get(3).get(2)};
+        */
 
         //Setting flags for arduino
-        for(int i=0;i<4;i++){
+        for(int i=0;i<NB_Arduinos;i++){
             flagsArduino[i] = dataComplete(arrayArduino.get(i));
         }
         flagFixedBeacon1 = flagsArduino[0];
@@ -81,6 +108,7 @@ public class DataManager {
         flagFixedBeacon3 = flagsArduino[2];
         flagFixedBeacon4 = flagsArduino[3];
 
+        Log.e("DataManager",flagsArduino.toString());
 
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -138,9 +166,15 @@ public class DataManager {
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_four()),
                         Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_four())}};
 
+        for(Beacon bcn : listBeacon){
+            Localizer.launchTrilateration(positions,bcn.distances,bcn);
+        }
+
+        /*
         Localizer.launchTrilateration(positions,distancesBeacon1,1);
         Localizer.launchTrilateration(positions,distancesBeacon2,2);
         Localizer.launchTrilateration(positions,distancesBeacon3,3);
+        */
     }
 
     /**
