@@ -1,5 +1,6 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -34,6 +35,7 @@ public class ParcBeacon {
 
             listBeacon.add(bcn);
         }
+        Log.e("Test julien","Creation du parcBeacon");
     }
 
     /**

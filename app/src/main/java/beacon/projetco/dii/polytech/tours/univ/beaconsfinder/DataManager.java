@@ -21,8 +21,8 @@ public class DataManager {
     private float RSSI_Init=55;
 
     //Gestion des informations
-    private boolean [] flagsArduino = new boolean[NB_Arduinos];
-    private float[][][] arrayAverage = new float[NB_Arduinos][NB_Beacons][21];
+    private boolean [] flagsArduino;
+    private float[][][] arrayAverage;
     private List<List<Float>> arrayArduino;
 
     //Gestion du BLE et des balises de détection
@@ -47,7 +47,8 @@ public class DataManager {
         ensembleBeacon = new ParcBeacon(currentActivity);
 
         this.arrayArduino = new ArrayList<List<Float>>();
-
+        this.arrayAverage= new float[NB_Arduinos][NB_Beacons][21];
+        this.flagsArduino = new boolean[NB_Arduinos];
 
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
             arrayArduino.add(new ArrayList<Float>());
@@ -55,6 +56,7 @@ public class DataManager {
                 arrayArduino.get(i).add((float) 0);
             }
         }
+        Log.e("Test julien","Creation du dataManager");
     }
 
     /**
@@ -225,6 +227,12 @@ public class DataManager {
     }
 
     public float getAverage(int fixedBeacon, int beacon){
+        if(arrayAverage!=null){
+            Log.e("TEST Julien","ArrayAverage est null : " + fixedBeacon + ";" + beacon);
+        }
+        else{
+            Log.e("TEST Julien",arrayAverage.toString() + fixedBeacon + ";" + beacon);
+        }
         return arrayAverage[fixedBeacon][beacon][20];
     }
 

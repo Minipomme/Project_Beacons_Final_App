@@ -76,7 +76,7 @@ public class BleManager extends Thread{
         }
 
         dataManager = new DataManager(currentActivity,scanner);
-
+        Log.e("Test julien","Creation du BLEManager");
     }
 
 
