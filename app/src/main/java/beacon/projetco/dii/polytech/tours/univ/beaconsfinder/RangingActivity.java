@@ -11,8 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.nightonke.boommenu.BoomMenuButton;
@@ -28,7 +26,6 @@ import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
-import org.apache.commons.math3.exception.NullArgumentException;
 
 import static java.lang.Math.abs;
 
@@ -112,30 +109,24 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         beaconManager.addRangeNotifier(new RangeNotifier() {
            @Override
            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-            Log.e("e", "onBeaconServiceConnect");
             if (beacons.size() > 0) {
                 num_beacons = beacons.size();
                 initViews();
                 for(Beacon b: beacons) {
-                    Log.d("TEST",b.getBluetoothName());
                     if (selectedButton != null) {
                         if(selectedButton.equals( b.getBluetoothName() )) {
                             selectedBeacon = b;
-                            Log.d("TEST", "Selected beacon " + b.getBluetoothName());
                         }
                     } else {
                         selectedBeacon = b;
-                        Log.d("TEST", "Selected beacon " + b.getBluetoothName());
                     }
                 }
                 if(selectedBeacon != null) {
                     if(!firstStart) {
                         firstStart = true;
                         RSSI_Init = selectedBeacon.getRssi();
-                        Log.e("STATE","Init : "+RSSI_Init);
                     } else {
                         RSSI_Now = selectedBeacon.getRssi();
-                        Log.e("STATE","Init : "+RSSI_Init+" Now : "+RSSI_Now);
                     }
 
                     float ratio = RSSI_Now*1.0f/RSSI_Init;
@@ -145,7 +136,6 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
                     else {
                         distance = (float) ((0.89976)*Math.pow(ratio,7.7095) + 0.111);
                     }
-                    Log.e("STATE","Distance : "+distance + "m");
 
                     if(distance < distCLOSE) {
                         thermometer.setCurrentInnerColor(ColorCLOSE);

@@ -1,6 +1,5 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
-import android.util.Log;
 import android.widget.ImageView;
 
 /**
@@ -19,7 +18,6 @@ public class Beacon {
         this.distances=distances;
         this.x=0;
         this.y=0;
-        Log.e("Test julien","Creation d'un beacon");
     }
 
     public Beacon(){
@@ -27,7 +25,6 @@ public class Beacon {
         this.distances=null;
         this.x=0;
         this.y=0;
-        Log.e("Test julien","Creation d'un beacon");
     }
 
     public Beacon(int name){
@@ -35,7 +32,6 @@ public class Beacon {
         this.distances=null;
         this.x=0;
         this.y=0;
-        Log.e("Test julien","Creation d'un beacon");
     }
 
     public int getName(){

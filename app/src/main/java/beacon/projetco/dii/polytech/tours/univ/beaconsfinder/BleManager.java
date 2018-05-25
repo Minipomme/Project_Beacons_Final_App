@@ -22,7 +22,6 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +75,6 @@ public class BleManager extends Thread{
         }
 
         dataManager = new DataManager(currentActivity,scanner);
-        Log.e("Test julien","Creation du BLEManager");
     }
 
 
@@ -101,14 +99,14 @@ public class BleManager extends Thread{
      */
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
-        builder.setMessage("Votre GPS semble être désactivé, voulez-vous l'activer ?")
+        builder.setMessage("Your GPS seems to be disabled, do you want to activate it?")
                 .setCancelable(false)
-                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         currentActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
-                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         dialog.cancel();
                         System.exit(1);
@@ -139,7 +137,6 @@ public class BleManager extends Thread{
     public class MyScanCallback extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
-            Log.e("TEST",result.getDevice().getName());
             device = adapter.getRemoteDevice(result.getDevice().getAddress());
             gatt = device.connectGatt(currentActivity.getApplicationContext(), true, new myGattCallBack());
         }
@@ -158,18 +155,14 @@ public class BleManager extends Thread{
     private class myGattCallBack extends BluetoothGattCallback {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            Log.d("TEST","onConnectionStateChange");
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.i("TEST", "Connected to GATT peripheral. Attempting to start service discovery");
                 gatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Log.i("TEST", "Disconnected from GATT peripheral");
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            Log.d("TEST","onServicesDiscovered");
             List<BluetoothGattService> services = gatt.getServices();
             for(BluetoothGattService service: services){
                 if(service.getUuid().toString().equalsIgnoreCase(uuidService)){
@@ -181,7 +174,6 @@ public class BleManager extends Thread{
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Log.d("TEST","onCharacteristicRead");
             gatt.setCharacteristicNotification(characteristic,true);
             BluetoothGattDescriptor descriptor = characteristic.getDescriptors().get(0);
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
@@ -190,7 +182,6 @@ public class BleManager extends Thread{
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            Log.d("TEST","onCharacteristicChanged");
 
             Long[] result = {0l,0l,0l,0l};
             byte[] data = characteristic.getValue();

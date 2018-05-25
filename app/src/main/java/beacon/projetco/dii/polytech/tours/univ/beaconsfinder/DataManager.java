@@ -42,8 +42,6 @@ public class DataManager {
 
         NB_Arduinos=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_ARDUINO));
         NB_Beacons=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_BEACONS));
-
-        Log.e("Test Julien",NB_Arduinos + " ; "+ NB_Beacons);
         ensembleBeacon = new ParcBeacon(currentActivity);
 
         this.arrayArduino = new ArrayList<List<Float>>();
@@ -56,7 +54,6 @@ public class DataManager {
                 arrayArduino.get(i).add((float) 0);
             }
         }
-        Log.e("Test julien","Creation du dataManager");
     }
 
     /**
@@ -96,7 +93,6 @@ public class DataManager {
         flagFixedBeacon2 = flagsArduino[1];
         flagFixedBeacon3 = flagsArduino[2];
         flagFixedBeacon4 = flagsArduino[3];
-        Log.e("TEST JULIEN",flagFixedBeacon1 + ", " +flagFixedBeacon2 + ", " +flagFixedBeacon3 + ", " +flagFixedBeacon4 );
 
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -180,15 +176,14 @@ public class DataManager {
     public float calcDist(Long[] result){
         short RSSI;
         float ratio;
-        float distance;
 
         RSSI=(short) ((result[1] << 8) | (result[0] & 0xFF));
         ratio = RSSI*1.0f/RSSI_Init;
         if (ratio < 1.0f) {
-            return distance = (float) Math.pow(ratio,10);
+            return (float) Math.pow(ratio,10);
         }
         else {
-            return distance = (float) ((0.89976)*Math.pow(ratio,7.7095) + 0.111);
+            return (float) ((0.89976)*Math.pow(ratio,7.7095) + 0.111);
         }
     }
 
@@ -227,12 +222,6 @@ public class DataManager {
     }
 
     public float getAverage(int fixedBeacon, int beacon){
-        /*if(arrayAverage!=null){
-            Log.e("TEST Julien","ArrayAverage n'est pas null : " +arrayAverage.toString() + "----"+ fixedBeacon + ";" + beacon);
-        }
-        else{
-            Log.e("TEST Julien","ArrayAverage est null : " + fixedBeacon + ";" + beacon);
-        }*/
         return arrayAverage[fixedBeacon][beacon][20];
     }
 
