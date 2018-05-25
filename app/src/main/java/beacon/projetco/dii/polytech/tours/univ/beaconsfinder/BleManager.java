@@ -27,14 +27,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BleManager extends Thread{
+    private MapActivity currentActivity;
+
+    //Variables fixes
+    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
+
+    //Gestion du bluetooth
     private BluetoothManager bluetoothManager;
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothDevice device;
     private BluetoothGatt gatt;
-    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
     private BluetoothGattCharacteristic characteristic;
-    private MapActivity currentActivity;
+
+    //Classe de gestion des informations
     private DataManager dataManager;
 
     // Storage Permissions
@@ -43,6 +49,10 @@ public class BleManager extends Thread{
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
+    /**
+     * Create the BleManager and bluetooth adapter. Verify the permissions concerning location and bluetooth
+     * @param currentActivity
+     */
     public BleManager(MapActivity currentActivity){
         this.currentActivity=currentActivity;
 
@@ -64,9 +74,15 @@ public class BleManager extends Thread{
         } else {
             System.out.println("BLE on!");
         }
+
+        dataManager = new DataManager(currentActivity,scanner);
+        Log.e("Test julien","Creation du BLEManager");
     }
 
 
+    /**
+     * Run the Thread and start scanning. Do nothing if the bluetooth isn't active
+     */
     @Override
     public void run() {
         while(!adapter.isEnabled());
@@ -80,9 +96,12 @@ public class BleManager extends Thread{
         }
     }
 
+    /**
+     * Advertise the user if the location isn't active
+     */
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
-        builder.setMessage("Votre GPS est semble être désactivé, voulez-vous l'activer ?")
+        builder.setMessage("Votre GPS semble être désactivé, voulez-vous l'activer ?")
                 .setCancelable(false)
                 .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
@@ -99,6 +118,9 @@ public class BleManager extends Thread{
         alert.show();
     }
 
+    /**
+     * Start scanning with filters corresponding to the services sent by the arduino(s)
+     */
     public void startScanning(){
         scanner = adapter.getBluetoothLeScanner();
         ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
@@ -111,6 +133,9 @@ public class BleManager extends Thread{
         System.out.println("Scanner on !");
     }
 
+    /**
+     * Callback that read the characteristics into the service
+     */
     public class MyScanCallback extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
@@ -177,10 +202,6 @@ public class BleManager extends Thread{
                     result[j]= (long) data[j];
                 }
             }
-
-            if(dataManager==null){
-                dataManager = new DataManager(currentActivity,scanner);
-            }
             dataManager.extractData(result,data);
         }
     }
@@ -195,6 +216,10 @@ public class BleManager extends Thread{
 
     public BluetoothLeScanner getScanner() {
         return scanner;
+    }
+
+    public DataManager getDataManager() {
+        return dataManager;
     }
 
     public void setScanner(BluetoothLeScanner scanner) {

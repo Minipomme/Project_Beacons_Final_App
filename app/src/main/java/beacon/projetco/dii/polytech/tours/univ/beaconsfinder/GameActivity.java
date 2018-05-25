@@ -40,4 +40,9 @@ public class GameActivity extends AppCompatActivity {
         });
         menu.setRotation(90);
     }
+
+    @Override
+    public void onBackPressed() {
+        GameActivity.this.finish();
+    }
 }

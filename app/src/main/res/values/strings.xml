@@ -31,4 +31,6 @@
         <item>Damien LE LANN</item>
         <item>Axel EYRAUD</item>
     </string-array>
+    <string name="NB_BEACONS">3</string>
+    <string name="NB_ARDUINO">4</string>
 </resources>

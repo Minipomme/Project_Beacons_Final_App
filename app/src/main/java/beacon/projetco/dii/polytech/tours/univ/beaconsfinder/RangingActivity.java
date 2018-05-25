@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -94,6 +95,11 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
     protected void onResume() {
         super.onResume();
         if (beaconManager.isBound(this)) beaconManager.setBackgroundMode(false);
+    }
+
+    @Override
+    public void onBackPressed() {
+        RangingActivity.this.finish();
     }
 
     @Override

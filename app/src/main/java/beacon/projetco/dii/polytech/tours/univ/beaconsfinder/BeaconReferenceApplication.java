@@ -92,6 +92,9 @@ public class BeaconReferenceApplication extends Application implements Bootstrap
     public void didDetermineStateForRegion(int state, Region region) {
     }
 
+    /**
+     * Send nofitification to user to advertize that a beacon is nearby
+     */
     private void sendNotification() {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)

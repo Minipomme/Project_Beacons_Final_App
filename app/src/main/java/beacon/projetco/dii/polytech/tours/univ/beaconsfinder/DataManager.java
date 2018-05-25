@@ -9,17 +9,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class that manages all the data from BLEManager. It
+ */
 public class DataManager {
-    public int NB_Arduinos=4;
-    public int NB_Beacons=3;
-    private float[][][] arrayAverage = new float[NB_Arduinos][NB_Beacons][21];
-    private List<List<Float>> arrayArduino;
-    private double[] distancesBeacon1;
-    private double[] distancesBeacon2;
-    private double[] distancesBeacon3;
-    private float RSSI_Init=55;
-    private Trilateration Localizer;
     private MapActivity currentActivity;
+
+    //Variables fixes
+    private int NB_Arduinos;
+    private int NB_Beacons;
+    private float RSSI_Init=55;
+
+    //Gestion des informations
+    private boolean [] flagsArduino;
+    private float[][][] arrayAverage;
+    private List<List<Float>> arrayArduino;
+
+    //Gestion du BLE et des balises de détection
     private BluetoothLeScanner scanner;
     private boolean flagScan = false;
     private boolean flagFixedBeacon1 = false;
@@ -27,19 +33,37 @@ public class DataManager {
     private boolean flagFixedBeacon3 = false;
     private boolean flagFixedBeacon4 = false;
 
+    private ParcBeacon ensembleBeacon;
+    private Trilateration Localizer;
+
     public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner){
         this.currentActivity=currentActivity;
         this.scanner=scanner;
 
-        arrayArduino = new ArrayList<List<Float>>();
+        NB_Arduinos=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_ARDUINO));
+        NB_Beacons=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_BEACONS));
+
+        Log.e("Test Julien",NB_Arduinos + " ; "+ NB_Beacons);
+        ensembleBeacon = new ParcBeacon(currentActivity);
+
+        this.arrayArduino = new ArrayList<List<Float>>();
+        this.arrayAverage= new float[NB_Arduinos][NB_Beacons][21];
+        this.flagsArduino = new boolean[NB_Arduinos];
+
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
             arrayArduino.add(new ArrayList<Float>());
             for (int j = 0; j <= NB_Beacons - 1; j++) {
                 arrayArduino.get(i).add((float) 0);
             }
         }
+        Log.e("Test julien","Creation du dataManager");
     }
 
+    /**
+     * Extract data from arrayArduino to print them and calculate the new distances
+     * @param result
+     * @param data
+     */
     public void extractData(Long[] result,byte[] data){
         float distance;
         distance = calcDist(result);
@@ -47,93 +71,68 @@ public class DataManager {
         addValue(distance,data[3]-1,data[2]-1);
         arrayArduino.get(data[3]-1).set(data[2]-1,getAverage(data[3]-1,data[2]-1));
 
-        Log.d("RESULT","---------------------------------------------");
-        Log.d("RESULT", "[Distances Arduino 1] : "+arrayArduino.get(0));
-        Log.d("RESULT", "[Distances Arduino 2] : "+arrayArduino.get(1));
-        Log.d("RESULT", "[Distances Arduino 3] : "+arrayArduino.get(2));
-        Log.d("RESULT", "[Distances Arduino 4] : "+arrayArduino.get(3));
-        Log.d("RESULT","---------------------------------------------");
+        Log.e("RESULT","---------------------------------------------");
+        Log.e("RESULT", "[Distances Arduino 1] : "+arrayArduino.get(0));
+        Log.e("RESULT", "[Distances Arduino 2] : "+arrayArduino.get(1));
+        Log.e("RESULT", "[Distances Arduino 3] : "+arrayArduino.get(2));
+        Log.e("RESULT", "[Distances Arduino 4] : "+arrayArduino.get(3));
+        Log.e("RESULT","---------------------------------------------");
 
-
-        distancesBeacon1 = new double[] {arrayArduino.get(0).get(0),
-                arrayArduino.get(1).get(0),
-                arrayArduino.get(2).get(0),
-                arrayArduino.get(3).get(0)};
-        distancesBeacon2 = new double[] {arrayArduino.get(0).get(1),
-                arrayArduino.get(1).get(1),
-                arrayArduino.get(2).get(1),
-                arrayArduino.get(3).get(1)};
-        distancesBeacon3 = new double[] {arrayArduino.get(0).get(2),
-                arrayArduino.get(1).get(2),
-                arrayArduino.get(2).get(2),
-                arrayArduino.get(3).get(2)};
-
-        if(dataComplete(arrayArduino.get(0))==true){
-            flagFixedBeacon1=true;
-        }
-        else{
-            flagFixedBeacon1=false;
+        //Setting arduino distance
+        for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
+            bcn.setDistances(new double[] {
+                    arrayArduino.get(0).get(bcn.getName()-1),
+                    arrayArduino.get(1).get(bcn.getName()-1),
+                    arrayArduino.get(2).get(bcn.getName()-1),
+                    arrayArduino.get(3).get(bcn.getName()-1)
+            } );
         }
 
-        if(dataComplete(arrayArduino.get(1))==true){
-            flagFixedBeacon2=true;
+        //Setting flags for arduino
+        for(int i=0;i<NB_Arduinos;i++){
+            flagsArduino[i] = dataComplete(arrayArduino.get(i));
         }
-        else{
-            flagFixedBeacon2=false;
-        }
-
-        if(dataComplete(arrayArduino.get(2))==true){
-            flagFixedBeacon3=true;
-        }
-        else{
-            flagFixedBeacon3=false;
-        }
-
-        if(dataComplete(arrayArduino.get(3))==true){
-            flagFixedBeacon4=true;
-        }
-        else{
-            flagFixedBeacon4=false;
-        }
+        flagFixedBeacon1 = flagsArduino[0];
+        flagFixedBeacon2 = flagsArduino[1];
+        flagFixedBeacon3 = flagsArduino[2];
+        flagFixedBeacon4 = flagsArduino[3];
+        Log.e("TEST JULIEN",flagFixedBeacon1 + ", " +flagFixedBeacon2 + ", " +flagFixedBeacon3 + ", " +flagFixedBeacon4 );
 
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
+                ContextThemeWrapper wrapper;
                 if(flagFixedBeacon1){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_ON);
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_OFF);
                 }
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
 
                 if(flagFixedBeacon2){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_ON);
+
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
                 }
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
 
                 if(flagFixedBeacon3){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_ON);
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
                 }
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
 
                 if(flagFixedBeacon4){
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_ON);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_ON);
                 }
                 else{
-                    ContextThemeWrapper wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
-                    currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
+                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
                 }
-
+                currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
             }
         });
 
@@ -155,20 +154,29 @@ public class DataManager {
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_four()),
                         Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_four())}};
 
-        Localizer.launchTrilateration(positions,distancesBeacon1,1);
-        Localizer.launchTrilateration(positions,distancesBeacon2,2);
-        Localizer.launchTrilateration(positions,distancesBeacon3,3);
+        for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
+            Localizer.launchTrilateration(positions,bcn.getDistances(),bcn);
+        }
+
     }
 
+    /**
+     * If the list is complete return true
+     * @param list
+     * @return
+     */
     public boolean dataComplete(List<Float> list){
-        for(int i=0;i<list.size();i++){
-            if(list.get(i)==0.0){
-                return false;
-            }
+        if(list.contains(0f)){
+            return false;
         }
         return true;
     }
 
+    /**
+     * Calculate the distance from RSSI to meters
+     * @param result
+     * @return
+     */
     public float calcDist(Long[] result){
         short RSSI;
         float ratio;
@@ -184,6 +192,12 @@ public class DataManager {
         }
     }
 
+    /**
+     * Add the value into the tab to smooth the values. Using shift.
+     * @param new_value
+     * @param fixedBeacon
+     * @param beacon
+     */
     public void addValue(float new_value, int fixedBeacon, int beacon){
 
         float average = getAverage(fixedBeacon,beacon);
@@ -199,6 +213,11 @@ public class DataManager {
         }
     }
 
+    /**
+     * Set the average into the tab. Corresponding to the last column of the tab.
+     * @param fixedBeacon
+     * @param beacon
+     */
     public void setAverage(int fixedBeacon, int beacon){
         float average = 0f;
         for(int i = 0;i<20;i++){
@@ -208,6 +227,16 @@ public class DataManager {
     }
 
     public float getAverage(int fixedBeacon, int beacon){
+        /*if(arrayAverage!=null){
+            Log.e("TEST Julien","ArrayAverage n'est pas null : " +arrayAverage.toString() + "----"+ fixedBeacon + ";" + beacon);
+        }
+        else{
+            Log.e("TEST Julien","ArrayAverage est null : " + fixedBeacon + ";" + beacon);
+        }*/
         return arrayAverage[fixedBeacon][beacon][20];
+    }
+
+    public ParcBeacon getEnsembleBeacon() {
+        return ensembleBeacon;
     }
 }
