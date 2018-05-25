@@ -99,6 +99,11 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
 
     @Override
     public void onBackPressed() {
+        if (boomMenuButton.isClosed()) {
+            super.onBackPressed();
+        } else {
+            boomMenuButton.dismiss();
+        }
         RangingActivity.this.finish();
     }
 
@@ -294,14 +299,5 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
             firstStart = false;
         }
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (boomMenuButton.isClosed()) {
-            super.onBackPressed();
-        } else {
-            boomMenuButton.dismiss();
-        }
     }
 }

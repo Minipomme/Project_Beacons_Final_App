@@ -128,7 +128,7 @@ public class MapActivity extends AppCompatActivity {
         dataManager = bleManager.getDataManager();
 
         for(Beacon bcn : dataManager.getEnsembleBeacon().getBeaconsToFind()){
-            changeTheme(new ContextThemeWrapper(this, R.style.Beacon_One).getTheme(),bcn.getImage(),R.drawable.ic_place_black_24dp);
+            changeTheme(new ContextThemeWrapper(this, R.style.Beacon_One).getTheme(),bcn.getImage(),R.drawable.ic_place_black_50dp);
             addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
         }
 
@@ -143,7 +143,6 @@ public class MapActivity extends AppCompatActivity {
         });
 
         bleManager.start();
-        Log.e("Test julien","Creation de mapActivity");
     }
 
     @Override
