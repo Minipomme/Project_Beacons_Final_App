@@ -29,7 +29,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     //Add Library for the Circle Menu
-    compile 'com.github.Hitomis:CircleMenu:v1.1.0'
+    compile 'com.ramotion.circlemenu:circle-menu:0.3.1'
 
     // Add Library for Trilateration
     compile 'com.lemmingapex.trilateration:trilateration:1.0.2'
