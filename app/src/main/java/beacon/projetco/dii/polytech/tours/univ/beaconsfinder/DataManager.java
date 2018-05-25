@@ -71,12 +71,12 @@ public class DataManager {
         addValue(distance,data[3]-1,data[2]-1);
         arrayArduino.get(data[3]-1).set(data[2]-1,getAverage(data[3]-1,data[2]-1));
 
-        Log.d("RESULT","---------------------------------------------");
-        Log.d("RESULT", "[Distances Arduino 1] : "+arrayArduino.get(0));
-        Log.d("RESULT", "[Distances Arduino 2] : "+arrayArduino.get(1));
-        Log.d("RESULT", "[Distances Arduino 3] : "+arrayArduino.get(2));
-        Log.d("RESULT", "[Distances Arduino 4] : "+arrayArduino.get(3));
-        Log.d("RESULT","---------------------------------------------");
+        Log.e("RESULT","---------------------------------------------");
+        Log.e("RESULT", "[Distances Arduino 1] : "+arrayArduino.get(0));
+        Log.e("RESULT", "[Distances Arduino 2] : "+arrayArduino.get(1));
+        Log.e("RESULT", "[Distances Arduino 3] : "+arrayArduino.get(2));
+        Log.e("RESULT", "[Distances Arduino 4] : "+arrayArduino.get(3));
+        Log.e("RESULT","---------------------------------------------");
 
         //Setting arduino distance
         for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
@@ -96,7 +96,7 @@ public class DataManager {
         flagFixedBeacon2 = flagsArduino[1];
         flagFixedBeacon3 = flagsArduino[2];
         flagFixedBeacon4 = flagsArduino[3];
-
+        Log.e("TEST JULIEN",flagFixedBeacon1 + ", " +flagFixedBeacon2 + ", " +flagFixedBeacon3 + ", " +flagFixedBeacon4 );
 
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
@@ -227,12 +227,12 @@ public class DataManager {
     }
 
     public float getAverage(int fixedBeacon, int beacon){
-        if(arrayAverage!=null){
-            Log.e("TEST Julien","ArrayAverage est null : " + fixedBeacon + ";" + beacon);
+        /*if(arrayAverage!=null){
+            Log.e("TEST Julien","ArrayAverage n'est pas null : " +arrayAverage.toString() + "----"+ fixedBeacon + ";" + beacon);
         }
         else{
-            Log.e("TEST Julien",arrayAverage.toString() + fixedBeacon + ";" + beacon);
-        }
+            Log.e("TEST Julien","ArrayAverage est null : " + fixedBeacon + ";" + beacon);
+        }*/
         return arrayAverage[fixedBeacon][beacon][20];
     }
 
