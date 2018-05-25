@@ -20,8 +20,8 @@
     <string-array name="libraries">
         <item>AltBeacon</item>
         <item>Trilateration</item>
-        <item>AltBeacon</item>
-        <item>Circle menu android</item>
+        <item>Circle Menu</item>
+        <item>Boom Menu</item>
     </string-array>
     <string-array name="team">
         <item>Karim EL GHARBI as <b>Project Manager</b></item>
