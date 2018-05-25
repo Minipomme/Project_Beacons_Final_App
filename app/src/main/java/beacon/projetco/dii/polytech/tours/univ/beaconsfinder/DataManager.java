@@ -136,7 +136,7 @@ public class DataManager {
         });
 
         if(flagFixedBeacon1 && flagFixedBeacon2 && flagFixedBeacon3 && flagFixedBeacon4 && !flagScan){
-            scanner.stopScan(new ScanCallback(){});
+            //scanner.stopScan(new ScanCallback(){});
             flagScan=true;
         }
 

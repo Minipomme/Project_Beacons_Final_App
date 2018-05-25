@@ -25,10 +25,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class BleManager extends Thread{
     private BluetoothManager bluetoothManager;
@@ -41,6 +43,7 @@ public class BleManager extends Thread{
     private MapActivity currentActivity;
     private DataManager dataManager;
     private boolean stopThread=false;
+    private MyScanCallback scanCallback;
 
     private ScanResult scanResult;
     private int onConnectionStateChangeStatus;
@@ -75,7 +78,8 @@ public class BleManager extends Thread{
         statusCheck();
 
         bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        Log.e("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
+        //Log.e("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
+
         if(bluetoothManager == null) {
             //Handle this issue. Report to the user that the device does not support BLE
         } else {
@@ -87,21 +91,6 @@ public class BleManager extends Thread{
             currentActivity.startActivityForResult(intent,1);
         }
         while(!adapter.isEnabled());
-    }
-
-    private boolean refreshDeviceCache(BluetoothGatt gatt){
-        try {
-            BluetoothGatt localBluetoothGatt = gatt;
-            Method localMethod = localBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
-            if (localMethod != null) {
-                boolean bool = ((Boolean) localMethod.invoke(localBluetoothGatt, new Object[0])).booleanValue();
-                return bool;
-            }
-        }
-        catch (Exception localException) {
-            Log.e("TEST", "An exception occured while refreshing device");
-        }
-        return false;
     }
 
     public void statusCheck() {
@@ -166,16 +155,9 @@ public class BleManager extends Thread{
 
     public void pleaseStop() {
         if(gatt!=null && scanner!=null){
-            //gatt.disconnect();
-            //gatt.close();
-            //gatt=null;
-            scanner.stopScan( new ScanCallback() {
-                @Override
-                public void onScanResult(int callbackType, ScanResult result) {
-                    super.onScanResult(callbackType,result);
-                }
-            } );
+            scanner.stopScan(scanCallback);
             scanner=null;
+            gatt.disconnect();
             gatt.close();
             gatt=null;
             stopThread=true;
@@ -190,7 +172,8 @@ public class BleManager extends Thread{
         scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino2").build());
         scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino3").build());
         scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino4").build());
-        scanner.startScan(scanFilters, scanSettings, new MyScanCallback());
+        scanCallback = new MyScanCallback();
+        scanner.startScan(scanFilters, scanSettings, scanCallback);
         System.out.println("Scanner on !");
     }
 
@@ -202,11 +185,11 @@ public class BleManager extends Thread{
             }
             scanResult=result;
             flagOnScanResult=true;
-            try {
+            /*try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
@@ -235,6 +218,17 @@ public class BleManager extends Thread{
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            for(BluetoothDevice device : bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)){
+                try {
+                    if(device.getName().contains("abc")){
+                        Method m = device.getClass()
+                                .getMethod("removeBond", (Class[]) null);
+                        m.invoke(device, (Object[]) null);
+                    }
+                } catch (Exception e) {
+                    Log.e("fail", e.getMessage());
+                }
+            }
             Log.d("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
             onCharactericticChangedCharacteristic=characteristic;
             flagOnCharacteristicChanged=true;
@@ -245,7 +239,6 @@ public class BleManager extends Thread{
         device = adapter.getRemoteDevice(result.getDevice().getAddress());
         device.fetchUuidsWithSdp();
         gatt = device.connectGatt(currentActivity.getApplicationContext(), false, new myGattCallBack());
-        refreshDeviceCache(gatt);
     }
 
     public void discoverServices(int newState){
@@ -330,5 +323,13 @@ public class BleManager extends Thread{
 
     public void setStopThread(boolean stopThread) {
         this.stopThread = stopThread;
+    }
+
+    public MyScanCallback getScanCallback() {
+        return scanCallback;
+    }
+
+    public void setScanCallback(MyScanCallback scanCallback) {
+        this.scanCallback = scanCallback;
     }
 }

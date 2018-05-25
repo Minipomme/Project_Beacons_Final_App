@@ -244,6 +244,7 @@ public class MapActivity extends AppCompatActivity {
         super.onStop();
         Log.e("TEST","OnStop");
         bleManager.pleaseStop();
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
