@@ -7,6 +7,16 @@
     android:paddingBottom="16dp"
     tools:context="beacon.projetco.dii.polytech.tours.univ.beaconsfinder.RangingActivity">
 
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/boom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/button_reset"
+        android:layout_alignTop="@+id/thermometer"
+        android:layout_gravity="bottom|end"
+        android:visibility="invisible"
+        app:boom_button_color="@color/green"/>
+
     <beacon.projetco.dii.polytech.tours.univ.beaconsfinder.Thermometer
         android:id="@+id/thermometer"
         android:layout_width="match_parent"
@@ -27,21 +37,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="43dp" />
 
-    <Spinner
-        android:id="@+id/spinnerBeacons"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:textAlignment="viewEnd"
-        android:textColor="#FF0000" />
-
     <Button
         android:id="@+id/button_reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/RangeText"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="15dp"
         android:text="Reset" />
 
 </RelativeLayout>

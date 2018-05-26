@@ -7,7 +7,6 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
@@ -41,7 +40,6 @@ public class BeaconReferenceApplication extends Application implements Bootstrap
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
 
-        Log.d(TAG, "setting up background monitoring for beacons and power saving");
         // wake up the app when a beacon is seen
         Region region = new Region("backgroundRegion",
                 null, null, null);
@@ -61,9 +59,7 @@ public class BeaconReferenceApplication extends Application implements Bootstrap
     public void didEnterRegion(Region arg0) {
         // In this example, this class sends a notification to the user whenever a Beacon
         // matching a Region (defined above) are first seen.
-        Log.d(TAG, "did enter region.");
         if (!haveDetectedBeaconsSinceBoot) {
-            Log.d(TAG, "auto launching MainActivity");
 
             // The very first time since boot that we detect an beacon, we launch the
             // MainActivity
@@ -78,7 +74,6 @@ public class BeaconReferenceApplication extends Application implements Bootstrap
             if (monitoringActivity == null) {
                 // If we have already seen beacons before, but the monitoring activity is not in
                 // the foreground, we send a notification to the user on subsequent detections.
-                Log.d(TAG, "Sending notification.");
                 sendNotification();
             }
         }
@@ -92,6 +87,9 @@ public class BeaconReferenceApplication extends Application implements Bootstrap
     public void didDetermineStateForRegion(int state, Region region) {
     }
 
+    /**
+     * Send nofitification to user to advertize that a beacon is nearby
+     */
     private void sendNotification() {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)

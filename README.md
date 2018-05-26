@@ -50,7 +50,9 @@ Thanks for all this stuff !
 
 ## How it works
 
+Here is a graph to understand a bit :
 
+![How it works](https://image.noelshack.com/fichiers/2018/21/1/1526939700-explicationgraph.png)
 
 ## Screens
 
@@ -65,7 +67,7 @@ Students from Polytech Tours (France) in Industrial Computer Science Department
 
 ### Team
 * Brandon SIMON-VERMOT
-* Julien GIDEL
+* [Julien GIDEL](http://jugid.fr)
 * Quentin ARCICAULT
 * Damien LE LANN
 * Axel EYRAUD
@@ -76,10 +78,4 @@ We use [Git kraken](https://www.gitkraken.com/) for versioning (linked with GitH
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details or ask [The independant gamers](http://theindependentgamers.xooit.fr/index.php). They can't help you.

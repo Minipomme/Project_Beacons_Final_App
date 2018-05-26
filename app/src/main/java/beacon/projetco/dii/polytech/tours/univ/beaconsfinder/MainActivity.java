@@ -11,11 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private CardView adminCard, gameCard, languageCard, day_nightCard, infosCard;
+    private CardView adminCard, gameCard, infosCard;
     private String email_saved, password_saved;
     private static final String SHARED_PREFS = "sharedPrefs";
     private static final String EMAIL = "email";
@@ -29,15 +31,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Defining Cards
         adminCard = findViewById(R.id.admin_card);
         gameCard = findViewById(R.id.game_card);
-        languageCard = findViewById(R.id.language_card);
-        day_nightCard = findViewById(R.id.day_night_card);
         infosCard = findViewById(R.id.infos_card);
 
         // Add Click Listener to the cards
         adminCard.setOnClickListener(this);
         gameCard.setOnClickListener(this);
-        languageCard.setOnClickListener(this);
-        day_nightCard.setOnClickListener(this);
         infosCard.setOnClickListener(this);
     }
 
@@ -133,9 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.show();
                 }
                 break;
-            case R.id.language_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
-            case R.id.day_night_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
-            case R.id.infos_card : i = new Intent(this, WIPActivity.class); startActivity(i); break;
+            case R.id.infos_card : i = new Intent(this, InfoActivity.class); startActivity(i); break;
             case R.id.game_card : i = new Intent(this, GameActivity.class); startActivity(i); break;
             default:break;
         }
@@ -165,10 +161,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences settings = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
-        editor.putString(PASSWORD, password);
+        // Sauvegarde du mot de passe hashé SHA-256
+        editor.putString(PASSWORD, stringifyHashedPassword(getHash(password)));
         editor.putString(EMAIL, email);
 
         editor.apply();
+    }
+
+    // Convertion des mot de passe hashé (byte[] -> String)
+    private static String stringifyHashedPassword(byte[] hash) {
+        StringBuffer hashedPassword = new StringBuffer();
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) hashedPassword.append('0');
+            hashedPassword.append(hex);
+        }
+        return hashedPassword.toString();
+    }
+
+    // Hashage du mot de passe en SHA-256
+    public byte[] getHash(String password) {
+        MessageDigest digest=null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e1) {
+            e1.printStackTrace();
+        }
+        digest.reset();
+        return digest.digest(password.getBytes());
     }
 
     protected boolean loadLogin() {
@@ -187,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     protected boolean compareWithPwdSaved(String password) {
-        return password.equals(password_saved);
+        // Hashage du password en SHA-256 puis comparaison avec celui sauvegarder
+        return stringifyHashedPassword(getHash(password)).equals(password_saved);
     }
 }

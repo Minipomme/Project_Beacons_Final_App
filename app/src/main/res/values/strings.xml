@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">BeaconsFinder</string>
-    <string name="title">Cibles à rechercher</string>
-    <string name="cancel">Quitter</string>
-    <string name="ok">Valider</string>
+    <string name="app_name">Indicon Join</string>
+    <string name="title">Targets to search</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Submit</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -17,4 +17,20 @@
     <string name="create_or_edit_login">Create/Edit Login</string>
     <string name="create_or_edit_login_btn">Create/Edit Login</string>
     <string name="succ_login_created_msg">Login created</string>
+    <string-array name="libraries">
+        <item>AltBeacon</item>
+        <item>Trilateration</item>
+        <item>Circle Menu</item>
+        <item>Boom Menu</item>
+    </string-array>
+    <string-array name="team">
+        <item>Karim EL GHARBI as <b>Project Manager</b></item>
+        <item>Brandon SIMON-VERMOT</item>
+        <item>Julien GIDEL</item>
+        <item>Quentin ARCICAULT</item>*
+        <item>Damien LE LANN</item>
+        <item>Axel EYRAUD</item>
+    </string-array>
+    <string name="NB_BEACONS">3</string>
+    <string name="NB_ARDUINO">4</string>
 </resources>

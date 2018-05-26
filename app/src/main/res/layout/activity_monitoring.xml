@@ -12,7 +12,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="27dp"
         android:gravity="center"
-        android:text="Placez vous à 1 mètre du beacon.\n Attendez 10 secondes puis validez :" />
+        android:text="Place yourself 1 meter from the beacon.\n Wait 10 seconds then confirm :" />
 
     <Button
         android:id="@+id/ButtonValidate"
@@ -21,6 +21,6 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:onClick="onRangingClicked"
-        android:text="Valider" />
+        android:text="Confirm" />
 
 </RelativeLayout>

@@ -15,8 +15,18 @@
         android:text="Click and choose a Game Mode"
         android:textSize="25sp" />
 
-    <com.hitomi.cmlibrary.CircleMenu
+    <com.ramotion.circlemenu.CircleMenuView
         android:id="@+id/circle_game_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:button_colors="@array/colors"
+        app:button_icons="@array/icons"
+        app:icon_menu="@drawable/ic_play_arrow_grey_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 </RelativeLayout>

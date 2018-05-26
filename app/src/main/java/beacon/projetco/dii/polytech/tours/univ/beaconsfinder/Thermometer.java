@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
-import android.util.Log;
 
 /**
  * Created by Minipomme.
@@ -65,7 +64,6 @@ public class Thermometer extends View {
     }
 
     public void setCurrentDist(float currentDist){
-        Log.d("STATE","Salut !!!");
         if (currentDist > maxDist) {
             this.currentDist = maxDist;
         } else if (currentDist < minDist) {
@@ -82,7 +80,6 @@ public class Thermometer extends View {
     }
 
     public void init(Context context, AttributeSet attrs) {
-        Log.d("STATE","INIT !!!");
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.Thermometer);
         outerCircleRadius = typedArray.getDimension(R.styleable.Thermometer_radius, 20f);
         int outerColor = typedArray.getColor(R.styleable.Thermometer_outerColor, Color.GRAY);
@@ -120,12 +117,10 @@ public class Thermometer extends View {
         graduationPaint.setStyle(Paint.Style.FILL);
         graduationPaint.setAntiAlias(true);
         graduationPaint.setTextSize(Utils.convertDpToPixel(GRADUATION_TEXT_SIZE, getContext()));
-        Log.d("STATE","FIN INIT !!!");
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d("STATE","ON DRAW !!!");
         super.onDraw(canvas);
 
         innerPaint.setColor(currentInnerColor);
@@ -167,7 +162,7 @@ public class Thermometer extends View {
         float tmp = innerEffectStartY;
         //float startGraduation = minDist;
         //float inc = rangeDist / nbGraduations;
-        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu est gelé", "Tabernak", "Il fait -8000"};
+        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu es gelé", "Tabernak", "Il fait -8000"};
 
         for (int i = 0; tmp <= innerEffectEndY; i++) {
             canvas.drawLine(circleCenterX - outerRectRadius - DEGREE_WIDTH, tmp, circleCenterX - outerRectRadius, tmp, degreePaint);
@@ -180,6 +175,5 @@ public class Thermometer extends View {
             tmp += (innerEffectEndY - innerEffectStartY) / nbGraduations;
             //startGraduation += inc;
         }
-        Log.d("STATE","fin ON DRAW !!!");
     }
 }
