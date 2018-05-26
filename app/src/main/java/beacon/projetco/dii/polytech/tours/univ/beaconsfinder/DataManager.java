@@ -187,7 +187,7 @@ public class DataManager {
         if(list.contains(0f)){
             int count = 0;
             for(int i=0;i<NB_Beacons;i++){
-                if(list.get(1) != 0f)
+                if(list.get(i) != 0.0)
                     count++;
             }
             return count;
