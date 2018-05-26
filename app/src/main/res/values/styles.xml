@@ -8,55 +8,69 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Fixed Beacon 1 -->
     <style name="Fixed_Beacon1_ON">
         <item name="Num_Beacon1">@color/green_on</item>
+    </style>
+
+    <style name="Fixed_Beacon1_NotAll">
+        <item name="Num_Beacon1">@color/orange_notAll</item>
     </style>
 
     <style name="Fixed_Beacon1_OFF">
         <item name="Num_Beacon1">@color/red_off</item>
     </style>
 
+    <!-- Fixed Beacon 2 -->
     <style name="Fixed_Beacon2_ON">
         <item name="Num_Beacon2">@color/green_on</item>
     </style>
 
-    <style name="Fixed_Beacon2_OFF">
-    <item name="Num_Beacon2">@color/red_off</item>
+    <style name="Fixed_Beacon2_NotAll">
+        <item name="Num_Beacon2">@color/orange_notAll</item>
     </style>
 
+    <style name="Fixed_Beacon2_OFF">
+        <item name="Num_Beacon2">@color/red_off</item>
+    </style>
+
+    <!-- Fixed Beacon 3 -->
     <style name="Fixed_Beacon3_ON">
-    <item name="Num_Beacon3">@color/green_on</item>
-        </style>
+        <item name="Num_Beacon3">@color/green_on</item>
+    </style>
+
+    <style name="Fixed_Beacon3_NotAll">
+        <item name="Num_Beacon3">@color/orange_notAll</item>
+    </style>
 
     <style name="Fixed_Beacon3_OFF">
-    <item name="Num_Beacon3">@color/red_off</item>
+        <item name="Num_Beacon3">@color/red_off</item>
     </style>
 
+    <!-- Fixed Beacon 4 -->
     <style name="Fixed_Beacon4_ON">
-    <item name="Num_Beacon4">@color/green_on</item>
-        </style>
+        <item name="Num_Beacon4">@color/green_on</item>
+    </style>
+
+    <style name="Fixed_Beacon4_NotAll">
+        <item name="Num_Beacon4">@color/orange_notAll</item>
+    </style>
 
     <style name="Fixed_Beacon4_OFF">
-    <item name="Num_Beacon4">@color/red_off</item>
+        <item name="Num_Beacon4">@color/red_off</item>
     </style>
 
-    <style name="Beacon_One">
-        <item name="Beacon">@color/yellow</item>
-    </style>
-
-    <style name="Beacon_Two">
-        <item name="Beacon">@color/green</item>
-    </style>
-
-    <style name="Beacon_Three">
-        <item name="Beacon">@color/colorAccent</item>
-    </style>
-
+    <!-- Fixed Beacon Default -->
     <style name="DefaultScene">
         <item name="Num_Beacon1">@color/red_off</item>
         <item name="Num_Beacon2">@color/red_off</item>
         <item name="Num_Beacon3">@color/red_off</item>
         <item name="Num_Beacon4">@color/red_off</item>
+    </style>
+
+    <!-- Beacons -->
+    <style name="Beacons">
+        <item name="Beacon">@color/yellow</item>
     </style>
 
 </resources>

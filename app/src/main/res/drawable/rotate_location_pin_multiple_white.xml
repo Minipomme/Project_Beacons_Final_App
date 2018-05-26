@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rotate xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_location_pin_multiple_white"
-    android:fromDegrees="-90"
-    android:toDegrees="-90"
-    android:visible="true" />

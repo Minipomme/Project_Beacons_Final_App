@@ -23,7 +23,7 @@
         android:layout_centerVertical="true"
         app:button_colors="@array/colors"
         app:button_icons="@array/icons"
-        app:icon_menu="@drawable/rotate_play_arrow_grey"
+        app:icon_menu="@drawable/ic_play_arrow_grey_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toLeftOf="parent"

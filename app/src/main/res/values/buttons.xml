@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="icons">
-        <item>@drawable/rotate_location_pin_multiple_white</item>
-        <item>@drawable/rotate_thermometer_half_white</item>
+        <item>@drawable/ic_location_pin_multiple_white</item>
+        <item>@drawable/ic_thermometer_half_white</item>
     </array>
     <array name="colors">
         <item>@color/green</item>
