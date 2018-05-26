@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -27,6 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+
+import static java.lang.Math.abs;
 
 /**
  * UI class that manage every part of the design. It doesn't care about data.
@@ -127,9 +131,25 @@ public class MapActivity extends AppCompatActivity {
         bleManager=new BleManager(this);
         dataManager = bleManager.getDataManager();
 
+        float[] HSVColorSTART = new float[3];
+        float[] HSVColorEND = new float[3];
+        Color.RGBToHSV(Color.red(Color.RED), Color.green(Color.RED), Color.blue(Color.RED), HSVColorSTART);
+        Color.RGBToHSV(Color.red(Color.MAGENTA), Color.green(Color.MAGENTA), Color.blue(Color.MAGENTA), HSVColorEND);
+        float[] HSVColorBeacon = new float[3];
+        float pas = abs(HSVColorSTART[0] - HSVColorEND[0]) / NB_Beacons;
+        int i = 0;
+
         for(Beacon bcn : dataManager.getEnsembleBeacon().getBeaconsToFind()){
-            changeTheme(new ContextThemeWrapper(this, R.style.Beacons).getTheme(),bcn.getImage(),R.drawable.ic_place_black_50dp);
+            HSVColorBeacon[0] = i * pas;
+            HSVColorBeacon[1] = 1;
+            HSVColorBeacon[2] = 1;
+
+            //changeTheme(new ContextThemeWrapper(this, R.style.Beacons).getTheme(),bcn.getImage(),R.drawable.ic_place_black_50dp);
             addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
+
+            Bitmap test = convertToBitmap(bcn.getImage().getDrawable(), 100, 100);
+
+            i++;
         }
 
         selectGoals = findViewById(R.id.selectGoals);
@@ -211,6 +231,14 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    public Bitmap convertToBitmap(Drawable drawable, int widthPixels, int heightPixels) {
+        Bitmap mutableBitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mutableBitmap);
+        drawable.setBounds(0, 0, widthPixels, heightPixels);
+        drawable.draw(canvas);
+
+        return mutableBitmap;
+    }
 
 
     public ImageView getFixedBeaconOne() {
