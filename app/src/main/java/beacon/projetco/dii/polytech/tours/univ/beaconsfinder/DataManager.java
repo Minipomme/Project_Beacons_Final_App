@@ -21,17 +21,14 @@ public class DataManager {
     private float RSSI_Init=55;
 
     //Gestion des informations
-    private boolean [] flagsArduino;
+    private boolean [] flagsArduinoAllBeacons;
+    private boolean [] flagsArduinoNotAllBeacons;
     private float[][][] arrayAverage;
     private List<List<Float>> arrayArduino;
 
     //Gestion du BLE et des balises de détection
     private BluetoothLeScanner scanner;
     private boolean flagScan = false;
-    private boolean flagFixedBeacon1 = false;
-    private boolean flagFixedBeacon2 = false;
-    private boolean flagFixedBeacon3 = false;
-    private boolean flagFixedBeacon4 = false;
 
     private ParcBeacon ensembleBeacon;
     private Trilateration Localizer;
@@ -46,7 +43,8 @@ public class DataManager {
 
         this.arrayArduino = new ArrayList<List<Float>>();
         this.arrayAverage= new float[NB_Arduinos][NB_Beacons][21];
-        this.flagsArduino = new boolean[NB_Arduinos];
+        this.flagsArduinoAllBeacons = new boolean[NB_Arduinos];
+        this.flagsArduinoNotAllBeacons = new boolean[NB_Arduinos];
 
         for (int i = 0; i <= NB_Arduinos - 1; i++) {
             arrayArduino.add(new ArrayList<Float>());
@@ -86,53 +84,77 @@ public class DataManager {
         }
 
         //Setting flags for arduino
+        int count;
         for(int i=0;i<NB_Arduinos;i++){
-            flagsArduino[i] = dataComplete(arrayArduino.get(i));
+            count = dataComplete(arrayArduino.get(i));
+            if(count > 0) {
+                if(count == NB_Beacons) {
+                    flagsArduinoAllBeacons[i] = true;
+                    flagsArduinoNotAllBeacons[i] = false;
+                } else {
+                    flagsArduinoAllBeacons[i] = false;
+                    flagsArduinoNotAllBeacons[i] = true;
+                }
+            } else {
+                flagsArduinoAllBeacons[i] = false;
+                flagsArduinoNotAllBeacons[i] = false;
+            }
         }
-        flagFixedBeacon1 = flagsArduino[0];
-        flagFixedBeacon2 = flagsArduino[1];
-        flagFixedBeacon3 = flagsArduino[2];
-        flagFixedBeacon4 = flagsArduino[3];
 
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
                 ContextThemeWrapper wrapper;
-                if(flagFixedBeacon1){
+                if(flagsArduinoAllBeacons[0]){
                     wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_ON);
                 }
                 else{
-                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_OFF);
+                    if(flagsArduinoNotAllBeacons[0]) {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_NotAll);
+                    } else {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon1_OFF);
+                    }
                 }
                 currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconOne(), R.drawable.ic_number_one_in_a_circle);
 
-                if(flagFixedBeacon2){
+                if(flagsArduinoAllBeacons[1]){
                     wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_ON);
-
                 }
                 else{
-                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
+                    if(flagsArduinoNotAllBeacons[1]) {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_NotAll);
+                    } else {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon2_OFF);
+                    }
                 }
                 currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconTwo(), R.drawable.ic_number_two_in_a_circle);
 
-                if(flagFixedBeacon3){
+                if(flagsArduinoAllBeacons[2]){
                     wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_ON);
                 }
                 else{
-                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
+                    if(flagsArduinoNotAllBeacons[2]) {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_NotAll);
+                    } else {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon3_OFF);
+                    }
                 }
                 currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconThree(), R.drawable.ic_number_three_in_a_circle);
 
-                if(flagFixedBeacon4){
+                if(flagsArduinoAllBeacons[3]){
                     wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_ON);
                 }
                 else{
-                    wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
+                    if(flagsArduinoNotAllBeacons[3]) {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_NotAll);
+                    } else {
+                        wrapper = new ContextThemeWrapper(currentActivity, R.style.Fixed_Beacon4_OFF);
+                    }
                 }
                 currentActivity.changeTheme(wrapper.getTheme(), currentActivity.getFixedBeaconFour(), R.drawable.ic_number_four_in_a_circle);
             }
         });
 
-        if(flagFixedBeacon1 && flagFixedBeacon2 && flagFixedBeacon3 && flagFixedBeacon4 && !flagScan){
+        if(flagsArduinoAllBeacons[0] && flagsArduinoAllBeacons[1] && flagsArduinoAllBeacons[2] && flagsArduinoAllBeacons[3] && !flagScan){
             scanner.stopScan( new ScanCallback(){});
             flagScan=true;
         }
@@ -157,15 +179,21 @@ public class DataManager {
     }
 
     /**
-     * If the list is complete return true
+     * If the list is complete return NB_Beacons but isn't complete return count of Beacons are connected
      * @param list
      * @return
      */
-    public boolean dataComplete(List<Float> list){
+    public int dataComplete(List<Float> list){
         if(list.contains(0f)){
-            return false;
+            int count = 0;
+            for(int i=0;i<NB_Beacons;i++){
+                if(list.get(i) != 0.0)
+                    count++;
+            }
+            return count;
+        } else {
+            return NB_Beacons;
         }
-        return true;
     }
 
     /**
