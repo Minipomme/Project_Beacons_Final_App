@@ -29,7 +29,7 @@ public class ParcBeacon {
 
             imgView = new ImageView(currentActivity.getApplicationContext());
             imgView.setImageResource(R.drawable.ic_place_black_50dp);
-            imgView.setLayoutParams(new RelativeLayout.LayoutParams(120,120));
+            imgView.setLayoutParams(new RelativeLayout.LayoutParams(50,50));
             bcn.setImage(imgView);
 
             listBeacon.add(bcn);

@@ -35,10 +35,9 @@ public class GameActivity extends AppCompatActivity {
                             default:break;
                         }
                     }
-                }, 500);   //5 seconds
+                }, 500);
             }
         });
-        //menu.setRotation(90);
     }
 
     @Override
