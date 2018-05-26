@@ -232,7 +232,7 @@ public class MapActivity extends AppCompatActivity {
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
-        Thread.currentThread().setPriority( Thread.MAX_PRIORITY);
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         bleManager=new BleManager(this);
         bleManager.setName("BleManagerThread");
         bleManager.setPriority(Thread.NORM_PRIORITY);
@@ -244,7 +244,6 @@ public class MapActivity extends AppCompatActivity {
         super.onStop();
         Log.e("TEST","OnStop");
         bleManager.pleaseStop();
-        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {

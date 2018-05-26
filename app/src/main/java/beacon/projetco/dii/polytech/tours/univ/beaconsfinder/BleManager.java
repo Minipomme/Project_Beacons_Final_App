@@ -155,11 +155,13 @@ public class BleManager extends Thread{
 
     public void pleaseStop() {
         if(gatt!=null && scanner!=null){
-            scanner.stopScan(scanCallback);
-            scanner=null;
+            Log.e("test","On Stop le scan");
+            //scanner.stopScan(scanCallback);
+            scanner.flushPendingScanResults(scanCallback);
+            /*scanner=null;
             gatt.disconnect();
             gatt.close();
-            gatt=null;
+            gatt=null;*/
             stopThread=true;
         }
     }
@@ -218,17 +220,6 @@ public class BleManager extends Thread{
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            for(BluetoothDevice device : bluetoothManager.getConnectedDevices(BluetoothProfile.GATT)){
-                try {
-                    if(device.getName().contains("abc")){
-                        Method m = device.getClass()
-                                .getMethod("removeBond", (Class[]) null);
-                        m.invoke(device, (Object[]) null);
-                    }
-                } catch (Exception e) {
-                    Log.e("fail", e.getMessage());
-                }
-            }
             Log.d("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
             onCharactericticChangedCharacteristic=characteristic;
             flagOnCharacteristicChanged=true;
