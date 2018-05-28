@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.View;
@@ -200,9 +201,10 @@ public class MapActivity extends AppCompatActivity {
         bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x")); //bcn.getImage() de temps en temps il est null donc ça plante (java.lang.NullPointerException: Attempt to invoke virtual method 'int android.widget.ImageView.getWidth()' on a null object reference)
         bcn.getImage().setY(settingScale(Float.toString((float) calculatedPosition[1]),bcn.getImage(),"y"));
 
-
         if(fragment!=null) {
-            if(fragment.getmSelectedItems().contains(bcn.getName())){
+            /*Log.e( "TEST", fragment.getmSelectedItems().toString());
+            Log.e("TEST","Numéro de beacon :"+bcn.getName());*/
+            if(fragment.getmSelectedItems().contains(bcn.getName()-1)){
                 bcn.getImage().setVisibility(View.VISIBLE);
             }
             else{

@@ -177,7 +177,6 @@ public class DataManager {
         for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
             Localizer.launchTrilateration(positions,bcn.getDistances(),bcn);
         }
-
     }
 
     /**
