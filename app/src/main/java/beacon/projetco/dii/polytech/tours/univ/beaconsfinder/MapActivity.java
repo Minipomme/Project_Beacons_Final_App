@@ -69,6 +69,7 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.e("TEST","OnCreate");
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Remove notification bar
@@ -141,20 +142,21 @@ public class MapActivity extends AppCompatActivity {
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
-
         bleManager.start();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(bleManager!=null && !bleManager.isAlive()){
+            bleManager.start();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (bleManager.getGatt() == null) {
-            return;
-        }
-        bleManager.getScanner().stopScan(bleManager.getScanCallback());
-        bleManager.getGatt().disconnect();
-        bleManager.getGatt().close();
-        bleManager.setGatt(null);
+        bleManager.pleaseStop();
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {

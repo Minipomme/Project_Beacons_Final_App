@@ -2,10 +2,12 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.PowerManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
 
+    protected PowerManager.WakeLock mWakeLock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adminCard.setOnClickListener(this);
         gameCard.setOnClickListener(this);
         infosCard.setOnClickListener(this);
+
+        final PowerManager pm = (PowerManager) getSystemService(this.getApplicationContext().POWER_SERVICE);
+        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        this.mWakeLock.acquire();
+    }
+
+    @Override
+    public void onDestroy() {
+        this.mWakeLock.release();
+        super.onDestroy();
     }
 
     @Override

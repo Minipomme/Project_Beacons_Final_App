@@ -157,7 +157,7 @@ public class DataManager {
         });
 
         if(flagsArduinoAllBeacons[0] && flagsArduinoAllBeacons[1] && flagsArduinoAllBeacons[2] && flagsArduinoAllBeacons[3] && !flagScan){
-            scanner.stopScan( new ScanCallback(){});
+            scanner.stopScan(scanCallback);
             flagScan=true;
         }
 
