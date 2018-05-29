@@ -42,7 +42,6 @@ public class MapActivity extends AppCompatActivity {
     private int deviceWidth;
     private int deviceHeight;
 
-
     //Gestion des données internes de l'application
     private boolean ConfigNotComplete = false;
     String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
@@ -146,12 +145,32 @@ public class MapActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if(bleManager!=null && !bleManager.isAlive()){
-            bleManager.start();
-        }
     }
+
+    /*@Override
+    public void onRestart() {
+        super.onRestart();
+        bleManager=new BleManager(this);
+        dataManager = bleManager.getDataManager();
+
+        for(Beacon bcn : dataManager.getEnsembleBeacon().getBeaconsToFind()){
+            changeTheme(new ContextThemeWrapper(this, R.style.Beacons).getTheme(),bcn.getImage(),R.drawable.ic_place_black_50dp);
+            addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
+        }
+
+        selectGoals = findViewById(R.id.selectGoals);
+        selectGoals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment = new FireMissilesDialogFragment();
+                fragment.setInput(dataManager.getEnsembleBeacon().getBeaconsToFindString());
+                fragment.show(getFragmentManager(),"SELECT");
+            }
+        });
+        bleManager.start();
+    }*/
 
     @Override
     public void onStop() {

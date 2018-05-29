@@ -1,6 +1,7 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -20,9 +21,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+
+import org.altbeacon.beacon.BeaconManager;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -69,34 +73,61 @@ public class BleManager extends Thread{
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-    public BleManager(MapActivity currentActivity){
+    public BleManager(final MapActivity currentActivity){
         this.currentActivity=currentActivity;
 
-        if(ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(currentActivity, PERMISSIONS_LOCATION, REQUEST_ACCESS_COARSE_LOCATION);
         }
-        statusCheck();
 
-        bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        Log.e("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
-        if(bluetoothManager == null) {
+        bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE);
+        if (bluetoothManager == null) {
             //Handle this issue. Report to the user that the device does not support BLE
         } else {
             adapter = bluetoothManager.getAdapter();
         }
-
-        if (adapter != null && !adapter.isEnabled()) {
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            currentActivity.startActivityForResult(intent,1);
-        } else {
-            System.out.println("BLE on!");
-        }
-        while(!adapter.isEnabled());
+        verifyBluetoothAndLocation();
 
         scanCallback=new MyScanCallback();
         if(dataManager==null){
             dataManager = new DataManager(this.currentActivity,adapter.getBluetoothLeScanner(),scanCallback);
         }
+    }
+
+    private void verifyBluetoothAndLocation() {
+        try {
+            final LocationManager manager = (LocationManager) currentActivity.getSystemService( Context.LOCATION_SERVICE );
+            if (!adapter.isEnabled() || !manager.isProviderEnabled( LocationManager.GPS_PROVIDER )) {
+                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(currentActivity);
+                builder.setTitle("Bluetooth and / or GPS disabled");
+                builder.setMessage("Enable the bluetooth and the GPS then restart the application");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        currentActivity.finish();
+                        System.exit(0);
+                    }
+                });
+                builder.show();
+            }
+        }
+        catch (RuntimeException e) {
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(currentActivity);
+            builder.setTitle("BLE not available");
+            builder.setMessage("Sorry, this device doesn't support the BLE");
+            builder.setPositiveButton(android.R.string.ok, null);
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    System.exit(0);
+                }
+
+            });
+            builder.show();
+        }
+
     }
 
     private boolean refreshDeviceCache(BluetoothGatt gatt){
@@ -114,34 +145,9 @@ public class BleManager extends Thread{
         return false;
     }
 
-    public void statusCheck() {
-        final LocationManager manager = (LocationManager) currentActivity.getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-        }
-    }
-
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
-        builder.setMessage("Votre GPS est semble être désactivé, voulez-vous l'activer ?")
-                .setCancelable(false)
-                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        currentActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                        System.exit(1);
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     @Override
     public void run() {
+        Log.e("TEST","Démarrage du thread");
         while(!adapter.isEnabled());
         startScanning();
         while(stopThread!=true){
@@ -170,6 +176,7 @@ public class BleManager extends Thread{
                 flagOnCharacteristicChanged=false;
             }
         }
+        Log.e("TEST","Sortie du thread");
     }
 
     public void pleaseStop() {
