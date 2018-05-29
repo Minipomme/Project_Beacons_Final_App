@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Minipomme on 30/04/2018.
+ * SplashActivity (Splash Screen) Created by Minipomme on 30/04/2018.
  */
 
 public class SplashActivity extends AppCompatActivity {

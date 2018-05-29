@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
+ * Thermometer manager
  * Created by Minipomme.
  */
 
@@ -59,10 +60,18 @@ public class Thermometer extends View {
         init(context, attrs);
     }
 
+    /**
+     * Set the color of the thermometer
+     * @param newColor
+     */
     public void setCurrentInnerColor(int newColor) {
         this.currentInnerColor = newColor;
     }
 
+    /**
+     * Set the level of the gauge
+     * @param currentDist
+     */
     public void setCurrentDist(float currentDist){
         if (currentDist > maxDist) {
             this.currentDist = maxDist;
@@ -79,6 +88,11 @@ public class Thermometer extends View {
         return minDist;
     }
 
+    /**
+     * Initialize the thermometer
+     * @param context
+     * @param attrs
+     */
     public void init(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.Thermometer);
         outerCircleRadius = typedArray.getDimension(R.styleable.Thermometer_radius, 20f);
@@ -162,7 +176,7 @@ public class Thermometer extends View {
         float tmp = innerEffectStartY;
         //float startGraduation = minDist;
         //float inc = rangeDist / nbGraduations;
-        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu es gelé", "Tabernak", "Il fait -8000"};
+        String[] txt_field = {"Allumez ! Le feu !", "Tu le vois !", "Il est où ??", "Tu y es presque !", "Tiède", "Il fait froid !", "Tu es gelé", "Il neige !", "Il fait -8000"};
 
         for (int i = 0; tmp <= innerEffectEndY; i++) {
             canvas.drawLine(circleCenterX - outerRectRadius - DEGREE_WIDTH, tmp, circleCenterX - outerRectRadius, tmp, degreePaint);

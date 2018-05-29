@@ -5,9 +5,9 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
 /**
+ * This class to convert dp in pixels
  * Created by Minipomme.
  */
-
 public class Utils {
 
     public static float convertDpToPixel(float dp, Context context) {

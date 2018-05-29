@@ -23,7 +23,9 @@ public class DataManager {
     //Gestion des informations
     private boolean [] flagsArduinoAllBeacons;
     private boolean [] flagsArduinoNotAllBeacons;
+    /**arrayAverage : array to filtering data*/
     private float[][][] arrayAverage;
+    /**arrayArduino : array of distances*/
     private List<List<Float>> arrayArduino;
 
     //Gestion du BLE et des balises de détection
@@ -75,7 +77,7 @@ public class DataManager {
         Log.e("RESULT", "[Distances Arduino 4] : "+arrayArduino.get(3));
         Log.e("RESULT","---------------------------------------------");
 
-        //Setting arduino distance
+        //Setting arduinos distance
         for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
             bcn.setDistances(new double[] {
                     arrayArduino.get(0).get(bcn.getName()-1),
@@ -103,6 +105,7 @@ public class DataManager {
             }
         }
 
+        /**Modifications on the color of the goals*/
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
                 ContextThemeWrapper wrapper;
@@ -156,6 +159,7 @@ public class DataManager {
             }
         });
 
+        /**If we have all the data, we stop scanning*/
         if(flagsArduinoAllBeacons[0] && flagsArduinoAllBeacons[1] && flagsArduinoAllBeacons[2] && flagsArduinoAllBeacons[3] && !flagScan){
             scanner.stopScan(scanCallback);
             flagScan=true;
@@ -165,6 +169,7 @@ public class DataManager {
             Localizer = new Trilateration(currentActivity);
         }
 
+        /**Array which contains the coordinates of the fixedBeacons*/
         double [][] positions = new double[][]{{Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_one()),
                 Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_one())},
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_two()),
@@ -174,6 +179,7 @@ public class DataManager {
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_four()),
                         Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_four())}};
 
+        /**Launching trilateration (il depends on the number of beacons)*/
         for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
             Localizer.launchTrilateration(positions,bcn.getDistances(),bcn);
         }

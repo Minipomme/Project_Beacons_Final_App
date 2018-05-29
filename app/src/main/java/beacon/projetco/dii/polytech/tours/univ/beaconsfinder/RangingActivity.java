@@ -29,6 +29,7 @@ import org.altbeacon.beacon.Region;
 
 import static java.lang.Math.abs;
 
+/**Activity which manage the Hot & Cold*/
 public class RangingActivity extends AppCompatActivity implements BeaconConsumer,
         BoomMenuButton.OnSubButtonClickListener {
     private BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
@@ -128,7 +129,7 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
                     } else {
                         RSSI_Now = selectedBeacon.getRssi();
                     }
-
+                    /**Calculation of the distance according to the RSSI captured at 1 meter*/
                     float ratio = RSSI_Now*1.0f/RSSI_Init;
                     if (ratio < 1.0f) {
                         distance = (float) Math.pow(ratio,10);
@@ -137,6 +138,7 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
                         distance = (float) ((0.89976)*Math.pow(ratio,7.7095) + 0.111);
                     }
 
+                    /**Using of the thermometer*/
                     if(distance < distCLOSE) {
                         thermometer.setCurrentInnerColor(ColorCLOSE);
                     } else if (distance > distFAR) {
@@ -170,6 +172,9 @@ public class RangingActivity extends AppCompatActivity implements BeaconConsumer
         } catch (RemoteException e) {   }
     }
 
+    /**
+     * These following classes are used to manage the GUI
+     */
     private void initBoom() {
         int number = num_beacons;
         BoomMenuButton.OnSubButtonClickListener ClickListener = this;

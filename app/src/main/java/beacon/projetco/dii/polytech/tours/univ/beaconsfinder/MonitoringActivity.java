@@ -13,6 +13,7 @@ import android.view.View;
 
 import org.altbeacon.beacon.BeaconManager;
 
+/**Classe which manage the BLE and the location (activation)*/
 public class MonitoringActivity extends AppCompatActivity {
 	private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
@@ -21,7 +22,7 @@ public class MonitoringActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_monitoring);
 		verifyBluetooth();
-
+		/**Demande d'autorisation d'accès à la localisation*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
             if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -89,7 +90,6 @@ public class MonitoringActivity extends AppCompatActivity {
 	}
 
 	private void verifyBluetooth() {
-
 		try {
 			if (!BeaconManager.getInstanceForApplication(this).checkAvailability()) {
 				final AlertDialog.Builder builder = new AlertDialog.Builder(this);

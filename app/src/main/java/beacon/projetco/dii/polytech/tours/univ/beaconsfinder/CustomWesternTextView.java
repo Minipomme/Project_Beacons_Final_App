@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 
 /**
+ * Font of the text : Indicon Join
  * Created by Minipomme on 23/05/2018.
  */
 

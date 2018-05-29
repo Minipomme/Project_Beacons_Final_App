@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.ramotion.circlemenu.CircleMenuView;
 
+/**Class allowing the selection of a game mode*/
 public class GameActivity extends AppCompatActivity {
 
     String arrayName[]={"Multiple Beacons","Hot Cold"};

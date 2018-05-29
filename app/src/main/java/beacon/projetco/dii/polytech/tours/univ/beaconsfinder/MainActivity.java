@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**Main Activity of the application*/
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private CardView adminCard, gameCard, infosCard;
     private String email_saved, password_saved;

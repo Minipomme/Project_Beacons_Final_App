@@ -172,12 +172,20 @@ public class MapActivity extends AppCompatActivity {
         bleManager.start();
     }*/
 
+    /**
+     * Stopping of the mapActivity
+     */
     @Override
     public void onStop() {
         super.onStop();
         bleManager.pleaseStop();
+        System.exit(0);
     }
 
+    /**
+     * Settings about the fixedBeacons (positions on the map)
+     * @param hasFocus
+     */
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
@@ -218,8 +226,9 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    /**Settings of the goals (positions on the map)*/
     public void setGoalsPosition(double[] calculatedPosition, Beacon bcn){
-        bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x")); //bcn.getImage() de temps en temps il est null donc ça plante (java.lang.NullPointerException: Attempt to invoke virtual method 'int android.widget.ImageView.getWidth()' on a null object reference)
+        bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x"));
         bcn.getImage().setY(settingScale(Float.toString((float) calculatedPosition[1]),bcn.getImage(),"y"));
 
         if(fragment!=null) {
@@ -384,6 +393,7 @@ public class MapActivity extends AppCompatActivity {
         return null;
     }
 
+    /**Classe which manage the dialog box to select beacons to print*/
     public static class FireMissilesDialogFragment extends DialogFragment {
         private String[] input;
         private ArrayList<Integer> mSelectedItems = new ArrayList<Integer>();  // Where we track the selected items

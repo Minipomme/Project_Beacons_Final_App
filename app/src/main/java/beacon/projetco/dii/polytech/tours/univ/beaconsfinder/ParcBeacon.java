@@ -23,7 +23,6 @@ public class ParcBeacon {
 
         Beacon bcn;
         ImageView imgView;
-        //Permet de set les beacons dans la liste. De leur attribuer un nom et d'y affecter un ImageView
         for(int i=0; i< NB_Beacons;i++){
             bcn=new Beacon(i+1);
 
@@ -37,7 +36,7 @@ public class ParcBeacon {
     }
 
     /**
-     * Renvoie la liste des beacons gérés par le parc.
+     * Return a list of beacon (parc)
      * @return
      */
     public List<Beacon> getBeaconsToFind(){
@@ -45,7 +44,7 @@ public class ParcBeacon {
     }
 
     /**
-     * Renvoi un tableau de chaine de caractère de l'ensemble des beacons du parc
+     * Return a string of all the beacons in the parc (names)
      * @return
      */
     public String[] getBeaconsToFindString(){

@@ -16,7 +16,7 @@ import org.altbeacon.beacon.startup.RegionBootstrap;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 
 /**
- * Created by dyoung on 12/13/13.
+ * Source : dyoung on 12/13/13.
  */
 public class BeaconReferenceApplication extends Application implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
@@ -55,6 +55,10 @@ public class BeaconReferenceApplication extends Application implements Bootstrap
         // ((TimedBeaconSimulator) BeaconManager.getBeaconSimulator()).createTimedSimulatedBeacons();
     }
 
+    /**
+     * Detect when a beacon is at proximity
+     * @param arg0
+     */
     @Override
     public void didEnterRegion(Region arg0) {
         // In this example, this class sends a notification to the user whenever a Beacon

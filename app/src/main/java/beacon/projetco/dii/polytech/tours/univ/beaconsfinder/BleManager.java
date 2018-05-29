@@ -1,7 +1,6 @@
 package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -18,33 +17,41 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.os.Build;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-
-import org.altbeacon.beacon.BeaconManager;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * BLEManager : manage the BLE (thread)
+ */
 public class BleManager extends Thread{
     private BluetoothManager bluetoothManager;
+    /**adapter : object which allow to do Bluetooth operations*/
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothDevice device;
+    /**gatt : object which allow to communicate with GATT.
+     * GATT : communication with services and characteristics*/
     private BluetoothGatt gatt;
+    private BluetoothGatt OnConnectionStateChangeGatt;
+    private BluetoothGatt OnServicesDiscoveredGatt;
+    private BluetoothGatt OnCharacteristicReadGatt;
+
+    private MyScanCallback scanCallback;
+
+    private ScanResult scanResult;
+
+    /**uuidService : UUID of the fixedBeacons services*/
     private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
     private MapActivity currentActivity;
     private DataManager dataManager;
-    private boolean stopThread=false;
 
-    private ScanResult scanResult;
     private int onConnectionStateChangeStatus;
     private int onServicesDiscoveredStatus;
     private int onCharacteristicReadStatus;
@@ -52,20 +59,15 @@ public class BleManager extends Thread{
     private BluetoothGattCharacteristic onCharactericticReadCharacteristic;
     private BluetoothGattCharacteristic onCharactericticChangedCharacteristic;
 
-    private MyScanCallback scanCallback;
-
+    /**Flags of the state machine*/
     private boolean flagOnScanResult=false;
     private boolean flagOnConnectionStateChange=false;
     private boolean flagOnServicesDiscovered=false;
     private boolean flagOnCharacteristicRead=false;
     private boolean flagOnCharacteristicChanged=false;
-
-    private BluetoothGatt OnConnectionStateChangeGatt;
-    private BluetoothGatt OnServicesDiscoveredGatt;
-    private BluetoothGatt OnCharacteristicReadGatt;
-
+    private boolean stopThread=false;
+    private boolean flagState1=false;
     private boolean flagState2=false;
-    private boolean flagState3=false;
 
     // Storage Permissions
     private static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
@@ -76,10 +78,11 @@ public class BleManager extends Thread{
     public BleManager(final MapActivity currentActivity){
         this.currentActivity=currentActivity;
 
+        /**Ask for the access to the location*/
         if (ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(currentActivity, PERMISSIONS_LOCATION, REQUEST_ACCESS_COARSE_LOCATION);
         }
-
+        /**Enable the Bluetooth*/
         bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE);
         if (bluetoothManager == null) {
             //Handle this issue. Report to the user that the device does not support BLE
@@ -88,12 +91,14 @@ public class BleManager extends Thread{
         }
         verifyBluetoothAndLocation();
 
+        /**dataManager allow to make some treatments on the read data*/
         scanCallback=new MyScanCallback();
         if(dataManager==null){
             dataManager = new DataManager(this.currentActivity,adapter.getBluetoothLeScanner(),scanCallback);
         }
     }
 
+    /**Method which verify if the Bluetooth and the location are enabled*/
     private void verifyBluetoothAndLocation() {
         try {
             final LocationManager manager = (LocationManager) currentActivity.getSystemService( Context.LOCATION_SERVICE );
@@ -145,11 +150,12 @@ public class BleManager extends Thread{
         return false;
     }
 
+    /**Method executed at the starting of the thread which manage the communication and the treatment*/
     @Override
     public void run() {
-        Log.e("TEST","Démarrage du thread");
         while(!adapter.isEnabled());
         startScanning();
+        /**Machine à états*/
         while(stopThread!=true){
             if(flagOnScanResult){
                 doConnect(scanResult);
@@ -158,27 +164,29 @@ public class BleManager extends Thread{
             if(flagOnConnectionStateChange){
                 discoverServices(onConnectionStateChangeStatus,OnConnectionStateChangeGatt);
                 flagOnConnectionStateChange=false;
-                flagState2=true;
+                flagState1=true;
             }
-            if(flagOnServicesDiscovered && flagState2){
+            if(flagOnServicesDiscovered && flagState1){
                 getCharacteristic(onServicesDiscoveredStatus,OnServicesDiscoveredGatt);
                 flagOnServicesDiscovered=false;
-                flagState2=false;
-                flagState3=true;
+                flagState1=false;
+                flagState2=true;
             }
-            if(flagOnCharacteristicRead && flagState3){
+            if(flagOnCharacteristicRead && flagState2){
                 setDescriptor(onCharacteristicReadStatus,onCharactericticReadCharacteristic,OnCharacteristicReadGatt);
                 flagOnCharacteristicRead=false;
-                flagState3=false;
+                flagState2=false;
             }
             if(flagOnCharacteristicChanged){
                 getData(onCharactericticChangedCharacteristic);
                 flagOnCharacteristicChanged=false;
             }
         }
-        Log.e("TEST","Sortie du thread");
     }
 
+    /**
+     * Method called when the application exit the mapActivity
+     */
     public void pleaseStop() {
         Log.e("Test","PleaseStop");
         if(gatt!=null && scanner!=null){
@@ -192,6 +200,9 @@ public class BleManager extends Thread{
         Log.e("TEST", String.valueOf(this.isAlive()));
     }
 
+    /**
+     * Launcher of the scanner
+     */
     public void startScanning(){
         scanner = adapter.getBluetoothLeScanner();
         ScanSettings scanSettings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
@@ -205,6 +216,9 @@ public class BleManager extends Thread{
         System.out.println("Scanner on !");
     }
 
+    /**
+     * Class MyScanCallback which get the ScanResults
+     */
     public class MyScanCallback extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
@@ -216,6 +230,9 @@ public class BleManager extends Thread{
         }
     }
 
+    /**
+     * Classe myGattCallBack allow to read the services and the characteristics
+     */
     private class myGattCallBack extends BluetoothGattCallback {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -250,6 +267,10 @@ public class BleManager extends Thread{
         }
     }
 
+    /**
+     * Connection to a peripheral
+     * @param result
+     */
     public void doConnect(ScanResult result){
         device = adapter.getRemoteDevice(result.getDevice().getAddress());
         new Thread(new Runnable() {
@@ -265,6 +286,11 @@ public class BleManager extends Thread{
         }).start();
     }
 
+    /**
+     * Researching of services
+     * @param newState
+     * @param gatt
+     */
     public void discoverServices(int newState, BluetoothGatt gatt){
         if (newState == BluetoothProfile.STATE_CONNECTED) {
             Log.i("TEST", "Connected to GATT peripheral. Attempting to start service discovery");
@@ -275,6 +301,11 @@ public class BleManager extends Thread{
         }
     }
 
+    /**
+     * Collecting of the first characteristic
+     * @param status
+     * @param gatt
+     */
     public void getCharacteristic(int status, BluetoothGatt gatt){
         if (status == BluetoothGatt.GATT_SUCCESS) {
             List<BluetoothGattService> services = gatt.getServices();
@@ -289,6 +320,12 @@ public class BleManager extends Thread{
         }
     }
 
+    /**
+     * Collecting of the descriptor (describe the data of the characteristic)
+     * @param status
+     * @param characteristic
+     * @param gatt
+     */
     public void setDescriptor(int status, BluetoothGattCharacteristic characteristic, BluetoothGatt gatt){
         if (status == BluetoothGatt.GATT_SUCCESS) {
             gatt.setCharacteristicNotification(characteristic,true);
@@ -298,6 +335,10 @@ public class BleManager extends Thread{
         }
     }
 
+    /**
+     * Collecting of data
+     * @param characteristic
+     */
     public void getData(BluetoothGattCharacteristic characteristic){
         Log.e("TEST","getData");
         Long[] result = {0l,0l,0l,0l};
