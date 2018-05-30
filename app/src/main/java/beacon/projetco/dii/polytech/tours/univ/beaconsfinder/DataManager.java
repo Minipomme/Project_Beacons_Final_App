@@ -232,9 +232,9 @@ public class DataManager {
 
         float average = getAverage(fixedBeacon,beacon);
 
-        if((new_value - average <= 2 &&  new_value - average >= -2) || Arrays.asList(arrayAverage[fixedBeacon][beacon]).contains(0)){
+        if((new_value - average <= 5 &&  new_value - average >= -5) || Arrays.asList(arrayAverage[fixedBeacon][beacon]).contains(0)){
             float temp;
-            for(int i = 18; i > -1; i--){
+            for(int i = 3; i > -1; i--){
                 temp=arrayAverage[fixedBeacon][beacon][i];
                 arrayAverage[fixedBeacon][beacon][i + 1]=temp;
             }
@@ -250,14 +250,14 @@ public class DataManager {
      */
     public void setAverage(int fixedBeacon, int beacon){
         float average = 0f;
-        for(int i = 0;i<20;i++){
+        for(int i = 0;i<5;i++){
             average += arrayAverage[fixedBeacon][beacon][i];
         }
-        arrayAverage[fixedBeacon][beacon][20]=average/20;
+        arrayAverage[fixedBeacon][beacon][5]=average/5;
     }
 
     public float getAverage(int fixedBeacon, int beacon){
-        return arrayAverage[fixedBeacon][beacon][20];
+        return arrayAverage[fixedBeacon][beacon][5];
     }
 
     public ParcBeacon getEnsembleBeacon() {
