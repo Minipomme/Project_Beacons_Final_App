@@ -17,30 +17,57 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
+import android.util.Log;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * BLEManager : manage the BLE (thread)
+ */
 public class BleManager extends Thread{
-    private MapActivity currentActivity;
-
-    //Variables fixes
-    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
-
-    //Gestion du bluetooth
     private BluetoothManager bluetoothManager;
+    /**adapter : object which allow to do Bluetooth operations*/
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
     private BluetoothDevice device;
+    /**gatt : object which allow to communicate with GATT.
+     * GATT : communication with services and characteristics*/
     private BluetoothGatt gatt;
-    private BluetoothGattCharacteristic characteristic;
+    private BluetoothGatt OnConnectionStateChangeGatt;
+    private BluetoothGatt OnServicesDiscoveredGatt;
+    private BluetoothGatt OnCharacteristicReadGatt;
 
-    //Classe de gestion des informations
+    private MyScanCallback scanCallback;
+
+    private ScanResult scanResult;
+
+    /**uuidService : UUID of the fixedBeacons services*/
+    private String uuidService="19B10010-E8F2-537E-4F6C-D104768A1214";
+    private MapActivity currentActivity;
     private DataManager dataManager;
+
+    private int onConnectionStateChangeStatus;
+    private int onServicesDiscoveredStatus;
+    private int onCharacteristicReadStatus;
+
+    private BluetoothGattCharacteristic onCharactericticReadCharacteristic;
+    private BluetoothGattCharacteristic onCharactericticChangedCharacteristic;
+
+    /**Flags of the state machine*/
+    private boolean flagOnScanResult=false;
+    private boolean flagOnConnectionStateChange=false;
+    private boolean flagOnServicesDiscovered=false;
+    private boolean flagOnCharacteristicRead=false;
+    private boolean flagOnCharacteristicChanged=false;
+    private boolean stopThread=false;
+    private boolean flagState1=false;
+    private boolean flagState2=false;
 
     // Storage Permissions
     private static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
@@ -48,76 +75,133 @@ public class BleManager extends Thread{
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-    /**
-     * Create the BleManager and bluetooth adapter. Verify the permissions concerning location and bluetooth
-     * @param currentActivity
-     */
-    public BleManager(MapActivity currentActivity){
+    public BleManager(final MapActivity currentActivity){
         this.currentActivity=currentActivity;
 
+        /**Ask for the access to the location*/
         if (ActivityCompat.checkSelfPermission(currentActivity, Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(currentActivity, PERMISSIONS_LOCATION, REQUEST_ACCESS_COARSE_LOCATION);
         }
-        statusCheck();
-
+        /**Enable the Bluetooth*/
         bluetoothManager = (BluetoothManager) currentActivity.getApplicationContext().getSystemService( Context.BLUETOOTH_SERVICE);
         if (bluetoothManager == null) {
             //Handle this issue. Report to the user that the device does not support BLE
         } else {
             adapter = bluetoothManager.getAdapter();
         }
+        verifyBluetoothAndLocation();
 
-        if (adapter != null && !adapter.isEnabled()) {
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            currentActivity.startActivityForResult(intent,1);
-        } else {
-            System.out.println("BLE on!");
+        /**dataManager allow to make some treatments on the read data*/
+        scanCallback=new MyScanCallback();
+        if(dataManager==null){
+            dataManager = new DataManager(this.currentActivity,adapter.getBluetoothLeScanner(),scanCallback);
         }
-
-        dataManager = new DataManager(currentActivity,scanner);
     }
 
+    /**Method which verify if the Bluetooth and the location are enabled*/
+    private void verifyBluetoothAndLocation() {
+        try {
+            final LocationManager manager = (LocationManager) currentActivity.getSystemService( Context.LOCATION_SERVICE );
+            if (!adapter.isEnabled() || !manager.isProviderEnabled( LocationManager.GPS_PROVIDER )) {
+                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(currentActivity);
+                builder.setTitle("Bluetooth and / or GPS disabled");
+                builder.setMessage("Enable the bluetooth and the GPS then restart the application");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        currentActivity.finish();
+                        System.exit(0);
+                    }
+                });
+                builder.show();
+            }
+        }
+        catch (RuntimeException e) {
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(currentActivity);
+            builder.setTitle("BLE not available");
+            builder.setMessage("Sorry, this device doesn't support the BLE");
+            builder.setPositiveButton(android.R.string.ok, null);
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
-    /**
-     * Run the Thread and start scanning. Do nothing if the bluetooth isn't active
-     */
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    System.exit(0);
+                }
+
+            });
+            builder.show();
+        }
+
+    }
+
+    private boolean refreshDeviceCache(BluetoothGatt gatt){
+        try {
+            BluetoothGatt localBluetoothGatt = gatt;
+            Method localMethod = localBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
+            if (localMethod != null) {
+                boolean bool = ((Boolean) localMethod.invoke(localBluetoothGatt, new Object[0])).booleanValue();
+                return bool;
+            }
+        }
+        catch (Exception localException) {
+            Log.e("TEST", "An exception occured while refreshing device");
+        }
+        return false;
+    }
+
+    /**Method executed at the starting of the thread which manage the communication and the treatment*/
     @Override
     public void run() {
         while(!adapter.isEnabled());
         startScanning();
-    }
-
-    public void statusCheck() {
-        final LocationManager manager = (LocationManager) currentActivity.getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
+        /**Machine à états*/
+        while(stopThread!=true){
+            if(flagOnScanResult){
+                doConnect(scanResult);
+                flagOnScanResult=false;
+            }
+            if(flagOnConnectionStateChange){
+                discoverServices(onConnectionStateChangeStatus,OnConnectionStateChangeGatt);
+                flagOnConnectionStateChange=false;
+                flagState1=true;
+            }
+            if(flagOnServicesDiscovered && flagState1){
+                getCharacteristic(onServicesDiscoveredStatus,OnServicesDiscoveredGatt);
+                flagOnServicesDiscovered=false;
+                flagState1=false;
+                flagState2=true;
+            }
+            if(flagOnCharacteristicRead && flagState2){
+                setDescriptor(onCharacteristicReadStatus,onCharactericticReadCharacteristic,OnCharacteristicReadGatt);
+                flagOnCharacteristicRead=false;
+                flagState2=false;
+            }
+            if(flagOnCharacteristicChanged){
+                getData(onCharactericticChangedCharacteristic);
+                flagOnCharacteristicChanged=false;
+            }
         }
     }
 
     /**
-     * Advertise the user if the location isn't active
+     * Method called when the application exit the mapActivity
      */
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
-        builder.setMessage("Your GPS seems to be disabled, do you want to activate it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        currentActivity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                        System.exit(1);
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
+    public void pleaseStop() {
+        Log.e("Test","PleaseStop");
+        if(gatt!=null && scanner!=null){
+            scanner.stopScan(scanCallback);
+            scanner=null;
+            this.gatt.disconnect();
+            this.gatt.close();
+            this.gatt=null;
+        }
+        this.stopThread=true;
+        Log.e("TEST", String.valueOf(this.isAlive()));
     }
 
     /**
-     * Start scanning with filters corresponding to the services sent by the arduino(s)
+     * Launcher of the scanner
      */
     public void startScanning(){
         scanner = adapter.getBluetoothLeScanner();
@@ -127,74 +211,148 @@ public class BleManager extends Thread{
         scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino2").build());
         scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino3").build());
         scanFilters.add(new ScanFilter.Builder().setDeviceName("ScanBeaconsbyArduino4").build());
-        scanner.startScan(scanFilters, scanSettings, new MyScanCallback());
+        scanner.flushPendingScanResults(scanCallback);
+        scanner.startScan(scanFilters, scanSettings,scanCallback);
         System.out.println("Scanner on !");
     }
 
     /**
-     * Callback that read the characteristics into the service
+     * Class MyScanCallback which get the ScanResults
      */
     public class MyScanCallback extends ScanCallback {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
-            device = adapter.getRemoteDevice(result.getDevice().getAddress());
-            gatt = device.connectGatt(currentActivity.getApplicationContext(), true, new myGattCallBack());
-        }
-
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            //Do something with batch of results
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            //Handle error
+            if(result.getDevice().getName()!=null){
+                Log.e("TEST",result.getDevice().getName());
+            }
+            scanResult=result;
+            flagOnScanResult=true;
         }
     }
 
+    /**
+     * Classe myGattCallBack allow to read the services and the characteristics
+     */
     private class myGattCallBack extends BluetoothGattCallback {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                gatt.discoverServices();
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-            }
+            Log.d("TEST","onConnectionStateChange");
+            OnConnectionStateChangeGatt=gatt;
+            onConnectionStateChangeStatus=newState;
+            flagOnConnectionStateChange=true;
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            List<BluetoothGattService> services = gatt.getServices();
-            for(BluetoothGattService service: services){
-                if(service.getUuid().toString().equalsIgnoreCase(uuidService)){
-                    characteristic=service.getCharacteristics().get(0);
-                    gatt.readCharacteristic(characteristic);
-                }
-            }
+            Log.e("TEST","onServicesDiscovered");
+            OnServicesDiscoveredGatt=gatt;
+            onServicesDiscoveredStatus=status;
+            flagOnServicesDiscovered=true;
         }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            Log.e("TEST","onCharacteristicRead");
+            OnCharacteristicReadGatt=gatt;
+            onCharacteristicReadStatus=status;
+            onCharactericticReadCharacteristic=characteristic;
+            flagOnCharacteristicRead=true;
+        }
+
+        @Override
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            Log.d("TEST",bluetoothManager.getConnectedDevices(BluetoothProfile.GATT).toString());
+            onCharactericticChangedCharacteristic=characteristic;
+            flagOnCharacteristicChanged=true;
+        }
+    }
+
+    /**
+     * Connection to a peripheral
+     * @param result
+     */
+    public void doConnect(ScanResult result){
+        device = adapter.getRemoteDevice(result.getDevice().getAddress());
+        new Thread(new Runnable() {
+            public void run() {
+                gatt = device.connectGatt(currentActivity.getApplicationContext(), true, new myGattCallBack());
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                refreshDeviceCache(gatt);
+            }
+        }).start();
+    }
+
+    /**
+     * Researching of services
+     * @param newState
+     * @param gatt
+     */
+    public void discoverServices(int newState, BluetoothGatt gatt){
+        if (newState == BluetoothProfile.STATE_CONNECTED) {
+            Log.i("TEST", "Connected to GATT peripheral. Attempting to start service discovery");
+            gatt.discoverServices();
+        } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+            Log.i( "TEST", "Disconnected from GATT peripheral" );
+            gatt.disconnect();
+        }
+    }
+
+    /**
+     * Collecting of the first characteristic
+     * @param status
+     * @param gatt
+     */
+    public void getCharacteristic(int status, BluetoothGatt gatt){
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            List<BluetoothGattService> services = gatt.getServices();
+            for (BluetoothGattService service : services) {
+                if (service.getUuid().toString().equalsIgnoreCase(uuidService)) {
+                    BluetoothGattCharacteristic characteristic = service.getCharacteristics().get(0);
+                    gatt.readCharacteristic(characteristic);
+                }
+            }
+        } else {
+            Log.i("TEST", "onServicesDiscovered received: " + status);
+        }
+    }
+
+    /**
+     * Collecting of the descriptor (describe the data of the characteristic)
+     * @param status
+     * @param characteristic
+     * @param gatt
+     */
+    public void setDescriptor(int status, BluetoothGattCharacteristic characteristic, BluetoothGatt gatt){
+        if (status == BluetoothGatt.GATT_SUCCESS) {
             gatt.setCharacteristicNotification(characteristic,true);
             BluetoothGattDescriptor descriptor = characteristic.getDescriptors().get(0);
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             gatt.writeDescriptor(descriptor);
         }
+    }
 
-        @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-
-            Long[] result = {0l,0l,0l,0l};
-            byte[] data = characteristic.getValue();
-            for(int j=0;j<=data.length-1;j++){
-                if(data[j]<0) {
-                    result[j] = (long) data[j] + 256 ;
-                }
-                else{
-                    result[j]= (long) data[j];
-                }
+    /**
+     * Collecting of data
+     * @param characteristic
+     */
+    public void getData(BluetoothGattCharacteristic characteristic){
+        Log.e("TEST","getData");
+        Long[] result = {0l,0l,0l,0l};
+        byte[] data = characteristic.getValue();
+        Log.e("Data", Arrays.toString(data));
+        for(int j=0;j<=data.length-1;j++){
+            if(data[j]<0) {
+                result[j] = (long) data[j] + 256 ;
             }
-            dataManager.extractData(result,data);
+            else{
+                result[j]= (long) data[j];
+            }
         }
+        dataManager.extractData(result,data);
     }
 
     public BluetoothGatt getGatt() {
@@ -209,10 +367,6 @@ public class BleManager extends Thread{
         return scanner;
     }
 
-    public DataManager getDataManager() {
-        return dataManager;
-    }
-
     public void setScanner(BluetoothLeScanner scanner) {
         this.scanner = scanner;
     }
@@ -223,5 +377,29 @@ public class BleManager extends Thread{
 
     public void setAdapter(BluetoothAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    public boolean isStopThread() {
+        return stopThread;
+    }
+
+    public void setStopThread(boolean stopThread) {
+        this.stopThread = stopThread;
+    }
+
+    public DataManager getDataManager() {
+        return dataManager;
+    }
+
+    public void setDataManager(DataManager dataManager) {
+        this.dataManager = dataManager;
+    }
+
+    public MyScanCallback getScanCallback() {
+        return scanCallback;
+    }
+
+    public void setScanCallback(MyScanCallback scanCallback) {
+        this.scanCallback = scanCallback;
     }
 }

@@ -68,9 +68,4 @@
         <item name="Num_Beacon4">@color/red_off</item>
     </style>
 
-    <!-- Beacons -->
-    <style name="Beacons">
-        <item name="Beacon">@color/yellow</item>
-    </style>
-
 </resources>

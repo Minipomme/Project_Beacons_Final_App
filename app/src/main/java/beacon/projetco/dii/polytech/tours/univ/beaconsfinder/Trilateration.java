@@ -17,6 +17,12 @@ public class Trilateration {
         this.currentActivity=currentActivity;
     }
 
+    /**
+     * Launch the trilateration function
+     * @param positions
+     * @param distances
+     * @param bcn
+     */
     public void launchTrilateration(double [][] positions, double[] distances, final Beacon bcn) {
         TrilaterationFunction triFunc = new TrilaterationFunction(positions,distances);
         LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(triFunc);
@@ -26,7 +32,7 @@ public class Trilateration {
         LeastSquaresOptimizer.Optimum nonLinearCalculatePosition = nlSolver.solve();
 
         final double[] calculatedPosition = nonLinearCalculatePosition.getPoint().toArray();
-
+        /**Placement des beacons cibles (exécution par le Thread UI)*/
         new Thread(new Runnable() {
             public void run() {
                 currentActivity.runOnUiThread(new Runnable() {

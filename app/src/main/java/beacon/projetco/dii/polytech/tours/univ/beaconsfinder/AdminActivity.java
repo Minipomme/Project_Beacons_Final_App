@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**Manage the administrator mode*/
 public class AdminActivity extends AppCompatActivity {
     private static final int SELECTED_PICTURE=1;
 
@@ -249,7 +250,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * onActivityResult
      * @param requestCode
      * @param resultCode
      * @param data

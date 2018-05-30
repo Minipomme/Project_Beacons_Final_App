@@ -23,18 +23,22 @@ public class DataManager {
     //Gestion des informations
     private boolean [] flagsArduinoAllBeacons;
     private boolean [] flagsArduinoNotAllBeacons;
+    /**arrayAverage : array to filtering data*/
     private float[][][] arrayAverage;
+    /**arrayArduino : array of distances*/
     private List<List<Float>> arrayArduino;
 
     //Gestion du BLE et des balises de détection
     private BluetoothLeScanner scanner;
+    private BleManager.MyScanCallback scanCallback;
     private boolean flagScan = false;
 
     private ParcBeacon ensembleBeacon;
     private Trilateration Localizer;
 
-    public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner){
+    public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner, BleManager.MyScanCallback scanCallback){
         this.currentActivity=currentActivity;
+        this.scanCallback=scanCallback;
         this.scanner=scanner;
 
         NB_Arduinos=Integer.parseInt(currentActivity.getApplicationContext().getString(R.string.NB_ARDUINO));
@@ -73,7 +77,7 @@ public class DataManager {
         Log.e("RESULT", "[Distances Arduino 4] : "+arrayArduino.get(3));
         Log.e("RESULT","---------------------------------------------");
 
-        //Setting arduino distance
+        //Setting arduinos distance
         for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
             bcn.setDistances(new double[] {
                     arrayArduino.get(0).get(bcn.getName()-1),
@@ -101,6 +105,7 @@ public class DataManager {
             }
         }
 
+        /**Modifications on the color of the goals*/
         currentActivity.runOnUiThread(new Runnable() {
             public void run() {
                 ContextThemeWrapper wrapper;
@@ -154,8 +159,9 @@ public class DataManager {
             }
         });
 
+        /**If we have all the data, we stop scanning*/
         if(flagsArduinoAllBeacons[0] && flagsArduinoAllBeacons[1] && flagsArduinoAllBeacons[2] && flagsArduinoAllBeacons[3] && !flagScan){
-            scanner.stopScan( new ScanCallback(){});
+            scanner.stopScan(scanCallback);
             flagScan=true;
         }
 
@@ -163,6 +169,7 @@ public class DataManager {
             Localizer = new Trilateration(currentActivity);
         }
 
+        /**Array which contains the coordinates of the fixedBeacons*/
         double [][] positions = new double[][]{{Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_one()),
                 Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_one())},
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_two()),
@@ -172,10 +179,10 @@ public class DataManager {
                 {Double.parseDouble(currentActivity.getPosition_x_fixed_beacon_four()),
                         Double.parseDouble(currentActivity.getPosition_y_fixed_beacon_four())}};
 
+        /**Launching trilateration (il depends on the number of beacons)*/
         for(Beacon bcn : ensembleBeacon.getBeaconsToFind()){
             Localizer.launchTrilateration(positions,bcn.getDistances(),bcn);
         }
-
     }
 
     /**
@@ -225,9 +232,9 @@ public class DataManager {
 
         float average = getAverage(fixedBeacon,beacon);
 
-        if((new_value - average <= 2 &&  new_value - average >= -2) || Arrays.asList(arrayAverage[fixedBeacon][beacon]).contains(0)){
+        if((new_value - average <= 5 &&  new_value - average >= -5) || Arrays.asList(arrayAverage[fixedBeacon][beacon]).contains(0)){
             float temp;
-            for(int i = 18; i > -1; i--){
+            for(int i = 3; i > -1; i--){
                 temp=arrayAverage[fixedBeacon][beacon][i];
                 arrayAverage[fixedBeacon][beacon][i + 1]=temp;
             }
@@ -243,14 +250,14 @@ public class DataManager {
      */
     public void setAverage(int fixedBeacon, int beacon){
         float average = 0f;
-        for(int i = 0;i<20;i++){
+        for(int i = 0;i<5;i++){
             average += arrayAverage[fixedBeacon][beacon][i];
         }
-        arrayAverage[fixedBeacon][beacon][20]=average/20;
+        arrayAverage[fixedBeacon][beacon][5]=average/5;
     }
 
     public float getAverage(int fixedBeacon, int beacon){
-        return arrayAverage[fixedBeacon][beacon][20];
+        return arrayAverage[fixedBeacon][beacon][5];
     }
 
     public ParcBeacon getEnsembleBeacon() {

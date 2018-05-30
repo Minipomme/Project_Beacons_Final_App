@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.View;
@@ -41,7 +42,6 @@ public class MapActivity extends AppCompatActivity {
     private int deviceWidth;
     private int deviceHeight;
 
-
     //Gestion des données internes de l'application
     private boolean ConfigNotComplete = false;
     String [] dataTitleTable = {"heightRoom","widthRoom","offsetMap_x","offsetMap_y","positionXFixedBeaconOne","positionYFixedBeaconOne","positionXFixedBeaconTwo","positionYFixedBeaconTwo","positionXFixedBeaconThree","positionYFixedBeaconThree","positionXFixedBeaconFour","positionYFixedBeaconFour"};
@@ -68,6 +68,7 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.e("TEST","OnCreate");
         //Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Remove notification bar
@@ -123,7 +124,33 @@ public class MapActivity extends AppCompatActivity {
             Toast.makeText(MapActivity.this, "Configuration is not complete, contact an administrator", Toast.LENGTH_SHORT).show();
         }
 
+        bleManager=new BleManager(this);
+        dataManager = bleManager.getDataManager();
 
+        for(Beacon bcn : dataManager.getEnsembleBeacon().getBeaconsToFind()){
+            addContentView(bcn.getImage(),bcn.getImage().getLayoutParams());
+        }
+
+        selectGoals = findViewById(R.id.selectGoals);
+        selectGoals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment = new FireMissilesDialogFragment();
+                fragment.setInput(dataManager.getEnsembleBeacon().getBeaconsToFindString());
+                fragment.show(getFragmentManager(),"SELECT");
+            }
+        });
+        bleManager.start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    /*@Override
+    public void onRestart() {
+        super.onRestart();
         bleManager=new BleManager(this);
         dataManager = bleManager.getDataManager();
 
@@ -141,21 +168,23 @@ public class MapActivity extends AppCompatActivity {
                 fragment.show(getFragmentManager(),"SELECT");
             }
         });
-
         bleManager.start();
-    }
+    }*/
 
+    /**
+     * Stopping of the mapActivity
+     */
     @Override
     public void onStop() {
         super.onStop();
-        if (bleManager.getGatt() == null) {
-            return;
-        }
-        bleManager.getGatt().disconnect();
-        bleManager.getGatt().close();
-        bleManager.setGatt(null);
+        bleManager.pleaseStop();
+        System.exit(0);
     }
 
+    /**
+     * Settings about the fixedBeacons (positions on the map)
+     * @param hasFocus
+     */
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
@@ -196,13 +225,15 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    /**Settings of the goals (positions on the map)*/
     public void setGoalsPosition(double[] calculatedPosition, Beacon bcn){
-        bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x")); //bcn.getImage() de temps en temps il est null donc ça plante (java.lang.NullPointerException: Attempt to invoke virtual method 'int android.widget.ImageView.getWidth()' on a null object reference)
+        bcn.getImage().setX(settingScale(Float.toString((float) calculatedPosition[0]),bcn.getImage(),"x"));
         bcn.getImage().setY(settingScale(Float.toString((float) calculatedPosition[1]),bcn.getImage(),"y"));
 
-
         if(fragment!=null) {
-            if(fragment.getmSelectedItems().contains(bcn.getName())){
+            /*Log.e( "TEST", fragment.getmSelectedItems().toString());
+            Log.e("TEST","Numéro de beacon :"+bcn.getName());*/
+            if(fragment.getmSelectedItems().contains(bcn.getName()-1)){
                 bcn.getImage().setVisibility(View.VISIBLE);
             }
             else{
@@ -210,8 +241,6 @@ public class MapActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
     public ImageView getFixedBeaconOne() {
         return fixedBeaconOne;
@@ -363,6 +392,7 @@ public class MapActivity extends AppCompatActivity {
         return null;
     }
 
+    /**Classe which manage the dialog box to select beacons to print*/
     public static class FireMissilesDialogFragment extends DialogFragment {
         private String[] input;
         private ArrayList<Integer> mSelectedItems = new ArrayList<Integer>();  // Where we track the selected items

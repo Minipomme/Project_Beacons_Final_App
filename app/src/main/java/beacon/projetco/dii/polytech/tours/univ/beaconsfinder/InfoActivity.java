@@ -3,6 +3,7 @@ package beacon.projetco.dii.polytech.tours.univ.beaconsfinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+/**Informations Activity (About Indicon Join)*/
 public class InfoActivity extends AppCompatActivity {
 
     @Override

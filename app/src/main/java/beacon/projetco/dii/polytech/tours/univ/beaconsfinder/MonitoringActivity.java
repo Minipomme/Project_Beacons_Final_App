@@ -13,6 +13,7 @@ import android.view.View;
 
 import org.altbeacon.beacon.BeaconManager;
 
+/**Classe which manage the BLE and the location (activation)*/
 public class MonitoringActivity extends AppCompatActivity {
 	private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
 
@@ -21,13 +22,13 @@ public class MonitoringActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_monitoring);
 		verifyBluetooth();
-
+		/**Demande d'autorisation d'accès à la localisation*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
             if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Cette application nécessite l'autorisation de la localisation");
-                builder.setMessage("Veuillez autoriser l'application à accéder à la localisation.");
+                builder.setTitle("This application need the location access");
+                builder.setMessage("Please autorize the app to access the location of your mobile");
                 builder.setPositiveButton(android.R.string.ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
@@ -51,8 +52,8 @@ public class MonitoringActivity extends AppCompatActivity {
 				if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				} else {
 					final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle("Fonctionnalités limitées");
-					builder.setMessage("Tant que la localisation n'est pas activée/acceptée, il n'est pas possible d'effectuer la localisation des beacons.");
+					builder.setTitle("Limited functionnalities");
+					builder.setMessage("While the GPS is disable, it is impossible to launch the localization");
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 						@Override
@@ -89,12 +90,11 @@ public class MonitoringActivity extends AppCompatActivity {
 	}
 
 	private void verifyBluetooth() {
-
 		try {
 			if (!BeaconManager.getInstanceForApplication(this).checkAvailability()) {
 				final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("Bluetooth non activé");
-				builder.setMessage("Veuillez activer le bluetooth et redémarrer l'application.");
+				builder.setTitle("Bluetooth disable");
+				builder.setMessage("Enable the bluetooth and restart the application");
 				builder.setPositiveButton(android.R.string.ok, null);
 				builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 					@Override
@@ -108,8 +108,8 @@ public class MonitoringActivity extends AppCompatActivity {
 		}
 		catch (RuntimeException e) {
 			final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Bluetooth LE non disponible");
-			builder.setMessage("Désolé, l'appareil ne supporte pas le BLE.");
+			builder.setTitle("BLE not available");
+			builder.setMessage("Sorry, this device doesn't support the BLE");
 			builder.setPositiveButton(android.R.string.ok, null);
 			builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
