@@ -36,6 +36,9 @@ public class DataManager {
     private ParcBeacon ensembleBeacon;
     private Trilateration Localizer;
 
+    private static int filteringParameter=5;
+    private static int filteringArraySize=5;
+
     public DataManager(MapActivity currentActivity, BluetoothLeScanner scanner, BleManager.MyScanCallback scanCallback){
         this.currentActivity=currentActivity;
         this.scanCallback=scanCallback;
@@ -232,9 +235,9 @@ public class DataManager {
 
         float average = getAverage(fixedBeacon,beacon);
 
-        if((new_value - average <= 5 &&  new_value - average >= -5) || Arrays.asList(arrayAverage[fixedBeacon][beacon]).contains(0)){
+        if((new_value - average <= filteringParameter &&  new_value - average >= -filteringParameter) || Arrays.asList(arrayAverage[fixedBeacon][beacon]).contains(0)){
             float temp;
-            for(int i = 3; i > -1; i--){
+            for(int i = filteringArraySize-2; i > -1; i--){
                 temp=arrayAverage[fixedBeacon][beacon][i];
                 arrayAverage[fixedBeacon][beacon][i + 1]=temp;
             }
@@ -250,14 +253,14 @@ public class DataManager {
      */
     public void setAverage(int fixedBeacon, int beacon){
         float average = 0f;
-        for(int i = 0;i<5;i++){
+        for(int i = 0;i<filteringArraySize;i++){
             average += arrayAverage[fixedBeacon][beacon][i];
         }
-        arrayAverage[fixedBeacon][beacon][5]=average/5;
+        arrayAverage[fixedBeacon][beacon][filteringArraySize]=average/filteringArraySize;
     }
 
     public float getAverage(int fixedBeacon, int beacon){
-        return arrayAverage[fixedBeacon][beacon][5];
+        return arrayAverage[fixedBeacon][beacon][filteringArraySize];
     }
 
     public ParcBeacon getEnsembleBeacon() {
